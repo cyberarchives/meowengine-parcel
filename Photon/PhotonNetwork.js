@@ -195,7 +195,7 @@ class PhotonClient {
 
 // Example usage:
 // In a browser environment with Photon client:
-// const packet = sendOwnershipTransferEvent(123, 456);
+// const packet = client.TransferOwnership(123, 456);
 // webSocket.send(packet.toBuffer());
 
 // Export the classes for use in other modules
