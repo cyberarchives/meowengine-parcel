@@ -1,1 +1,1 @@
-// Idk how to set up webpack
+// Idk how to set up parcel
