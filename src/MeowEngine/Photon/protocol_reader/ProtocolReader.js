@@ -1,6 +1,5 @@
 import { DataType, PacketType } from './constants';
 import { ProtocolArray } from './types/Array';
-import { CustomData } from './types/CustomData';
 import { SizedFloat } from './types/SizedFloat';
 import { SizedInt } from './types/SizedInt';
 import {
@@ -14,6 +13,7 @@ import {
 } from './types/packets';
 
 import { Buffer } from "../../../Browser/Utility/Buffer";
+import CustomDataReader from './types/CustomDataReader';
 
 export class ProtocolReader {
   constructor(buffer) {
@@ -34,7 +34,7 @@ export class ProtocolReader {
       case DataType.Byte:
         return SizedInt.read(this, 1);
       case DataType.Custom:
-        return CustomData.read(this);
+        return CustomDataReader.read(this);
       case DataType.Double:
         return SizedFloat.read(this, 8);
       case DataType.EventData:

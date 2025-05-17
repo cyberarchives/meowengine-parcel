@@ -34,12 +34,15 @@ This custom implementation allows developers to use familiar Photon-style networ
 MeowEngine Parcel/
 ├── dist/ # Built files
 │   ├── index.js # Main entry point
-│   └── meowengine.user.js
+│   ├── meowengine.user.js
+│   ├── Quaternion.8bb787cc.js
+│   ├── UnimplementedCustomData.e36ca5ce.js
+│   └── Vector3.7b29588f.js
 ├── node_modules/
 ├── src/
 │   ├── Browser/
 │   │   ├── Utility/
-│   │   │   ├── Buffer.js # Buffer library from Node.js converted to a Browser compatible version
+│   │   │   ├── Buffer.js
 │   │   │   └── GameUtils.js
 │   │   └── GlobalTypeDefs.js
 │   ├── Bullet Force/
@@ -83,6 +86,7 @@ MeowEngine Parcel/
 │   │           ├── types/
 │   │           │   ├── Array.js
 │   │           │   ├── CustomData.js
+│   │           │   ├── CustomDataReader.js
 │   │           │   ├── packets.js
 │   │           │   ├── Quaternion.js
 │   │           │   ├── Serializable.js
@@ -139,7 +143,7 @@ MeowEngine Parcel/
 1. Clone the repository:
    ```bash
    git clone https://github.com/cyberarchives/meowengine-parcel.git
-   cd meowengine-parcel
+   cd meowengine-parce
    ```
 
 2. Install dependencies:
