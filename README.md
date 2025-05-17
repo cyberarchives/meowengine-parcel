@@ -6,6 +6,8 @@ A high-performance Bullet Force Cheat Engine rebuilt with Parcel bundler for opt
 
 MeowEngine Parcel has been completely redesigned using Parcel bundler to deliver better performance, cleaner architecture, and improved maintainability. This implementation features optimized code organization and structural improvements to facilitate ongoing development.
 
+![image](https://github.com/user-attachments/assets/f0ef4212-b009-4ccd-bb26-5892f643c023)
+
 ## Features
 
 - **High Performance**: Rebuilt with Parcel for faster execution and efficient bundling
@@ -13,17 +15,31 @@ MeowEngine Parcel has been completely redesigned using Parcel bundler to deliver
 - **Enhanced Maintainability**: Better organized components for easier future development
 - **User Script Ready**: Compiles directly to a userscript format for quick installation
 
+## SDK
+
+MeowEngine includes a custom SDK for calling "mock" functions rebuilt in JavaScript from PhotonNetwork. This SDK implements a JavaScript version of networking functionality similar to Photon Network with the following key components:
+
+- **Core Structure**: Organized into modules like `InitOperations`, `PairCalculation`, `LoadBalancingClient`, and `Networking`
+- **Network Communication**: Implements websocket connections to Photon servers
+- **Cryptography Layer**: Features extensive encryption/decryption methods for various data types (integers, strings, vectors, etc.)
+- **Configuration Options**: Includes debug mode flags and development settings
+
+This custom implementation allows developers to use familiar Photon-style networking patterns while running in JavaScript environments.
+
+![image](https://github.com/user-attachments/assets/51f54ed4-5392-4802-9a7c-da952a107cb5)
+
 ## Project Structure
 
 ```
 MeowEngine Parcel/
 ├── dist/ # Built files
-│   ├── index.js
+│   ├── index.js # Main entry point
 │   └── meowengine.user.js
 ├── node_modules/
 ├── src/
 │   ├── Browser/
 │   │   ├── Utility/
+│   │   │   ├── Buffer.js # Buffer library from Node.js converted to a Browser compatible version
 │   │   │   └── GameUtils.js
 │   │   └── GlobalTypeDefs.js
 │   ├── Bullet Force/
@@ -103,7 +119,7 @@ MeowEngine Parcel/
 ├── .parcelrc # Parcel configuration
 ├── bundle.js
 ├── header.js
-├── index.js
+├── index.js # Main entry point
 ├── old.user.js
 ├── package.json # Project dependencies and scripts
 ├── pnpm-lock.yaml

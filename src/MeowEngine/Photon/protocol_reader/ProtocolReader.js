@@ -13,8 +13,7 @@ import {
   PacketWithPayload
 } from './types/packets';
 
-import * as buffer from "buffer";
-const Buffer = buffer.Buffer;
+import { Buffer } from "../../../Browser/Utility/Buffer";
 
 export class ProtocolReader {
   constructor(buffer) {

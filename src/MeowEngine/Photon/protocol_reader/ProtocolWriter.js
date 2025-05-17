@@ -1,6 +1,6 @@
 import { DataType } from './constants';
-import * as buffer from "buffer";
-const Buffer = buffer.Buffer;
+import { Buffer } from "../../../Browser/Utility/Buffer";
+
 
 export class ProtocolWriter {
   constructor() {

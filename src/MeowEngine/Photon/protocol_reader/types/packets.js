@@ -1,7 +1,6 @@
 import { PacketType } from '../constants';
 import { Serializable } from './Serializable';
-import * as buffer from "buffer";
-const Buffer = buffer.Buffer;
+import { Buffer } from "../../../../Browser/Utility/Buffer";
 
 export class PacketWithPayload extends Serializable {
   constructor(code, params = {}) {

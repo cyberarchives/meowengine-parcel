@@ -5,6 +5,9 @@ import RoomProperties from "./Handlers/RoomProperties";
 import { PhotonClient } from "./PhotonNetwork";
 
 export class SocketManager {
+    static packetCount = 0;
+    static firstPacket = true;
+
     static overrideSocket() {
         const originalSend = WebSocket.prototype.send;
         const OriginalWebSocket = WebSocket;
@@ -22,49 +25,39 @@ export class SocketManager {
             socket.send = function(...args) {
                 const message = args[0];
 
-                if (!(message instanceof ArrayBuffer)) {
-                    return originalSend.apply(this, args);
+                if (message instanceof ArrayBuffer) {
+                    // For ArrayBuffer messages, intercept and analyze
+                    const uint8Array = new Uint8Array(message);
+                    let reader = new ProtocolReader(uint8Array.buffer);
+                    const packet = reader.readPacket();
+                    console.log("Sending packet:", packet);
                 }
-
-                const uint8Array = new Uint8Array(message);
-
+                
+                // Always pass the message to the original send method
+                return originalSend.apply(this, args);
+            };
+            
+            socket.addEventListener('message', e => {
+                if (!(e.data instanceof ArrayBuffer) || e.data.byteLength < 1) return;
+                
+                const uint8Array = new Uint8Array(e.data);
+                console.log("Received packet:", uint8Array);
+                
                 // Initialize the reader with the data
                 let reader = new ProtocolReader(uint8Array.buffer);
                 const packet = reader.readPacket();
-
-                console.log("Sending packet:", packet);
-
-                originalSend.apply(this, args);
-            };
+    
+                console.log("Received packet:", packet);
+    
+                // Check if the packet has a parameter with the key, 249
+                if (packet.code == OperationCode.JoinGame && packet.params["249"]) {
+                    // Loop through entries in the packet
+                    RoomProperties.handleRoomProps(packet);
+                }
+            });
             
-            SocketManager.bindEventListeners(socket);
-        }
-    }
-
-    static bindEventListeners(socket) {
-        socket.addEventListener('message', e => {
-            const uint8Array = new Uint8Array(e.data);
-
-            // Initialize the reader with the data
-            let reader = new ProtocolReader(uint8Array.buffer);
-            const packet = reader.readPacket();
-
-            console.log("Received packet:", packet);
-
-            // Check if the packet has a parameter with the key, 249
-            if (packet.code == OperationCode.JoinGame && packet.params["249"]) {
-                // Loop through entries in the packet
-                RoomProperties.handleRoomProps(packet);
-            }
-        });
-    }
-
-    static removeListener(socket, event, callback) {
-        socket.removeEventListener(event, callback);   
-    }
-
-    static addListener(socket, event, callback) {
-        socket.addEventListener(event, callback);
+            return socket;
+        };
     }
 }
 
