@@ -183,7 +183,7 @@ pnpm dev
 
 1. Begin by exploring `/src/index.js` which serves as the application's entry point.
 2. To create new UI elements:
-   - Look at src/Menu/Examples.md
+   - Look at [Examples.md](https://snoofz.net/)
 
 3. Modify existing features by editing the corresponding files in the core directory.
 
