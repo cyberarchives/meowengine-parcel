@@ -15,3 +15,5 @@ export class HttpRequestManager {
         };
     }
 }
+
+export default HttpRequestManager;

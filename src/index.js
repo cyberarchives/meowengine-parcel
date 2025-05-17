@@ -3,6 +3,7 @@ import CustomLogs from './Browser/Utility/CustomLogs';
 import GameUtils from './Browser/Utility/GameUtils';
 import FairCollection from './Bullet Force/FairPlayAPI/FairCollection';
 import { UI } from './Menu/UIManager';
+import HttpRequestManager from './Photon/HttpRequestManager';
 import SocketManager from './Photon/SocketManager';
 
 // Return if not in the right iFrame
@@ -25,6 +26,9 @@ GameUtils.waitForUnityInstance(() => {
 
     // Override socket to add Photon reading and writing logic
     SocketManager.overrideSocket();
+
+    // Initialize the Http Request Manager
+    HttpRequestManager.initialize();
     
     // Initialize UI
     // TODO: Remove the example UI elements and add a proper UI and features
