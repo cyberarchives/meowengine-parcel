@@ -1,11 +1,10 @@
-/*
-    Wonky way to do things, but if it works, it works
-*/
-
+import { PacketBuilder, createPacket } from '../MeowEngine/Photon/protocol_reader/PacketBuilder';
 import { EventCaching } from "./Enums/EventCaching";
 import { ReceiverGroup } from "./Enums/ReceiverGroup";
 import { RaiseEventOptions } from "./StaticDefinitions/RaiseEventOptions";
 import { SendOptions } from "./StaticDefinitions/SendOptions";
+import { PacketType, DataType, ParameterCode, OperationCode } from '../MeowEngine/Photon/protocol_reader/constants';
+
 /**
  * Creates a new PhotonClient instance.
  * @param {Object} options - The configuration options.
@@ -17,6 +16,50 @@ export class PhotonClient {
         this.opParameters = new Map();
         this.socket = socket;
         this.originalSend = originalSend;
+        this.packetBuilder = new PacketBuilder();
+        this.viewIdCounter = 1;
+        this.photonView = {
+            Owner: {
+                ActorNumber: 1 // Default value, should be set later on when connecting to an instance
+            }
+        };
+    }
+
+    /**
+     * Sends an operation to the Photon server
+     * @param {number} operationCode - The operation code
+     * @param {Map<number, any>} parameters - The parameters for the operation
+     * @param {SendOptions} sendOptions - Options for the send operation
+     * @returns {boolean} True if operation was sent successfully
+     */
+    SendOperation(operationCode, parameters, sendOptions) {
+        try {
+            // Create a new packet builder
+            const builder = createPacket().operation(operationCode);
+            
+            // Add each parameter
+            for (const [key, value] of parameters.entries()) {
+                builder.withParam(key, value);
+            }
+            
+            // Build the packet
+            const packet = builder.build();
+            
+            // Send the packet
+            if (this.originalSend) {
+                this.originalSend(packet);
+            } else if (this.socket && this.socket.readyState === WebSocket.OPEN) {
+                this.socket.send(packet);
+            } else {
+                console.error("No valid send method available");
+                return false;
+            }
+            
+            return true;
+        } catch (error) {
+            console.error("Error sending operation:", error);
+            return false;
+        }
     }
 
     /**
@@ -34,7 +77,7 @@ export class PhotonClient {
         if (raiseEventOptions) {
             // Handle caching options
             if (raiseEventOptions.CachingOption !== EventCaching.DoNotCache) {
-                this.opParameters.set(ParameterCode.Cache, PhotonPacketBuilder.types.byte(raiseEventOptions.CachingOption));
+                this.opParameters.set(ParameterCode.Cache, raiseEventOptions.CachingOption);
             }
             
             // Handle different caching cases
@@ -52,102 +95,73 @@ export class PhotonClient {
                     
                 case EventCaching.RemoveFromRoomCache:
                     if (raiseEventOptions.TargetActors) {
-                        this.opParameters.set(ParameterCode.ActorList, 
-                            PhotonPacketBuilder.types.integerArray(raiseEventOptions.TargetActors));
+                        this.opParameters.set(ParameterCode.ActorList, raiseEventOptions.TargetActors);
                     }
                     break;
                     
                 default:
                     if (raiseEventOptions.TargetActors) {
-                        this.opParameters.set(ParameterCode.ActorList, 
-                            PhotonPacketBuilder.types.integerArray(raiseEventOptions.TargetActors));
+                        this.opParameters.set(ParameterCode.ActorList, raiseEventOptions.TargetActors);
                     } 
                     else if (raiseEventOptions.InterestGroup !== 0) {
-                        this.opParameters.set(ParameterCode.Group, 
-                            PhotonPacketBuilder.types.byte(raiseEventOptions.InterestGroup));
+                        this.opParameters.set(ParameterCode.Group, raiseEventOptions.InterestGroup);
                     } 
                     else if (raiseEventOptions.Receivers !== ReceiverGroup.Others) {
-                        this.opParameters.set(ParameterCode.ReceiverGroup, 
-                            PhotonPacketBuilder.types.byte(raiseEventOptions.Receivers));
+                        this.opParameters.set(ParameterCode.ReceiverGroup, raiseEventOptions.Receivers);
                     }
                     
-                    if (raiseEventOptions.Flags.HttpForward) {
-                        this.opParameters.set(ParameterCode.EventForward, 
-                            PhotonPacketBuilder.types.byte(raiseEventOptions.Flags.WebhookFlags));
+                    if (raiseEventOptions.Flags && raiseEventOptions.Flags.HttpForward) {
+                        this.opParameters.set(ParameterCode.EventForward, raiseEventOptions.Flags.WebhookFlags);
                     }
                     break;
             }
         }
         
         // Add event code parameter
-        this.opParameters.set(ParameterCode.Code, PhotonPacketBuilder.types.byte(eventCode));
+        this.opParameters.set(ParameterCode.Code, eventCode);
         
         // Add custom event content if provided
         if (customEventContent !== null && customEventContent !== undefined) {
-            // Here we would need to determine the proper type based on the customEventContent
-            // For simplicity, we'll use a generic approach
-            this.opParameters.set(ParameterCode.Data, this.convertToPhotonType(customEventContent));
+            this.opParameters.set(ParameterCode.Data, customEventContent);
         }
         
         // Send the operation
         return this.SendOperation(OperationCode.RaiseEvent, this.opParameters, sendOptions);
     }
-    
+
     /**
-     * Converts JavaScript values to proper Photon types
-     * @param {*} value - Value to convert
-     * @returns {Object} - Photon type object
+     * Gets the next view ID for network object instantiation
+     * @returns {number} The next available view ID
      */
-    convertToPhotonType(value) {
-        if (value === null || value === undefined) {
-            return PhotonPacketBuilder.types.null();
-        }
-        
-        switch (typeof value) {
-            case 'string':
-                return PhotonPacketBuilder.types.string(value);
-            case 'boolean':
-                return PhotonPacketBuilder.types.boolean(value);
-            case 'number':
-                // Check if it's an integer or float
-                if (Number.isInteger(value)) {
-                    return PhotonPacketBuilder.types.integer(value);
-                } else {
-                    return PhotonPacketBuilder.types.float(value);
-                }
-            case 'object':
-                if (Array.isArray(value)) {
-                    // Special case for integer arrays which need special handling
-                    // This is critical for compatibility with C# int[] expectation
-                    if (value.every(item => typeof item === 'number' && Number.isInteger(item))) {
-                        return PhotonPacketBuilder.types.integerArray(value); // Use intArray explicitly
-                    }
-                    
-                    // Determine array type (this is a simplified approach)
-                    if (value.length === 0) {
-                        return PhotonPacketBuilder.types.objectArray([]);
-                    }
-                    
-                    const firstItemType = typeof value[0];
-                    if (firstItemType === 'string') {
-                        return PhotonPacketBuilder.types.stringArray(value);
-                    } else {
-                        // Convert each item in the array and return objectArray
-                        const convertedItems = value.map(item => this.convertToPhotonType(item));
-                        return PhotonPacketBuilder.types.objectArray(convertedItems);
-                    }
-                } else {
-                    // For objects, create a hashtable
-                    const entries = Object.entries(value).map(([key, val]) => [
-                        PhotonPacketBuilder.types.string(key),
-                        this.convertToPhotonType(val)
-                    ]);
-                    return PhotonPacketBuilder.types.hashTable(entries);
-                }
-            default:
-                // Default to string for any other types
-                return PhotonPacketBuilder.types.string(String(value));
-        }
+    GetNextViewId() {
+        return this.viewIdCounter++;
+    }
+
+    /**
+     * Serializes a Vector3 object for network transmission
+     * @param {Object} vector3 - The Vector3 to serialize
+     * @returns {Object} Serialized representation
+     */
+    SerializeVector3(vector3) {
+        return {
+            x: vector3.x || 0,
+            y: vector3.y || 0,
+            z: vector3.z || 0
+        };
+    }
+
+    /**
+     * Serializes a Quaternion object for network transmission
+     * @param {Object} quaternion - The Quaternion to serialize
+     * @returns {Object} Serialized representation
+     */
+    SerializeQuaternion(quaternion) {
+        return {
+            x: quaternion.x || 0,
+            y: quaternion.y || 0,
+            z: quaternion.z || 0,
+            w: quaternion.w || 1
+        };
     }
 
     /**
@@ -168,25 +182,9 @@ export class PhotonClient {
         // PunEvent.OwnershipTransfer is 210
         const ownershipTransferEventCode = 210;
         
-        // Custom handler for this specific event to ensure proper Int32[] serialization
-        const originalConvert = client.convertToPhotonType;
-        this.convertToPhotonType = function(value) {
-            // If this is our ownership transfer array, ensure it's treated as intArray
-            if (Array.isArray(value) && value.length === 2 && 
-                typeof value[0] === 'number' && typeof value[1] === 'number') {
-                return PhotonPacketBuilder.types.integerArray(value);
-            }
-            
-            // Use original method for other cases
-            return originalConvert.call(this, value);
-        };
-        
         const data = [viewID, playerID];
         
-        const result = this.OpRaiseEvent(ownershipTransferEventCode, data, eventOptions, sendOptions);
-        this.convertToPhotonType = originalConvert;
-        
-        return result;
+        return this.OpRaiseEvent(ownershipTransferEventCode, data, eventOptions, sendOptions);
     }
 
     /**
@@ -237,12 +235,95 @@ export class PhotonClient {
             sendOptions
         );
     }
+
+    /**
+     * Creates a direct packet using the PacketBuilder
+     * @param {number} operationCode - The operation code
+     * @param {Object} parameters - Parameters to include in the packet
+     * @returns {Buffer} The constructed packet
+     */
+    CreateDirectPacket(operationCode, parameters) {
+        // Create a new packet builder
+        const builder = createPacket().operation(operationCode);
+        
+        // Add each parameter
+        for (const [key, value] of Object.entries(parameters)) {
+            // Determine the type and add appropriately
+            if (typeof value === 'string') {
+                builder.withString(Number(key), value);
+            } else if (typeof value === 'number') {
+                if (Number.isInteger(value)) {
+                    builder.withInteger(Number(key), value);
+                } else {
+                    builder.withFloat(Number(key), value);
+                }
+            } else if (typeof value === 'boolean') {
+                builder.withBoolean(Number(key), value);
+            } else if (Array.isArray(value)) {
+                // Handle different array types
+                if (value.length === 0) {
+                    builder.withObjectArray(Number(key), []);
+                } else if (typeof value[0] === 'string') {
+                    builder.withStringArray(Number(key), value);
+                } else if (typeof value[0] === 'number' && value.every(item => Number.isInteger(item))) {
+                    builder.withIntArray(Number(key), value);
+                } else {
+                    builder.withObjectArray(Number(key), value);
+                }
+            } else if (value === null || value === undefined) {
+                builder.withNull(Number(key));
+            } else if (typeof value === 'object') {
+                builder.withHashtable(Number(key), value);
+            }
+        }
+        
+        // Build and return the packet
+        return builder.build();
+    }
+
+    /**
+     * Leaves the current room
+     * @param {boolean} willComeBack - Whether the client intends to come back
+     * @returns {boolean} True if the leave operation was sent successfully
+     */
+    LeaveRoom(willComeBack = false) {
+        const parameters = {
+            254: this.photonView.Owner.ActorNumber, // ActorNr
+            233: willComeBack // IsInactive (optional)
+        };
+        
+        try {
+            const packet = this.CreateDirectPacket(OperationCode.Leave, parameters);
+            
+            if (this.originalSend) {
+                this.originalSend(packet);
+            } else if (this.socket && this.socket.readyState === WebSocket.OPEN) {
+                this.socket.send(packet);
+            } else {
+                console.error("No valid send method available");
+                return false;
+            }
+            
+            return true;
+        } catch (error) {
+            console.error("Error leaving room:", error);
+            return false;
+        }
+    }
 }
 
 // Example usage:
 // In a browser environment with Photon client:
-// const packet = client.TransferOwnership(123, 456);
-// webSocket.send(packet.toBuffer());
+// const client = new PhotonClient({ socket: webSocket });
+// client.TransferOwnership(1, 2001);
 
-// Export the classes for use in other modules
-export default { PhotonClient, RaiseEventOptions, SendOptions, EventCaching, ReceiverGroup };
+// Export the client and enums
+export default { 
+    PhotonClient, 
+    OperationCode, 
+    ParameterCode, 
+    RaiseEventOptions, 
+    SendOptions, 
+    EventCaching, 
+    ReceiverGroup 
+};
