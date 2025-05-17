@@ -1,6 +1,9 @@
 {
   "extends": "@parcel/config-default",
-  "transformers": {
-    "*.{js,mjs,jsx,ts,tsx}": ["@parcel/transformer-js"]
+  "packagers": {
+    "*.js": "@parcel/packager-js"
+  },
+  "optimizers": {
+    "*.js": ["@parcel/optimizer-terser"]
   }
 }

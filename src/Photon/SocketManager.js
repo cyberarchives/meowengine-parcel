@@ -37,13 +37,13 @@ export class SocketManager {
                 originalSend.apply(this, args);
             };
             
-            SocketManager.bindEventListeners();
+            SocketManager.bindEventListeners(socket);
         }
     }
 
-    static bindEventListeners() {
-        this.addListener(MeowEngine.PhotonClient.gameSocket, "message", (event) => {
-            const uint8Array = new Uint8Array(event.data);
+    static bindEventListeners(socket) {
+        socket.addEventListener('message', e => {
+            const uint8Array = new Uint8Array(e.data);
 
             // Initialize the reader with the data
             let reader = new ProtocolReader(uint8Array.buffer);
