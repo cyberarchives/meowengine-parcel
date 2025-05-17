@@ -2,12 +2,18 @@
   "name": "meowengine-parcel",
   "version": "1.0.0",
   "description": "- This is a rewrite of MeowEngine but in Parcel to have better performance and a better / organized code structure",
-  "main": "index.js",
-  "browser": {
-    "buffer": "buffer"
+  "main": "dist/index.js",
+  "source": "src/index.js",
+  "targets": {
+    "meow": {
+      "engines": {
+        "browsers": "Chrome 80"
+      }
+    }
   },
+  "type": "module",
   "scripts": {
-    "build": "parcel build src/index.js --no-source-maps --detailed-report",
+    "build": "parcel build src/index.js --no-source-maps --detailed-report && node bundle.js",
     "dev": "parcel watch src/index.js --no-source-maps"
   },
   "repository": {
