@@ -18,7 +18,8 @@ export class CustomLogs {
     ERROR: { name: "ERROR", priority: 3, color: "#E74C3C" },
     SUCCESS: { name: "SUCCESS", priority: 4, color: "#2ECC71" },
     JOIN: { name: "JOIN", priority: 5, color: "#9B59B6" }, // Purple for joins
-    LEAVE: { name: "LEAVE", priority: 5, color: "#34495E" }, // Dark blue/gray for leaves
+    LEAVE: { name: "LEAVE", priority: 5, color: "#34495E" },
+    MEOW: { name: "MEOW", priority: 6, color: "#00ffaa" },
   };
 
   /**
