@@ -3,3 +3,5 @@ export const ReceiverGroup = {
     All: 1,
     MasterClient: 2
 };
+
+export default ReceiverGroup;

@@ -9,7 +9,7 @@ const WEB_ADDRESS = "https://server.blayzegames.com/OnlineAccountSystem/fairplay
 const MAGIC = "1983031920131006";
 const SEC_SIZE = 16;
 
-class FairCollection {
+export class FairCollection {
     static #off1 = 0;
     static #off2 = 0;
     static #sec1 = new Uint8Array(SEC_SIZE);
@@ -423,4 +423,4 @@ class FairCollection {
     }
 }
 
-module.exports = FairCollection;
+export default FairCollection;

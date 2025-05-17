@@ -87,3 +87,5 @@ export class Tab {
         return tabElement;
     }
 }
+
+export default Tab;

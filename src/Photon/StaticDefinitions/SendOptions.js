@@ -5,3 +5,5 @@ export class SendOptions {
         this.Encrypt = false;
     }
 }
+
+export default SendOptions;

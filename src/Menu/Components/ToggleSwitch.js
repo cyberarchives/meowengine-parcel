@@ -111,3 +111,5 @@ export class ToggleSwitch {
         return toggleContainer;
     }
 }
+
+export default ToggleSwitch;

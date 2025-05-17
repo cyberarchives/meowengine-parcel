@@ -1,3 +1,5 @@
+import Label from "./Label";
+
 export class Dropdown {
     static getDropdownTemplate(options, selectedValue = '', onChange = null, label = '') {
         const dropdownContainer = document.createElement('div');
@@ -8,7 +10,7 @@ export class Dropdown {
         dropdownContainer.style.border = '1px solid rgba(0, 255, 170, 0.08)';
 
         if (label) {
-            const labelElement = this.createLabel(label);
+            const labelElement = Label.getLabelTemplate(label);
             dropdownContainer.appendChild(labelElement);
         }
 
@@ -47,3 +49,5 @@ export class Dropdown {
         return dropdownContainer;
     }
 }
+
+export default Dropdown;

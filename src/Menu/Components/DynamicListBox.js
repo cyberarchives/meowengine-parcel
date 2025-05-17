@@ -50,3 +50,5 @@ export class DynamicListBox {
         return { listBox, ListManager };
     }
 }
+
+export default DynamicListBox;

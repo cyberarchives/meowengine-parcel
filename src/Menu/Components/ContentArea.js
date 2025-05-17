@@ -9,3 +9,5 @@ export class ContentArea {
         return contentArea;
     }
 }
+
+export default ContentArea;

@@ -1,4 +1,4 @@
-class Account {
+export class Account {
     constructor(username, password) {
         this.username = username;
         this.password = this.hashSHA512(password);
@@ -61,4 +61,4 @@ class Account {
     }
 }
 
-module.exports = Account;
+export default Account;

@@ -26,3 +26,5 @@ export class Label {
         return label;
     }
 }
+
+export default Label;

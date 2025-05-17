@@ -1,4 +1,4 @@
-class PhotonSerializer {
+export class Serializer {
     constructor(packet) {
         this.packet = packet;
         this.buffer = [];
@@ -295,3 +295,5 @@ class PhotonSerializer {
         return new Uint8Array(this.buffer).buffer;
     }
 }
+
+export default Serializer;

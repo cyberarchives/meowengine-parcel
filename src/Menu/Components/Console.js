@@ -35,3 +35,5 @@ export class Console {
         return logBox;
     }
 }
+
+export default Console;

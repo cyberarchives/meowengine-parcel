@@ -1,0 +1,25 @@
+{
+  "name": "meowengine-parcel",
+  "version": "1.0.0",
+  "description": "- This is a rewrite of MeowEngine but in Parcel to have better performance and a better / organized code structure",
+  "main": "index.js",
+  "scripts": {
+      "build": "parcel build src/index.js --no-source-maps --detailed-report",
+      "dev": "parcel watch src/index.js --no-source-maps"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cyberarchives/meowengine-parcel.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/cyberarchives/meowengine-parcel/issues"
+  },
+  "homepage": "https://github.com/cyberarchives/meowengine-parcel#readme",
+  "devDependencies": {
+    "@parcel/config-default": "^2.15.1",
+    "parcel": "^2.15.1"
+  }
+}

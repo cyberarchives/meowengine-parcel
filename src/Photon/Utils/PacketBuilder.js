@@ -1,6 +1,6 @@
-const Serializer = require("./Serializer");
+import { Serializer } from "./Serializer";
 
-class PacketBuilder {
+export class PacketBuilder {
     /**
      * Creates a new request packet (type 2)
      * @param {number} opCode - The operation code for the request
@@ -409,4 +409,4 @@ class PacketBuilder {
     };
 }
 
-module.exports = PacketBuilder;
+export default PacketBuilder;

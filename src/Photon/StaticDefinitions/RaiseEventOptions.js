@@ -11,3 +11,5 @@ export class RaiseEventOptions {
         this.CacheSliceIndex = 0;
     }
 }
+
+export default RaiseEventOptions;

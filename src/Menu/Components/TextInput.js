@@ -41,3 +41,5 @@ export class TextInput {
         return input;
     }
 }
+
+export default TextInput;

@@ -13,3 +13,5 @@ export class SideNav {
         return sideNav;
     }
 }
+
+export default SideNav;

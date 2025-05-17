@@ -544,3 +544,5 @@ export class ThreeDViewport {
         };
     }
 }
+
+export default ThreeDViewport;

@@ -13,3 +13,5 @@ export class ToggleGroup {
         return groupContainer;
     }
 }
+
+export default ToggleGroup;

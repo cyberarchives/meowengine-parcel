@@ -18,3 +18,5 @@ export class ButtonGroup {
         return buttonGroup;
     }
 }
+
+export default ButtonGroup;

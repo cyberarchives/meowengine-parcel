@@ -1,3 +1,5 @@
+import Label from "./Label";
+
 export class Slider {
     static getSliderTemplate(min, max, value, step, label = '', onChange = null) {
         const sliderContainer = document.createElement('div');
@@ -8,7 +10,7 @@ export class Slider {
         sliderContainer.style.border = '1px solid rgba(0, 255, 170, 0.08)';
 
         if (label) {
-            const labelElement = this.createLabel(label);
+            const labelElement = Label.getLabelTemplate(label);
             sliderContainer.appendChild(labelElement);
         }
 
@@ -45,3 +47,5 @@ export class Slider {
         return sliderContainer;
     }
 }
+
+export default Slider;

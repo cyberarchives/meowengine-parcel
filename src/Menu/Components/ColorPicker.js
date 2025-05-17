@@ -1,3 +1,5 @@
+import Label from "./Label";
+
 export class ColorPicker {
     static getColorPickerTemplate(label, defaultColor = '#00ffaa', onChange = null) {
         const pickerContainer = document.createElement('div');
@@ -9,7 +11,7 @@ export class ColorPicker {
         pickerContainer.style.background = 'rgba(0, 0, 0, 0.2)';
         pickerContainer.style.border = '1px solid rgba(0, 255, 170, 0.08)';
 
-        const pickerLabel = this.createLabel(label);
+        const pickerLabel = Label.getLabelTemplate(label); 
         pickerContainer.appendChild(pickerLabel);
 
         const pickerInput = document.createElement('input');
@@ -32,3 +34,5 @@ export class ColorPicker {
         return pickerContainer;
     }
 }
+
+export default ColorPicker;

@@ -11,7 +11,7 @@ export class PanelContainer {
         return panelContainer;
     }
 
-    static getPatternOverlay() {
+    static getPatternOverlay(backgroundImageLayer) {
         backgroundImageLayer = document.createElement('div');
         backgroundImageLayer.style.position = 'absolute';
         backgroundImageLayer.style.top = '0';
@@ -36,3 +36,5 @@ export class PanelContainer {
         return { patternOverlay, backgroundImageLayer };
     }
 }
+
+export default PanelContainer;

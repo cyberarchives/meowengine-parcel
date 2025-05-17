@@ -14,3 +14,5 @@ export class Spacer {
         return spacer;
     }
 }
+
+export default Spacer;

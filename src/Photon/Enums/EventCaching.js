@@ -12,3 +12,5 @@ export const EventCaching = {
     SlicePurgeIndex: 12,
     SlicePurgeUpToIndex: 13
 };
+
+export default EventCaching;

@@ -1,7 +1,7 @@
-const Serializer = require("./Serializer");
-const Deserializer = require("./Deserializer");
+import { Serializer } from "./Serializer";
+import { Deserializer } from "./Deserializer";
 
-class PhotonPacket {
+export class PhotonPacket {
     constructor(buffer) {
         this.parser = new Deserializer(buffer);
         this.magic = this.parser.readUint8();
@@ -85,4 +85,4 @@ class PhotonPacket {
     }
 }
 
-module.exports = PhotonPacket;
+export default PhotonPacket;

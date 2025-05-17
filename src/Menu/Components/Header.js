@@ -1,3 +1,5 @@
+import UI from "../UIManager";
+
 export class Header {
     static getHeaderTemplate(title) {
         const header = document.createElement('div');
@@ -38,7 +40,7 @@ export class Header {
         minimizeButton.addEventListener('mouseout', () => {
             minimizeButton.style.background = 'transparent';
         });
-        minimizeButton.addEventListener('click', () => this.minimize());
+        minimizeButton.addEventListener('click', () => UI.minimize());
 
         const closeButton = document.createElement('div');
         closeButton.innerHTML = '&#10005;';
@@ -60,7 +62,7 @@ export class Header {
             closeButton.style.background = 'transparent';
             closeButton.style.color = '#00ffaa';
         });
-        closeButton.addEventListener('click', () => this.hide());
+        closeButton.addEventListener('click', () => UI.hide());
 
         controlsContainer.appendChild(minimizeButton);
         controlsContainer.appendChild(closeButton);
@@ -69,4 +71,6 @@ export class Header {
         header.appendChild(controlsContainer);
         return header;
     }
-}   
+}
+
+export default Header;

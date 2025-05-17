@@ -1,4 +1,4 @@
-class Deserializer {
+export class Deserializer {
     constructor(buffer) {
         this.view = new DataView(buffer);
         this.offset = 0;
@@ -360,4 +360,4 @@ class Deserializer {
     }
 }
 
-module.exports = Deserializer;
+export default Deserializer;

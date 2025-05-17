@@ -59,3 +59,5 @@ export class Container {
         return styleElement;
     }
 }
+
+export default Container;

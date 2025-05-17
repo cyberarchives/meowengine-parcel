@@ -6,3 +6,5 @@ export class Divider {
         return divider;
     }
 }
+
+export default Divider;

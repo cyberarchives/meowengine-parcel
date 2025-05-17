@@ -2,18 +2,17 @@
     Wonky way to do things, but if it works, it works
 */
 
-const { EventCaching } = require("./Enums/EventCaching");
-const { ReceiverGroup } = require("./Enums/ReceiverGroup");
-const { RaiseEventOptions } = require("./StaticDefinitions/RaiseEventOptions");
-const { SendOptions } = require("./StaticDefinitions/SendOptions");
-
+import { EventCaching } from "./Enums/EventCaching";
+import { ReceiverGroup } from "./Enums/ReceiverGroup";
+import { RaiseEventOptions } from "./StaticDefinitions/RaiseEventOptions";
+import { SendOptions } from "./StaticDefinitions/SendOptions";
 /**
  * Creates a new PhotonClient instance.
  * @param {Object} options - The configuration options.
  * @param {Function} options.originalSend - The original send function to use.
  * @param {WebSocket} options.socket - The WebSocket connection to use.
  */
-class PhotonClient {
+export class PhotonClient {
     constructor({ originalSend, socket }) {
         this.opParameters = new Map();
         this.socket = socket;
@@ -157,9 +156,7 @@ class PhotonClient {
      * @param {number} playerID - The player ID of the new owner
      * @returns {boolean} True if the operation was sent successfully
      */
-    TransferOwnership(viewID, playerID) {
-        const client = new PhotonClient();
-        
+    TransferOwnership(viewID, playerID) {        
         // Create event options - set receivers to All
         const eventOptions = new RaiseEventOptions();
         eventOptions.Receivers = ReceiverGroup.All;
@@ -173,7 +170,7 @@ class PhotonClient {
         
         // Custom handler for this specific event to ensure proper Int32[] serialization
         const originalConvert = client.convertToPhotonType;
-        client.convertToPhotonType = function(value) {
+        this.convertToPhotonType = function(value) {
             // If this is our ownership transfer array, ensure it's treated as intArray
             if (Array.isArray(value) && value.length === 2 && 
                 typeof value[0] === 'number' && typeof value[1] === 'number') {
@@ -186,10 +183,59 @@ class PhotonClient {
         
         const data = [viewID, playerID];
         
-        const result = client.OpRaiseEvent(ownershipTransferEventCode, data, eventOptions, sendOptions);
-        client.convertToPhotonType = originalConvert;
+        const result = this.OpRaiseEvent(ownershipTransferEventCode, data, eventOptions, sendOptions);
+        this.convertToPhotonType = originalConvert;
         
         return result;
+    }
+
+    /**
+     * Instantiates a prefab on all clients in the room
+     * @param {string} prefabName - The name of the prefab to instantiate
+     * @param {Vector3} position - The position to instantiate at
+     * @param {Quaternion} rotation - The rotation to instantiate with
+     * @param {number} group - The group this object belongs to
+     * @param {object} customData - Any additional custom data to include
+     * @returns {boolean} Whether the event was sent successfully
+     */
+    Instantiate(prefabName, position, rotation, group, customData) {
+        // Validate inputs
+        if (!prefabName || typeof prefabName !== 'string') {
+            console.error("Invalid prefab name");
+            return false;
+        }
+        
+        // Create event options with proper receivers
+        const eventOptions = new RaiseEventOptions();
+        eventOptions.Receivers = ReceiverGroup.All;
+        
+        // Create send options for reliability
+        const sendOptions = new SendOptions();
+        sendOptions.Reliability = true;
+        
+        // Use the correct event code for instantiation
+        // Photon's instantiate event is typically code 202
+        const instantiateEventCode = 202;
+        
+        // Create the content to send
+        // We need to format the data properly for network transmission
+        const networkData = {
+            prefabName: prefabName,
+            position: this.SerializeVector3(position),
+            rotation: this.SerializeQuaternion(rotation),
+            groupId: group || 0,
+            data: customData || null,
+            viewId: this.GetNextViewId(), // Generate a unique view ID
+            ownerId: this.photonView.Owner.ActorNumber // Current actor number as owner
+        };
+        
+        // Send the event to all clients including ourselves
+        return this.OpRaiseEvent(
+            instantiateEventCode,
+            networkData,
+            eventOptions,
+            sendOptions
+        );
     }
 }
 
@@ -199,10 +245,4 @@ class PhotonClient {
 // webSocket.send(packet.toBuffer());
 
 // Export the classes for use in other modules
-module.exports = {
-    PhotonClient,
-    RaiseEventOptions,
-    SendOptions,
-    EventCaching,
-    ReceiverGroup
-};
+export default { PhotonClient, RaiseEventOptions, SendOptions, EventCaching, ReceiverGroup };

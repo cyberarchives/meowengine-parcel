@@ -46,3 +46,5 @@ export class ConfirmModal {
         return modal;
     }
 }
+
+export default ConfirmModal;
