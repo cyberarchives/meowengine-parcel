@@ -11,7 +11,6 @@
 // @updateURL    https://snoofz.net/updates/meowengine.user.js
 // @downloadURL  https://snoofz.net/downloads/meowengine.user.js
 // @supportURL   https://discord.gg/thSyH8ZVbH
-// @run-at       document-start
 // @grant        none
 // @license      CUSTOM - All Rights Reserved
 // ==/UserScript==
