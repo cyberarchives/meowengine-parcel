@@ -40,6 +40,10 @@ export class SocketManager {
                         const parser = new OpCode201(packet);
                         OpCode201.handleLocalPlayerUpdate(parser.parseOutgoing());
                     }
+
+                    if (packet.code == OperationCode.Leave) {
+                        PlayerList.clearPlayerlist();
+                    }
                 }
                 
                 // Always pass the message to the original send method
