@@ -1,4 +1,4 @@
-var $jqpSz$buffer = require("buffer");
+var $jqpSz$bufferindexjs = require("buffer/index.js");
 
 
 function $parcel$export(e, n, v, s) {
@@ -1661,7 +1661,7 @@ var $jNwcC = parcelRequire("jNwcC");
 
 class $59baf61e1f6fd914$export$30afd0d1dfcfaf9c {
     constructor(buffer){
-        this.buffer = $jqpSz$buffer.from(buffer);
+        this.buffer = (0, $jqpSz$bufferindexjs.Buffer).from(buffer);
         this.offset = 0;
     }
     readValue(type = null) {
@@ -2161,7 +2161,7 @@ class $ca11be4b9782c641$export$ea69f93a488f088a {
         } else if (typeof value === 'string') {
             if (writeType) this.writeUint8((0, $fdLXt.DataType).String);
             this.writeString(value);
-        } else if (value instanceof $jqpSz$buffer) {
+        } else if (value instanceof (0, $jqpSz$bufferindexjs.Buffer)) {
             if (writeType) this.writeUint8((0, $fdLXt.DataType).ByteArray);
             this.writeInt32(value.length);
             this.write(value);
@@ -2176,7 +2176,7 @@ class $ca11be4b9782c641$export$ea69f93a488f088a {
         for (const str of strings)this.writeString(str);
     }
     writeString(str) {
-        const bytes = $jqpSz$buffer.from(str, 'utf8');
+        const bytes = (0, $jqpSz$bufferindexjs.Buffer).from(str, 'utf8');
         this.writeUint16(bytes.length);
         this.write(bytes);
     }
@@ -2189,59 +2189,59 @@ class $ca11be4b9782c641$export$ea69f93a488f088a {
         }
     }
     writeUint8(value) {
-        const buf = $jqpSz$buffer.alloc(1);
+        const buf = (0, $jqpSz$bufferindexjs.Buffer).alloc(1);
         buf.writeUInt8(value);
         this.buffers.push(buf);
         this.length += 1;
     }
     writeInt8(value) {
-        const buf = $jqpSz$buffer.alloc(1);
+        const buf = (0, $jqpSz$bufferindexjs.Buffer).alloc(1);
         buf.writeInt8(value);
         this.buffers.push(buf);
         this.length += 1;
     }
     writeUint16(value) {
-        const buf = $jqpSz$buffer.alloc(2);
+        const buf = (0, $jqpSz$bufferindexjs.Buffer).alloc(2);
         buf.writeUInt16BE(value);
         this.buffers.push(buf);
         this.length += 2;
     }
     writeInt16(value) {
-        const buf = $jqpSz$buffer.alloc(2);
+        const buf = (0, $jqpSz$bufferindexjs.Buffer).alloc(2);
         buf.writeInt16BE(value);
         this.buffers.push(buf);
         this.length += 2;
     }
     writeInt32(value) {
-        const buf = $jqpSz$buffer.alloc(4);
+        const buf = (0, $jqpSz$bufferindexjs.Buffer).alloc(4);
         buf.writeInt32BE(value);
         this.buffers.push(buf);
         this.length += 4;
     }
     writeInt64(value) {
-        const buf = $jqpSz$buffer.alloc(8);
+        const buf = (0, $jqpSz$bufferindexjs.Buffer).alloc(8);
         buf.writeBigInt64BE(BigInt(value));
         this.buffers.push(buf);
         this.length += 8;
     }
     writeFloat32(value) {
-        const buf = $jqpSz$buffer.alloc(4);
+        const buf = (0, $jqpSz$bufferindexjs.Buffer).alloc(4);
         buf.writeFloatBE(value);
         this.buffers.push(buf);
         this.length += 4;
     }
     writeFloat64(value) {
-        const buf = $jqpSz$buffer.alloc(8);
+        const buf = (0, $jqpSz$bufferindexjs.Buffer).alloc(8);
         buf.writeDoubleBE(value);
         this.buffers.push(buf);
         this.length += 8;
     }
     write(bytes) {
-        this.buffers.push($jqpSz$buffer.from(bytes));
+        this.buffers.push((0, $jqpSz$bufferindexjs.Buffer).from(bytes));
         this.length += bytes.length;
     }
     toBytes() {
-        return $jqpSz$buffer.concat(this.buffers, this.length);
+        return (0, $jqpSz$bufferindexjs.Buffer).concat(this.buffers, this.length);
     }
 }
 var $ca11be4b9782c641$export$2e2bcd8739ae039 = $ca11be4b9782c641$export$ea69f93a488f088a;
@@ -2553,7 +2553,7 @@ class $e69b92a89130bc3d$export$549e8a9504cdc069 extends $e69b92a89130bc3d$export
     static clientSdkIdShifted = this.clientSdkId << 1;
     constructor(appID, { isIpv6: isIpv6 = false } = {}){
         super();
-        this.appID = $jqpSz$buffer.from(appID);
+        this.appID = (0, $jqpSz$bufferindexjs.Buffer).from(appID);
         this.isIpv6 = isIpv6;
     }
     writeType(writer) {
@@ -2569,7 +2569,7 @@ class $e69b92a89130bc3d$export$549e8a9504cdc069 extends $e69b92a89130bc3d$export
         writer.writeUint8($e69b92a89130bc3d$export$549e8a9504cdc069.clientVersion[2]);
         writer.writeUint8($e69b92a89130bc3d$export$549e8a9504cdc069.clientVersion[3]);
         writer.writeUint8(0);
-        const appIDBuffer = $jqpSz$buffer.alloc(32);
+        const appIDBuffer = (0, $jqpSz$bufferindexjs.Buffer).alloc(32);
         this.appID.copy(appIDBuffer, 0, 0, Math.min(this.appID.length, 32));
         writer.write(appIDBuffer);
     }

@@ -1,6 +1,6 @@
 import { PacketType } from '../constants';
 import { Serializable } from './Serializable';
-var Buffer = require('buffer');
+import { Buffer } from 'buffer/index.js';
 
 export class PacketWithPayload extends Serializable {
   constructor(code, params = {}) {
