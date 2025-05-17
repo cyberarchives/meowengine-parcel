@@ -118,6 +118,7 @@ MeowEngine Parcel/
 │   │   │   ├── Packet.js
 │   │   │   ├── PacketBuilder.js
 │   │   │   └── Serializer.js
+│   │   ├── HttpRequestManager.js
 │   │   ├── PhotonNetwork.js
 │   │   └── SocketManager.js
 │   └── index.js # Main entry point
