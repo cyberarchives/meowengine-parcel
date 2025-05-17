@@ -39,6 +39,9 @@ export const MeowEngine = {
     },
     RoomInstance: {
         Players: [],
+    },
+    Log: {
+        Instance: null
     }
 };
 

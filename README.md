@@ -40,6 +40,7 @@ MeowEngine Parcel/
 │   ├── Browser/
 │   │   ├── Utility/
 │   │   │   ├── Buffer.js
+│   │   │   ├── CustomLogs.js
 │   │   │   └── GameUtils.js
 │   │   └── GlobalTypeDefs.js
 │   ├── Bullet Force/
@@ -105,7 +106,7 @@ MeowEngine Parcel/
 │   │   │   ├── ParameterCode.js
 │   │   │   └── ReceiverGroup.js
 │   │   ├── Handlers/
-│   │   │   └── RoomProperties.js
+│   │   │   └── PlayerList.js
 │   │   ├── StaticDefinitions/
 │   │   │   ├── RaiseEventOptions.js
 │   │   │   └── SendOptions.js

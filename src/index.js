@@ -1,4 +1,5 @@
 import MeowEngine from './Browser/GlobalTypeDefs';
+import CustomLogs from './Browser/Utility/CustomLogs';
 import GameUtils from './Browser/Utility/GameUtils';
 import FairCollection from './Bullet Force/FairPlayAPI/FairCollection';
 import { UI } from './Menu/UIManager';
@@ -6,6 +7,9 @@ import SocketManager from './Photon/SocketManager';
 
 // Return if not in the right iFrame
 if (!window.location.href.includes('https://bullet-force-multiplayer.game-files.crazygames.com/unity/unity2020/bullet-force-multiplayer.html')) return;
+
+// Initialize Logs
+MeowEngine.Log.Instance = new CustomLogs({ title: "MeowEngine", enabled: true, showTimestamp: true });
 
 // Wait for UnityInstance to be ready
 // TODO: Add a timeout
