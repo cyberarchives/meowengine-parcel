@@ -31,10 +31,12 @@ This custom implementation allows developers to use familiar Photon-style networ
 ## Project Structure
 
 ```
-MeowEngine Parcel/
-├── dist/ # Built files
+meowengine-parcel/
+├── dist/ # Built files (Not included in repo)
 │   ├── index.js # Main entry point
 │   └── meowengine.user.js
+├── lib/
+│   └── tree.js
 ├── node_modules/
 ├── src/
 │   ├── Browser/
@@ -125,7 +127,6 @@ MeowEngine Parcel/
 ├── .parcelrc # Parcel configuration
 ├── bundle.js
 ├── header.js
-├── index.js # Main entry point
 ├── old.user.js
 ├── package.json # Project dependencies and scripts
 ├── pnpm-lock.yaml

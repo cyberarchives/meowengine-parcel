@@ -4,7 +4,7 @@
   "description": "- This is a rewrite of MeowEngine but in Parcel to have better performance and a better / organized code structure",
   "type": "module",
   "scripts": {
-    "build": "parcel build src/index.js --target userscript --no-source-maps --no-scope-hoist --no-content-hash --detailed-report && node bundle.js && node C:\\Users\\Snoofz\\photon-server-js\\tree.js",
+    "build": "parcel build src/index.js --target userscript --no-source-maps --no-scope-hoist --no-content-hash --detailed-report && node bundle.js && node lib/tree.js",
     "dev": "parcel watch src/index.js --target userscript --no-source-maps --no-scope-hoist --no-content-hash"
   },
   "targets": {
@@ -31,6 +31,7 @@
   "devDependencies": {
     "@parcel/config-default": "^2.15.1",
     "@parcel/optimizer-terser": "^2.15.1",
+    "@parcel/packager-js": "^2.15.1",
     "parcel": "^2.15.1"
   },
   "dependencies": {

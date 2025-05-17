@@ -21,6 +21,9 @@ importers:
       '@parcel/optimizer-terser':
         specifier: ^2.15.1
         version: 2.15.1(@parcel/core@2.15.1(@swc/helpers@0.5.17))
+      '@parcel/packager-js':
+        specifier: ^2.15.1
+        version: 2.15.1(@parcel/core@2.15.1(@swc/helpers@0.5.17))
       parcel:
         specifier: ^2.15.1
         version: 2.15.1(@swc/helpers@0.5.17)
