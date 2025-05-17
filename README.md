@@ -183,7 +183,7 @@ pnpm dev
 
 1. Begin by exploring `/src/index.js` which serves as the application's entry point.
 2. To create new UI elements:
-   - Look at [Examples.md](https://github.com/cyberarchives/meowengine-parcel/raw/refs/heads/main/src/Menu/Examples.md)
+   - Look at [Examples.md](https://github.com/cyberarchives/meowengine-parcel/blob/main/src/Menu/Examples.md)
 
 3. Modify existing features by editing the corresponding files in the core directory.
 
