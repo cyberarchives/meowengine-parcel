@@ -1,8 +1,8 @@
 import MeowEngine from "../../Browser/GlobalTypeDefs";
 import GameUtils from "../../Browser/Utility/GameUtils";
 
-class RoomProperties {
-    static handleRoomProps(packet) {
+class PlayerList {
+    static handlePlayerList(packet) {
         for (const [key, value] of Object.entries(packet.params["249"])) {
             if (!key.startsWith("int32")) continue;
 
@@ -45,6 +45,10 @@ class RoomProperties {
             MeowEngine.RoomInstance.Players.push(usrEntry);
         }
     }
+
+    static clearPlayerlist() {
+        MeowEngine.RoomInstance.Players = [];
+    }
 }
 
-export default RoomProperties;
+export default PlayerList;

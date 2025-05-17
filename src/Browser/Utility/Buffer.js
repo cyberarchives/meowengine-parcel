@@ -681,6 +681,50 @@ export class Buffer extends Uint8Array {
     view.setFloat32(0, value, true); // true for little-endian
     return offset + 4;
   }
+
+  // Read a 64-bit double-precision float (big-endian)
+  readDoubleBE(offset = 0) {
+    if (offset < 0 || offset + 7 >= this.length) {
+      throw new RangeError("Offset is out of bounds");
+    }
+    const view = new DataView(this.buffer, this.byteOffset + offset, 8);
+    return view.getFloat64(0, false); // false for big-endian
+  }
+
+  // Read a 64-bit double-precision float (little-endian)
+  readDoubleLE(offset = 0) {
+    if (offset < 0 || offset + 7 >= this.length) {
+      throw new RangeError("Offset is out of bounds");
+    }
+    const view = new DataView(this.buffer, this.byteOffset + offset, 8);
+    return view.getFloat64(0, true); // true for little-endian
+  }
+
+  // Write a 64-bit double-precision float (big-endian)
+  writeDoubleBE(value, offset = 0) {
+    if (offset < 0 || offset + 7 >= this.length) {
+      throw new RangeError("Offset is out of bounds");
+    }
+    if (typeof value !== "number") {
+      throw new TypeError("Value must be a number");
+    }
+    const view = new DataView(this.buffer, this.byteOffset + offset, 8);
+    view.setFloat64(0, value, false); // false for big-endian
+    return offset + 8;
+  }
+
+  // Write a 64-bit double-precision float (little-endian)
+  writeDoubleLE(value, offset = 0) {
+    if (offset < 0 || offset + 7 >= this.length) {
+      throw new RangeError("Offset is out of bounds");
+    }
+    if (typeof value !== "number") {
+      throw new TypeError("Value must be a number");
+    }
+    const view = new DataView(this.buffer, this.byteOffset + offset, 8);
+    view.setFloat64(0, value, true); // true for little-endian
+    return offset + 8;
+  }
 }
 
 export default Buffer;

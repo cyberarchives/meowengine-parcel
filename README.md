@@ -34,10 +34,7 @@ This custom implementation allows developers to use familiar Photon-style networ
 MeowEngine Parcel/
 ├── dist/ # Built files
 │   ├── index.js # Main entry point
-│   ├── meowengine.user.js
-│   ├── Quaternion.8bb787cc.js
-│   ├── UnimplementedCustomData.e36ca5ce.js
-│   └── Vector3.7b29588f.js
+│   └── meowengine.user.js
 ├── node_modules/
 ├── src/
 │   ├── Browser/
