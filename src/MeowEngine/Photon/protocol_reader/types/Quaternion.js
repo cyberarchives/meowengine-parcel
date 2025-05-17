@@ -1,4 +1,5 @@
 import { CustomData } from './CustomData';
+
 export class Quaternion extends CustomData {
   static TypeCode = 81;
 

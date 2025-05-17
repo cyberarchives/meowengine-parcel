@@ -13,6 +13,7 @@ export const MeowEngine = {
     },
     PhotonClient: {
         Instance: null,
+        gameSocket: null,
     },
     FairCollection: {
         InitOperation: null,
@@ -35,7 +36,9 @@ export const MeowEngine = {
     UnityInstance: {
         Module: null,
         SendMessage: null,
-
+    },
+    RoomInstance: {
+        Players: [],
     }
 };
 

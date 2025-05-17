@@ -1,3 +1,5 @@
+var $jqpSz$buffer = require("buffer");
+
 
 function $parcel$export(e, n, v, s) {
   Object.defineProperty(e, n, {get: v, set: s, enumerable: true, configurable: true});
@@ -40,31 +42,39 @@ if (parcelRequire == null) {
 }
 
 var parcelRegister = parcelRequire.register;
-parcelRegister("iac3y", function(module, exports) {
+parcelRegister("dkk4n", function(module, exports) {
 
-var $7gE5K = parcelRequire("7gE5K");
+var $Bj194 = parcelRequire("Bj194");
 
-var $1HznK = parcelRequire("1HznK");
+var $15YEI = parcelRequire("15YEI");
 
-var $K3MZ6 = parcelRequire("K3MZ6");
+var $kxXjP = parcelRequire("kxXjP");
 
-var $lbgFd = parcelRequire("lbgFd");
-parcelRequire("8Z6sh");
+var $c5wSb = parcelRequire("c5wSb");
 
-var $22q2M = parcelRequire("22q2M");
+var $cd2Nj = parcelRequire("cd2Nj");
+// Return if not in the right iFrame
 if (!window.location.href.includes('https://bullet-force-multiplayer.game-files.crazygames.com/unity/unity2020/bullet-force-multiplayer.html')) return;
-(0, $1HznK.default).waitForUnityInstance(()=>{
+// Wait for UnityInstance to be ready
+// TODO: Add a timeout
+// TODO: Add a check for the unity version
+(0, $15YEI.default).waitForUnityInstance(()=>{
+    // Ensure MeowEngine is set to window globally
+    window.MeowEngine = (0, $Bj194.default);
     // set up GlobalTypeDefs
-    (0, $7gE5K.default).FairCollection.InitOperation = (0, $K3MZ6.default).InitOperation;
-    (0, $7gE5K.default).FairCollection.Instance = (0, $K3MZ6.default);
-    (0, $7gE5K.default).SDK.FairCollection = (0, $K3MZ6.default);
+    (0, $Bj194.default).FairCollection.InitOperation = (0, $kxXjP.default).InitOperation;
+    (0, $Bj194.default).FairCollection.Instance = (0, $kxXjP.default);
+    (0, $Bj194.default).SDK.FairCollection = (0, $kxXjP.default);
+    // Override socket to add Photon reading and writing logic
     overrideSocket();
+    // Initialize UI
+    // TODO: Remove the example UI elements and add a proper UI and features
     // Create the main container
     const newContainer = document.createElement('div');
     newContainer.id = `ui-container-${Date.now()}`;
     document.body.appendChild(newContainer);
     // Initialize UI
-    const ui = new (0, $lbgFd.UI)(newContainer.id);
+    const ui = new (0, $c5wSb.UI)(newContainer.id);
     // Create tabs
     const tabs = [
         {
@@ -131,15 +141,15 @@ if (!window.location.href.includes('https://bullet-force-multiplayer.game-files.
         return container;
     }
     function overrideSocket() {
-        (0, $22q2M.default).overrideSocket();
+        (0, $cd2Nj.default).overrideSocket();
     }
 });
 
 });
-parcelRegister("7gE5K", function(module, exports) {
+parcelRegister("Bj194", function(module, exports) {
 
-$parcel$export(module.exports, "default", () => $54a920672f7c0302$export$2e2bcd8739ae039);
-const $54a920672f7c0302$export$979b404d080c1d6c = {
+$parcel$export(module.exports, "default", () => $0702354a47059dac$export$2e2bcd8739ae039);
+const $0702354a47059dac$export$979b404d080c1d6c = {
     SDK: {
         Account: null,
         FairCollection: null,
@@ -153,7 +163,8 @@ const $54a920672f7c0302$export$979b404d080c1d6c = {
         }
     },
     PhotonClient: {
-        Instance: null
+        Instance: null,
+        gameSocket: null
     },
     FairCollection: {
         InitOperation: null,
@@ -174,52 +185,60 @@ const $54a920672f7c0302$export$979b404d080c1d6c = {
     UnityInstance: {
         Module: null,
         SendMessage: null
+    },
+    RoomInstance: {
+        Players: []
     }
 };
-var $54a920672f7c0302$export$2e2bcd8739ae039 = $54a920672f7c0302$export$979b404d080c1d6c;
+var $0702354a47059dac$export$2e2bcd8739ae039 = $0702354a47059dac$export$979b404d080c1d6c;
 
 });
 
-parcelRegister("1HznK", function(module, exports) {
+parcelRegister("15YEI", function(module, exports) {
 
-$parcel$export(module.exports, "default", () => $13d540b50b7d13d1$export$2e2bcd8739ae039);
+$parcel$export(module.exports, "default", () => $0cc54f030f5a7731$export$2e2bcd8739ae039);
 
-var $7gE5K = parcelRequire("7gE5K");
-class $13d540b50b7d13d1$var$GameUtils {
+var $Bj194 = parcelRequire("Bj194");
+class $0cc54f030f5a7731$var$GameUtils {
     static waitForUnityInstance(callback, checkInterval = 100, timeout = 10000) {
         const startTime = Date.now();
         const checkUnityInstance = ()=>{
             if (typeof unityGameInstance !== 'undefined' && unityGameInstance !== null && typeof unityGameInstance.SendMessage === 'function') {
                 console.log('Unity instance is ready!');
-                (0, $7gE5K.default).UnityInstance.SendMessage = unityGameInstance.SendMessage;
-                (0, $7gE5K.default).UnityInstance.Module = unityGameInstance.Module;
+                (0, $Bj194.default).UnityInstance.SendMessage = unityGameInstance.SendMessage;
+                (0, $Bj194.default).UnityInstance.Module = unityGameInstance.Module;
                 callback();
             } else if (Date.now() - startTime > timeout) console.error('Timeout: Unity instance not ready.');
             else setTimeout(checkUnityInstance, checkInterval);
         };
         checkUnityInstance();
     }
+    static cleanUsername(rawName) {
+        let cleaned = rawName.replaceAll(/<color=#[A-Fa-f0-9]{6}>/g, '').replaceAll('</color>', '');
+        cleaned = cleaned.replaceAll(/^\[[^\]]+\]/g, '');
+        return cleaned.trim();
+    }
 }
-var $13d540b50b7d13d1$export$2e2bcd8739ae039 = $13d540b50b7d13d1$var$GameUtils;
+var $0cc54f030f5a7731$export$2e2bcd8739ae039 = $0cc54f030f5a7731$var$GameUtils;
 
 });
 
-parcelRegister("K3MZ6", function(module, exports) {
+parcelRegister("kxXjP", function(module, exports) {
 
-$parcel$export(module.exports, "default", () => $08a73c6c78ab5162$export$2e2bcd8739ae039);
+$parcel$export(module.exports, "default", () => $ef54e73375103cbc$export$2e2bcd8739ae039);
 /**
  * FairCollection - A utility class for secure data handling in browser environments.
  * 
  * Provides encryption and decryption utilities for various data types 
  * including numbers, strings, and vector objects.
- */ const $08a73c6c78ab5162$var$WEB_ADDRESS = "https://server.blayzegames.com/OnlineAccountSystem/fairplay_spec.php";
-const $08a73c6c78ab5162$var$MAGIC = "1983031920131006";
-const $08a73c6c78ab5162$var$SEC_SIZE = 16;
-class $08a73c6c78ab5162$export$323828bb5f07a5ac {
+ */ const $ef54e73375103cbc$var$WEB_ADDRESS = "https://server.blayzegames.com/OnlineAccountSystem/fairplay_spec.php";
+const $ef54e73375103cbc$var$MAGIC = "1983031920131006";
+const $ef54e73375103cbc$var$SEC_SIZE = 16;
+class $ef54e73375103cbc$export$323828bb5f07a5ac {
     static #off1 = 0;
     static #off2 = 0;
-    static #sec1 = new Uint8Array($08a73c6c78ab5162$var$SEC_SIZE);
-    static #sec2 = new Uint8Array($08a73c6c78ab5162$var$SEC_SIZE);
+    static #sec1 = new Uint8Array($ef54e73375103cbc$var$SEC_SIZE);
+    static #sec2 = new Uint8Array($ef54e73375103cbc$var$SEC_SIZE);
     static #response = "";
     static #enabled = false;
     /**
@@ -228,8 +247,8 @@ class $08a73c6c78ab5162$export$323828bb5f07a5ac {
      */ static async #initRequest() {
         try {
             const params = new URLSearchParams();
-            params.append('magic', $08a73c6c78ab5162$var$MAGIC);
-            const response = await fetch($08a73c6c78ab5162$var$WEB_ADDRESS, {
+            params.append('magic', $ef54e73375103cbc$var$MAGIC);
+            const response = await fetch($ef54e73375103cbc$var$WEB_ADDRESS, {
                 method: 'POST',
                 headers: {
                     accept: '*/*',
@@ -253,9 +272,9 @@ class $08a73c6c78ab5162$export$323828bb5f07a5ac {
         if (bytes[1] !== 0) return;
         this.#off1 = bytes[3];
         this.#off2 = bytes[4];
-        for(let i = 0; i < $08a73c6c78ab5162$var$SEC_SIZE; ++i){
+        for(let i = 0; i < $ef54e73375103cbc$var$SEC_SIZE; ++i){
             this.#sec1[i] = bytes[i + 5];
-            this.#sec2[i] = bytes[i + 5 + $08a73c6c78ab5162$var$SEC_SIZE];
+            this.#sec2[i] = bytes[i + 5 + $ef54e73375103cbc$var$SEC_SIZE];
         }
         this.#enabled = true;
     }
@@ -502,15 +521,15 @@ class $08a73c6c78ab5162$export$323828bb5f07a5ac {
         };
     }
 }
-var $08a73c6c78ab5162$export$2e2bcd8739ae039 = $08a73c6c78ab5162$export$323828bb5f07a5ac;
+var $ef54e73375103cbc$export$2e2bcd8739ae039 = $ef54e73375103cbc$export$323828bb5f07a5ac;
 
 });
 
-parcelRegister("lbgFd", function(module, exports) {
+parcelRegister("c5wSb", function(module, exports) {
 
-$parcel$export(module.exports, "UI", () => $f6b78d1e2ab47dff$export$4b08aed5f1ec6952);
-const $f6b78d1e2ab47dff$var$notifications = [];
-class $f6b78d1e2ab47dff$export$4b08aed5f1ec6952 {
+$parcel$export(module.exports, "UI", () => $8ccf738d3cd81000$export$4b08aed5f1ec6952);
+const $8ccf738d3cd81000$var$notifications = [];
+class $8ccf738d3cd81000$export$4b08aed5f1ec6952 {
     constructor(containerId){
         this.notifications = [];
         this.container = document.getElementById(containerId);
@@ -1453,7 +1472,7 @@ class $f6b78d1e2ab47dff$export$4b08aed5f1ec6952 {
     createNotification(title, type = 'info', message, duration = 3000) {
         const notification = document.createElement('div');
         notification.style.position = 'fixed';
-        notification.style.bottom = `${$f6b78d1e2ab47dff$var$notifications.length * 60 + 20}px`;
+        notification.style.bottom = `${$8ccf738d3cd81000$var$notifications.length * 60 + 20}px`;
         notification.style.right = '20px';
         notification.style.padding = '12px 20px';
         notification.style.borderRadius = '6px';
@@ -1497,7 +1516,7 @@ class $f6b78d1e2ab47dff$export$4b08aed5f1ec6952 {
                 notification.style.color = '#00ffaa';
         }
         document.body.appendChild(notification);
-        $f6b78d1e2ab47dff$var$notifications.push(notification);
+        $8ccf738d3cd81000$var$notifications.push(notification);
         // Animate in
         setTimeout(()=>{
             notification.style.opacity = '1';
@@ -1510,9 +1529,9 @@ class $f6b78d1e2ab47dff$export$4b08aed5f1ec6952 {
             setTimeout(()=>{
                 if (notification.parentNode) {
                     document.body.removeChild(notification);
-                    $f6b78d1e2ab47dff$var$notifications.splice($f6b78d1e2ab47dff$var$notifications.indexOf(notification), 1);
+                    $8ccf738d3cd81000$var$notifications.splice($8ccf738d3cd81000$var$notifications.indexOf(notification), 1);
                     // Adjust positions of remaining notifications
-                    $f6b78d1e2ab47dff$var$notifications.forEach((n, i)=>{
+                    $8ccf738d3cd81000$var$notifications.forEach((n, i)=>{
                         n.style.bottom = `${i * 60 + 20}px`;
                     });
                 }
@@ -1521,368 +1540,172 @@ class $f6b78d1e2ab47dff$export$4b08aed5f1ec6952 {
         return notification;
     }
 }
-var $f6b78d1e2ab47dff$export$2e2bcd8739ae039 = $f6b78d1e2ab47dff$export$4b08aed5f1ec6952;
+var $8ccf738d3cd81000$export$2e2bcd8739ae039 = $8ccf738d3cd81000$export$4b08aed5f1ec6952;
 
 });
 
-parcelRegister("8Z6sh", function(module, exports) {
+parcelRegister("cd2Nj", function(module, exports) {
 
-$parcel$export(module.exports, "PhotonClient", () => $68a90713ca65a7df$export$ff44adeb1575cf4b);
-/*
-    Wonky way to do things, but if it works, it works
-*/ 
-var $1bHDE = parcelRequire("1bHDE");
+$parcel$export(module.exports, "default", () => $8e38ddd549d67715$export$2e2bcd8739ae039);
 
-var $7wqrk = parcelRequire("7wqrk");
+var $Bj194 = parcelRequire("Bj194");
 
-var $7oyC4 = parcelRequire("7oyC4");
+var $15YEI = parcelRequire("15YEI");
 
-var $4rS7j = parcelRequire("4rS7j");
-class $68a90713ca65a7df$export$ff44adeb1575cf4b {
-    constructor({ originalSend: originalSend, socket: socket }){
-        this.opParameters = new Map();
-        this.socket = socket;
-        this.originalSend = originalSend;
-    }
-    /**
-     * Raises an event to be sent to other clients or cached for new clients
-     * @param {number} eventCode - Identifies the type of event
-     * @param {Object} customEventContent - The custom content/data to be sent with the event
-     * @param {RaiseEventOptions} raiseEventOptions - Options that control the behavior of the event
-     * @param {SendOptions} sendOptions - Options for the send operation
-     * @returns {boolean} True if operation was sent successfully
-     */ OpRaiseEvent(eventCode, customEventContent, raiseEventOptions, sendOptions) {
-        // Clear the parameters map for reuse
-        this.opParameters.clear();
-        if (raiseEventOptions) {
-            // Handle caching options
-            if (raiseEventOptions.CachingOption !== (0, $1bHDE.EventCaching).DoNotCache) this.opParameters.set(ParameterCode.Cache, PhotonPacketBuilder.types.byte(raiseEventOptions.CachingOption));
-            // Handle different caching cases
-            switch(raiseEventOptions.CachingOption){
-                case (0, $1bHDE.EventCaching).SliceSetIndex:
-                case (0, $1bHDE.EventCaching).SlicePurgeIndex:
-                case (0, $1bHDE.EventCaching).SlicePurgeUpToIndex:
-                    // In the original code, there's a commented section about CacheSliceIndex
-                    // and then immediately returns with SendOperation call
-                    return this.SendOperation(OperationCode.RaiseEvent, this.opParameters, sendOptions);
-                case (0, $1bHDE.EventCaching).SliceIncreaseIndex:
-                case (0, $1bHDE.EventCaching).RemoveFromRoomCacheForActorsLeft:
-                    return this.SendOperation(OperationCode.RaiseEvent, this.opParameters, sendOptions);
-                case (0, $1bHDE.EventCaching).RemoveFromRoomCache:
-                    if (raiseEventOptions.TargetActors) this.opParameters.set(ParameterCode.ActorList, PhotonPacketBuilder.types.integerArray(raiseEventOptions.TargetActors));
-                    break;
-                default:
-                    if (raiseEventOptions.TargetActors) this.opParameters.set(ParameterCode.ActorList, PhotonPacketBuilder.types.integerArray(raiseEventOptions.TargetActors));
-                    else if (raiseEventOptions.InterestGroup !== 0) this.opParameters.set(ParameterCode.Group, PhotonPacketBuilder.types.byte(raiseEventOptions.InterestGroup));
-                    else if (raiseEventOptions.Receivers !== (0, $7wqrk.ReceiverGroup).Others) this.opParameters.set(ParameterCode.ReceiverGroup, PhotonPacketBuilder.types.byte(raiseEventOptions.Receivers));
-                    if (raiseEventOptions.Flags.HttpForward) this.opParameters.set(ParameterCode.EventForward, PhotonPacketBuilder.types.byte(raiseEventOptions.Flags.WebhookFlags));
-                    break;
-            }
-        }
-        // Add event code parameter
-        this.opParameters.set(ParameterCode.Code, PhotonPacketBuilder.types.byte(eventCode));
-        // Add custom event content if provided
-        if (customEventContent !== null && customEventContent !== undefined) // Here we would need to determine the proper type based on the customEventContent
-        // For simplicity, we'll use a generic approach
-        this.opParameters.set(ParameterCode.Data, this.convertToPhotonType(customEventContent));
-        // Send the operation
-        return this.SendOperation(OperationCode.RaiseEvent, this.opParameters, sendOptions);
-    }
-    /**
-     * Converts JavaScript values to proper Photon types
-     * @param {*} value - Value to convert
-     * @returns {Object} - Photon type object
-     */ convertToPhotonType(value) {
-        if (value === null || value === undefined) return PhotonPacketBuilder.types.null();
-        switch(typeof value){
-            case 'string':
-                return PhotonPacketBuilder.types.string(value);
-            case 'boolean':
-                return PhotonPacketBuilder.types.boolean(value);
-            case 'number':
-                // Check if it's an integer or float
-                if (Number.isInteger(value)) return PhotonPacketBuilder.types.integer(value);
-                else return PhotonPacketBuilder.types.float(value);
-            case 'object':
-                if (Array.isArray(value)) {
-                    // Special case for integer arrays which need special handling
-                    // This is critical for compatibility with C# int[] expectation
-                    if (value.every((item)=>typeof item === 'number' && Number.isInteger(item))) return PhotonPacketBuilder.types.integerArray(value); // Use intArray explicitly
-                    // Determine array type (this is a simplified approach)
-                    if (value.length === 0) return PhotonPacketBuilder.types.objectArray([]);
-                    const firstItemType = typeof value[0];
-                    if (firstItemType === 'string') return PhotonPacketBuilder.types.stringArray(value);
-                    else {
-                        // Convert each item in the array and return objectArray
-                        const convertedItems = value.map((item)=>this.convertToPhotonType(item));
-                        return PhotonPacketBuilder.types.objectArray(convertedItems);
-                    }
-                } else {
-                    // For objects, create a hashtable
-                    const entries = Object.entries(value).map(([key, val])=>[
-                            PhotonPacketBuilder.types.string(key),
-                            this.convertToPhotonType(val)
-                        ]);
-                    return PhotonPacketBuilder.types.hashTable(entries);
-                }
-            default:
-                // Default to string for any other types
-                return PhotonPacketBuilder.types.string(String(value));
-        }
-    }
-    /**
-     * Alternative implementation using the OpRaiseEvent method
-     * @param {number} viewID - The view ID of the object to transfer ownership of
-     * @param {number} playerID - The player ID of the new owner
-     * @returns {boolean} True if the operation was sent successfully
-     */ TransferOwnership(viewID, playerID) {
-        // Create event options - set receivers to All
-        const eventOptions = new (0, $7oyC4.RaiseEventOptions)();
-        eventOptions.Receivers = (0, $7wqrk.ReceiverGroup).All;
-        // Create send options - set to reliable
-        const sendOptions = new (0, $4rS7j.SendOptions)();
-        sendOptions.Reliability = true;
-        // PunEvent.OwnershipTransfer is 210
-        const ownershipTransferEventCode = 210;
-        // Custom handler for this specific event to ensure proper Int32[] serialization
-        const originalConvert = client.convertToPhotonType;
-        this.convertToPhotonType = function(value) {
-            // If this is our ownership transfer array, ensure it's treated as intArray
-            if (Array.isArray(value) && value.length === 2 && typeof value[0] === 'number' && typeof value[1] === 'number') return PhotonPacketBuilder.types.integerArray(value);
-            // Use original method for other cases
-            return originalConvert.call(this, value);
-        };
-        const data = [
-            viewID,
-            playerID
-        ];
-        const result = this.OpRaiseEvent(ownershipTransferEventCode, data, eventOptions, sendOptions);
-        this.convertToPhotonType = originalConvert;
-        return result;
-    }
-    /**
-     * Instantiates a prefab on all clients in the room
-     * @param {string} prefabName - The name of the prefab to instantiate
-     * @param {Vector3} position - The position to instantiate at
-     * @param {Quaternion} rotation - The rotation to instantiate with
-     * @param {number} group - The group this object belongs to
-     * @param {object} customData - Any additional custom data to include
-     * @returns {boolean} Whether the event was sent successfully
-     */ Instantiate(prefabName, position, rotation, group, customData) {
-        // Validate inputs
-        if (!prefabName || typeof prefabName !== 'string') {
-            console.error("Invalid prefab name");
-            return false;
-        }
-        // Create event options with proper receivers
-        const eventOptions = new (0, $7oyC4.RaiseEventOptions)();
-        eventOptions.Receivers = (0, $7wqrk.ReceiverGroup).All;
-        // Create send options for reliability
-        const sendOptions = new (0, $4rS7j.SendOptions)();
-        sendOptions.Reliability = true;
-        // Use the correct event code for instantiation
-        // Photon's instantiate event is typically code 202
-        const instantiateEventCode = 202;
-        // Create the content to send
-        // We need to format the data properly for network transmission
-        const networkData = {
-            prefabName: prefabName,
-            position: this.SerializeVector3(position),
-            rotation: this.SerializeQuaternion(rotation),
-            groupId: group || 0,
-            data: customData || null,
-            viewId: this.GetNextViewId(),
-            ownerId: this.photonView.Owner.ActorNumber // Current actor number as owner
-        };
-        // Send the event to all clients including ourselves
-        return this.OpRaiseEvent(instantiateEventCode, networkData, eventOptions, sendOptions);
-    }
-}
-var // Example usage:
-// In a browser environment with Photon client:
-// const packet = client.TransferOwnership(123, 456);
-// webSocket.send(packet.toBuffer());
-// Export the classes for use in other modules
-$68a90713ca65a7df$export$2e2bcd8739ae039 = {
-    PhotonClient: $68a90713ca65a7df$export$ff44adeb1575cf4b,
-    RaiseEventOptions: $7oyC4.RaiseEventOptions,
-    SendOptions: $4rS7j.SendOptions,
-    EventCaching: $1bHDE.EventCaching,
-    ReceiverGroup: $7wqrk.ReceiverGroup
-};
+var $7HDcR = parcelRequire("7HDcR");
 
-});
-parcelRegister("1bHDE", function(module, exports) {
-
-$parcel$export(module.exports, "EventCaching", () => $0dd8ab3e3e69bbec$export$3d2274495cff5221);
-const $0dd8ab3e3e69bbec$export$3d2274495cff5221 = {
-    DoNotCache: 0,
-    MergeCache: 1,
-    ReplaceCache: 2,
-    RemoveCache: 3,
-    AddToRoomCache: 4,
-    AddToRoomCacheGlobal: 5,
-    RemoveFromRoomCache: 6,
-    RemoveFromRoomCacheForActorsLeft: 7,
-    SliceIncreaseIndex: 10,
-    SliceSetIndex: 11,
-    SlicePurgeIndex: 12,
-    SlicePurgeUpToIndex: 13
-};
-var $0dd8ab3e3e69bbec$export$2e2bcd8739ae039 = $0dd8ab3e3e69bbec$export$3d2274495cff5221;
-
-});
-
-parcelRegister("7wqrk", function(module, exports) {
-
-$parcel$export(module.exports, "ReceiverGroup", () => $57a007fa506955cc$export$da51ffd7819cf58f);
-const $57a007fa506955cc$export$da51ffd7819cf58f = {
-    Others: 0,
-    All: 1,
-    MasterClient: 2
-};
-var $57a007fa506955cc$export$2e2bcd8739ae039 = $57a007fa506955cc$export$da51ffd7819cf58f;
-
-});
-
-parcelRegister("7oyC4", function(module, exports) {
-
-$parcel$export(module.exports, "RaiseEventOptions", () => $56259fbda006940d$export$4e41dc56ffcd93cd);
-class $56259fbda006940d$export$4e41dc56ffcd93cd {
-    constructor(){
-        this.CachingOption = EventCaching.DoNotCache;
-        this.TargetActors = null;
-        this.InterestGroup = 0;
-        this.Receivers = ReceiverGroup.Others;
-        this.Flags = {
-            HttpForward: false,
-            WebhookFlags: 0
-        };
-        this.CacheSliceIndex = 0;
-    }
-}
-var $56259fbda006940d$export$2e2bcd8739ae039 = $56259fbda006940d$export$4e41dc56ffcd93cd;
-
-});
-
-parcelRegister("4rS7j", function(module, exports) {
-
-$parcel$export(module.exports, "SendOptions", () => $33d3a98e852b75a6$export$2486db4d5359fb2f);
-class $33d3a98e852b75a6$export$2486db4d5359fb2f {
-    constructor(){
-        this.Reliability = true;
-        this.Channel = 0;
-        this.Encrypt = false;
-    }
-}
-var $33d3a98e852b75a6$export$2e2bcd8739ae039 = $33d3a98e852b75a6$export$2486db4d5359fb2f;
-
-});
-
-
-parcelRegister("22q2M", function(module, exports) {
-
-$parcel$export(module.exports, "default", () => $17bff86cb3a62f22$export$2e2bcd8739ae039);
-
-var $7gE5K = parcelRequire("7gE5K");
-
-var $jrHth = parcelRequire("jrHth");
-
-var $8Z6sh = parcelRequire("8Z6sh");
-class $17bff86cb3a62f22$export$c91428cbd4f5850d {
+var $3T6OO = parcelRequire("3T6OO");
+class $8e38ddd549d67715$export$c91428cbd4f5850d {
     static overrideSocket() {
-        let originalSend = WebSocket.prototype.send;
+        const originalSend = WebSocket.prototype.send;
         const OriginalWebSocket = WebSocket;
         window.WebSocket = function(url, protocols) {
             const socket = new OriginalWebSocket(url, protocols);
-            var photonClient = new (0, $8Z6sh.PhotonClient)({
+            var photonClient = new (0, $3T6OO.PhotonClient)({
                 originalSend: originalSend,
                 socket: socket
             });
-            (0, $7gE5K.default).PhotonClient.Instance = photonClient;
-            (0, $7gE5K.default).Networking.Instantiate = photonClient.Instantiate;
-            (0, $7gE5K.default).Networking.TransferOwnership = photonClient.TransferOwnership;
-            (0, $7gE5K.default).LoadBalancingClient.OpRaiseEvent = photonClient.OpRaiseEvent;
+            (0, $Bj194.default).PhotonClient.Instance = photonClient;
+            (0, $Bj194.default).Networking.Instantiate = photonClient.Instantiate;
+            (0, $Bj194.default).Networking.TransferOwnership = photonClient.TransferOwnership;
+            (0, $Bj194.default).LoadBalancingClient.OpRaiseEvent = photonClient.OpRaiseEvent;
+            (0, $Bj194.default).PhotonClient.gameSocket = socket;
             socket.send = function(...args) {
                 const message = args[0];
                 if (!(message instanceof ArrayBuffer)) return originalSend.apply(this, args);
                 const uint8Array = new Uint8Array(message);
-                let reader = new (0, $jrHth.default)(uint8Array.buffer);
+                // Initialize the reader with the data
+                let reader = new (0, $7HDcR.default)(uint8Array.buffer);
                 const packet = reader.readPacket();
-                console.log(packet);
+                console.log("Sending packet:", packet);
+                originalSend.apply(this, args);
             };
+            $8e38ddd549d67715$export$c91428cbd4f5850d.bindEventListeners();
         };
     }
-    static addListener(event, callback) {}
+    static bindEventListeners() {
+        this.addListener((0, $Bj194.default).PhotonClient.gameSocket, "message", (event)=>{
+            const uint8Array = new Uint8Array(event.data);
+            // Initialize the reader with the data
+            let reader = new (0, $7HDcR.default)(uint8Array.buffer);
+            const packet = reader.readPacket();
+            console.log("Received packet:", packet);
+            // Check if the packet has a parameter with the key, 249
+            if (packet.params["249"]) // Loop through entries in the packet
+            for (const [key, value] of Object.entries(packet.params["249"])){
+                if (!key.startsWith("int32")) continue;
+                // Grab the information from the packet
+                let actorNr = key.split(" ")[1];
+                const name = (0, $15YEI.default).cleanUsername(value["int8 255"] ?? "Unknown");
+                let rank = value.rank?.value ?? 0;
+                const kd = value.kd?.value ?? 0;
+                let team = value.teamNumber?.value ?? 0;
+                let kills = value.current_kills_in_killstreak?.value ?? 0;
+                const platform = value.platform ?? "Unknown";
+                // Utilize the player entry
+                let usrEntry = {};
+                // Do some parsing
+                actorNr = parseInt(actorNr);
+                rank = parseInt(rank);
+                kills = parseInt(kills);
+                team = parseInt(team);
+                // Create the player entry
+                usrEntry[actorNr] = {
+                    actorNr: actorNr,
+                    name: name,
+                    rank: rank,
+                    kd: kd,
+                    team: team,
+                    kills: kills,
+                    platform: platform,
+                    position: {},
+                    rotation: {},
+                    pitch: 0,
+                    yaw: 0,
+                    health: 0,
+                    ping: 0
+                };
+                // Add the player entry to the list
+                (0, $Bj194.default).RoomInstance.Players.push(usrEntry);
+            }
+        });
+    }
+    static removeListener(socket, event, callback) {
+        socket.removeEventListener(event, callback);
+    }
+    static addListener(socket, event, callback) {
+        socket.addEventListener(event, callback);
+    }
 }
-var $17bff86cb3a62f22$export$2e2bcd8739ae039 = $17bff86cb3a62f22$export$c91428cbd4f5850d;
+var $8e38ddd549d67715$export$2e2bcd8739ae039 = $8e38ddd549d67715$export$c91428cbd4f5850d;
 
 });
-parcelRegister("jrHth", function(module, exports) {
+parcelRegister("7HDcR", function(module, exports) {
 
 $parcel$defineInteropFlag(module.exports);
 
-$parcel$export(module.exports, "ProtocolReader", () => $e282426f0627aef8$export$30afd0d1dfcfaf9c);
-$parcel$export(module.exports, "default", () => $e282426f0627aef8$export$2e2bcd8739ae039);
+$parcel$export(module.exports, "ProtocolReader", () => $59baf61e1f6fd914$export$30afd0d1dfcfaf9c);
+$parcel$export(module.exports, "default", () => $59baf61e1f6fd914$export$2e2bcd8739ae039);
 
-var $cPvrJ = parcelRequire("cPvrJ");
+var $fdLXt = parcelRequire("fdLXt");
 
-var $2NMWT = parcelRequire("2NMWT");
+var $50Nma = parcelRequire("50Nma");
 
-var $2JOv6 = parcelRequire("2JOv6");
+var $5RiRz = parcelRequire("5RiRz");
 
-var $knztm = parcelRequire("knztm");
+var $hSghd = parcelRequire("hSghd");
 
-var $kzHa0 = parcelRequire("kzHa0");
+var $chy8r = parcelRequire("chy8r");
 
-var $3HBkV = parcelRequire("3HBkV");
-class $e282426f0627aef8$export$30afd0d1dfcfaf9c {
+var $jNwcC = parcelRequire("jNwcC");
+
+class $59baf61e1f6fd914$export$30afd0d1dfcfaf9c {
     constructor(buffer){
-        this.buffer = Buffer.from(buffer);
+        this.buffer = $jqpSz$buffer.from(buffer);
         this.offset = 0;
     }
     readValue(type = null) {
         type = type ?? this.readUint8();
         switch(type){
-            case (0, $cPvrJ.DataType).NullValue:
+            case (0, $fdLXt.DataType).NullValue:
                 return null;
-            case (0, $cPvrJ.DataType).Dictionary:
+            case (0, $fdLXt.DataType).Dictionary:
                 throw new Error('Unimplemented data type Dictionary');
-            case (0, $cPvrJ.DataType).StringArray:
+            case (0, $fdLXt.DataType).StringArray:
                 return this.readStringArray();
-            case (0, $cPvrJ.DataType).Byte:
-                return (0, $kzHa0.SizedInt).read(this, 1);
-            case (0, $cPvrJ.DataType).Custom:
-                return (0, $2JOv6.CustomData).read(this);
-            case (0, $cPvrJ.DataType).Double:
-                return (0, $knztm.SizedFloat).read(this, 8);
-            case (0, $cPvrJ.DataType).EventData:
+            case (0, $fdLXt.DataType).Byte:
+                return (0, $chy8r.SizedInt).read(this, 1);
+            case (0, $fdLXt.DataType).Custom:
+                return (0, $5RiRz.CustomData).read(this);
+            case (0, $fdLXt.DataType).Double:
+                return (0, $hSghd.SizedFloat).read(this, 8);
+            case (0, $fdLXt.DataType).EventData:
                 throw new Error('Unimplemented data type EventData');
-            case (0, $cPvrJ.DataType).Float:
-                return (0, $knztm.SizedFloat).read(this, 4);
-            case (0, $cPvrJ.DataType).Hashtable:
+            case (0, $fdLXt.DataType).Float:
+                return (0, $hSghd.SizedFloat).read(this, 4);
+            case (0, $fdLXt.DataType).Hashtable:
                 return this.readHashTable();
-            case (0, $cPvrJ.DataType).Integer:
-                return (0, $kzHa0.SizedInt).read(this, 4);
-            case (0, $cPvrJ.DataType).Short:
-                return (0, $kzHa0.SizedInt).read(this, 2);
-            case (0, $cPvrJ.DataType).Long:
-                return (0, $kzHa0.SizedInt).read(this, 8);
-            case (0, $cPvrJ.DataType).IntegerArray:
+            case (0, $fdLXt.DataType).Integer:
+                return (0, $chy8r.SizedInt).read(this, 4);
+            case (0, $fdLXt.DataType).Short:
+                return (0, $chy8r.SizedInt).read(this, 2);
+            case (0, $fdLXt.DataType).Long:
+                return (0, $chy8r.SizedInt).read(this, 8);
+            case (0, $fdLXt.DataType).IntegerArray:
                 return this.readIntArray();
-            case (0, $cPvrJ.DataType).Bool:
+            case (0, $fdLXt.DataType).Bool:
                 return this.readUint8() !== 0;
-            case (0, $cPvrJ.DataType).OperationResponse:
+            case (0, $fdLXt.DataType).OperationResponse:
                 throw new Error('Unimplemented data type OperationResponse');
-            case (0, $cPvrJ.DataType).OperationRequest:
+            case (0, $fdLXt.DataType).OperationRequest:
                 throw new Error('Unimplemented data type OperationRequest');
-            case (0, $cPvrJ.DataType).String:
+            case (0, $fdLXt.DataType).String:
                 return this.readString();
-            case (0, $cPvrJ.DataType).ByteArray:
+            case (0, $fdLXt.DataType).ByteArray:
                 return this.readByteArray();
-            case (0, $cPvrJ.DataType).Array:
-                return (0, $2NMWT.ProtocolArray).read(this);
-            case (0, $cPvrJ.DataType).ObjectArray:
+            case (0, $fdLXt.DataType).Array:
+                return (0, $50Nma.ProtocolArray).read(this);
+            case (0, $fdLXt.DataType).ObjectArray:
                 return this.readObjectArray();
             default:
                 throw new Error(`Unknown data type ${type}`);
@@ -1893,29 +1716,29 @@ class $e282426f0627aef8$export$30afd0d1dfcfaf9c {
         if (magic !== 0xF3) throw new Error(`Invalid magic byte: ${magic}`);
         const type = this.readUint8();
         switch(type){
-            case (0, $cPvrJ.PacketType).Init:
+            case (0, $fdLXt.PacketType).Init:
                 throw new Error('Init packet parsing not implemented');
-            case (0, $cPvrJ.PacketType).InitResponse:
-                return (0, $3HBkV.InitResponse).read(this);
-            case (0, $cPvrJ.PacketType).Operation:
-                return (0, $3HBkV.OperationRequest).read(this);
-            case (0, $cPvrJ.PacketType).OperationResponse:
-                return (0, $3HBkV.OperationResponse).read(this);
-            case (0, $cPvrJ.PacketType).Event:
-                return (0, $3HBkV.Event).read(this);
-            case (0, $cPvrJ.PacketType).InternalOperationRequest:
-                return (0, $3HBkV.InternalOperationRequest).read(this);
-            case (0, $cPvrJ.PacketType).InternalOperationResponse:
-                return (0, $3HBkV.InternalOperationResponse).read(this);
-            case (0, $cPvrJ.PacketType).Disconnect:
+            case (0, $fdLXt.PacketType).InitResponse:
+                return (0, $jNwcC.InitResponse).read(this);
+            case (0, $fdLXt.PacketType).Operation:
+                return (0, $jNwcC.OperationRequest).read(this);
+            case (0, $fdLXt.PacketType).OperationResponse:
+                return (0, $jNwcC.OperationResponse).read(this);
+            case (0, $fdLXt.PacketType).Event:
+                return (0, $jNwcC.Event).read(this);
+            case (0, $fdLXt.PacketType).InternalOperationRequest:
+                return (0, $jNwcC.InternalOperationRequest).read(this);
+            case (0, $fdLXt.PacketType).InternalOperationResponse:
+                return (0, $jNwcC.InternalOperationResponse).read(this);
+            case (0, $fdLXt.PacketType).Disconnect:
                 console.log('Received Disconnect packet');
                 return {
                     type: 'Disconnect'
                 };
-            case (0, $cPvrJ.PacketType).InitResponse:
-                return new (0, $3HBkV.InitResponse)();
-            case (0, $cPvrJ.PacketType).Message:
-            case (0, $cPvrJ.PacketType).RawMessage:
+            case (0, $fdLXt.PacketType).InitResponse:
+                return new (0, $jNwcC.InitResponse)();
+            case (0, $fdLXt.PacketType).Message:
+            case (0, $fdLXt.PacketType).RawMessage:
                 throw new Error(`Unimplemented packet type ${type}`);
             default:
                 throw new Error(`Unknown packet type ${type}`);
@@ -2018,14 +1841,14 @@ class $e282426f0627aef8$export$30afd0d1dfcfaf9c {
         return data;
     }
 }
-var $e282426f0627aef8$export$2e2bcd8739ae039 = $e282426f0627aef8$export$30afd0d1dfcfaf9c;
+var $59baf61e1f6fd914$export$2e2bcd8739ae039 = $59baf61e1f6fd914$export$30afd0d1dfcfaf9c;
 
 });
-parcelRegister("cPvrJ", function(module, exports) {
+parcelRegister("fdLXt", function(module, exports) {
 
-$parcel$export(module.exports, "DataType", () => $9572a40d449588bd$export$45c69700ee30a78c);
-$parcel$export(module.exports, "PacketType", () => $9572a40d449588bd$export$84d4095e16c6fc19);
-class $9572a40d449588bd$export$45c69700ee30a78c {
+$parcel$export(module.exports, "DataType", () => $b14d456e86077343$export$45c69700ee30a78c);
+$parcel$export(module.exports, "PacketType", () => $b14d456e86077343$export$84d4095e16c6fc19);
+class $b14d456e86077343$export$45c69700ee30a78c {
     static NullValue = 42;
     static Dictionary = 68;
     static StringArray = 97;
@@ -2047,7 +1870,7 @@ class $9572a40d449588bd$export$45c69700ee30a78c {
     static Array = 121;
     static ObjectArray = 122;
 }
-class $9572a40d449588bd$export$84d4095e16c6fc19 {
+class $b14d456e86077343$export$84d4095e16c6fc19 {
     static Init = 0;
     static InitResponse = 1;
     static Operation = 2;
@@ -2059,11 +1882,11 @@ class $9572a40d449588bd$export$84d4095e16c6fc19 {
     static RawMessage = 9;
     static Disconnect = 5;
 }
-class $9572a40d449588bd$export$a5e61cd3c11c8828 {
+class $b14d456e86077343$export$a5e61cd3c11c8828 {
     static InitEncryption = 0;
     static Ping = 1;
 }
-class $9572a40d449588bd$export$6e71357f8f04bc3e {
+class $b14d456e86077343$export$6e71357f8f04bc3e {
     static GetGameList = 217;
     static ServerSettings = 218;
     static WebRpc = 219;
@@ -2086,7 +1909,7 @@ class $9572a40d449588bd$export$6e71357f8f04bc3e {
     static Leave = 254;
     static Join = 255;
 }
-class $9572a40d449588bd$export$321530e93eee298c {
+class $b14d456e86077343$export$321530e93eee298c {
     static AzureNodeInfo = 210;
     static AuthEvent = 223;
     static LobbyStats = 224;
@@ -2102,7 +1925,7 @@ class $9572a40d449588bd$export$321530e93eee298c {
     static Leave = 254;
     static Join = 255;
 }
-class $9572a40d449588bd$export$33c90a15721f7830 {
+class $b14d456e86077343$export$33c90a15721f7830 {
     static FindFriendsRequestList = 1;
     static FindFriendsResponseOnlineList = 1;
     static FindFriendsOptions = 2;
@@ -2173,23 +1996,25 @@ class $9572a40d449588bd$export$33c90a15721f7830 {
     static ActorNr = 254;
     static RoomName = 255;
 }
-var $9572a40d449588bd$export$2e2bcd8739ae039 = {
-    DataType: $9572a40d449588bd$export$45c69700ee30a78c,
-    PacketType: $9572a40d449588bd$export$84d4095e16c6fc19,
-    InternalOperationCode: $9572a40d449588bd$export$a5e61cd3c11c8828,
-    OperationCode: $9572a40d449588bd$export$6e71357f8f04bc3e,
-    EventCode: $9572a40d449588bd$export$321530e93eee298c,
-    ParameterCode: $9572a40d449588bd$export$33c90a15721f7830
+var $b14d456e86077343$export$2e2bcd8739ae039 = {
+    DataType: $b14d456e86077343$export$45c69700ee30a78c,
+    PacketType: $b14d456e86077343$export$84d4095e16c6fc19,
+    InternalOperationCode: $b14d456e86077343$export$a5e61cd3c11c8828,
+    OperationCode: $b14d456e86077343$export$6e71357f8f04bc3e,
+    EventCode: $b14d456e86077343$export$321530e93eee298c,
+    ParameterCode: $b14d456e86077343$export$33c90a15721f7830
 };
 
 });
 
-parcelRegister("2NMWT", function(module, exports) {
+parcelRegister("50Nma", function(module, exports) {
 
-var $cPvrJ = parcelRequire("cPvrJ");
+$parcel$export(module.exports, "ProtocolArray", () => $3a633d0b19cad310$export$4532e8701b7ca2d6);
 
-var $18MRn = parcelRequire("18MRn");
-class $20a620951384ae85$var$ProtocolArray extends $18MRn {
+var $fdLXt = parcelRequire("fdLXt");
+
+var $5TLwl = parcelRequire("5TLwl");
+class $3a633d0b19cad310$export$4532e8701b7ca2d6 extends (0, $5TLwl.default) {
     constructor(innerDataType, data){
         super();
         this.innerDataType = innerDataType;
@@ -2200,10 +2025,10 @@ class $20a620951384ae85$var$ProtocolArray extends $18MRn {
         const innerDataType = reader.readUint8();
         const data = new Array(len);
         for(let i = 0; i < len; i++)data[i] = reader.readValue(innerDataType);
-        return new $20a620951384ae85$var$ProtocolArray(innerDataType, data);
+        return new $3a633d0b19cad310$export$4532e8701b7ca2d6(innerDataType, data);
     }
     writeType(writer) {
-        writer.writeUint8((0, $cPvrJ.DataType).Array);
+        writer.writeUint8((0, $fdLXt.DataType).Array);
     }
     writeValue(writer) {
         writer.writeUint16(this.data.length);
@@ -2214,18 +2039,14 @@ class $20a620951384ae85$var$ProtocolArray extends $18MRn {
         return `ProtocolArray ${this.innerDataType}: ${JSON.stringify(this.data)}`;
     }
 }
-module.exports = {
-    ProtocolArray: $20a620951384ae85$var$ProtocolArray
-};
+var $3a633d0b19cad310$export$2e2bcd8739ae039 = $3a633d0b19cad310$export$4532e8701b7ca2d6;
 
 });
-parcelRegister("18MRn", function(module, exports) {
+parcelRegister("5TLwl", function(module, exports) {
 
-$parcel$defineInteropFlag(module.exports);
-
-$parcel$export(module.exports, "Serializable", () => $0d4c70587d5f84dd$export$64782a6a7800f48c);
-$parcel$export(module.exports, "default", () => $0d4c70587d5f84dd$export$2e2bcd8739ae039);
-class $0d4c70587d5f84dd$export$64782a6a7800f48c {
+$parcel$export(module.exports, "Serializable", () => $44b6f36625d32b9f$export$64782a6a7800f48c);
+$parcel$export(module.exports, "default", () => $44b6f36625d32b9f$export$2e2bcd8739ae039);
+class $44b6f36625d32b9f$export$64782a6a7800f48c {
     writeType(writer) {
         throw new Error('writeType must be implemented');
     }
@@ -2233,25 +2054,25 @@ class $0d4c70587d5f84dd$export$64782a6a7800f48c {
         throw new Error('writeValue must be implemented');
     }
 }
-var $0d4c70587d5f84dd$export$2e2bcd8739ae039 = $0d4c70587d5f84dd$export$64782a6a7800f48c;
+var $44b6f36625d32b9f$export$2e2bcd8739ae039 = $44b6f36625d32b9f$export$64782a6a7800f48c;
 
 });
 
 
-parcelRegister("2JOv6", function(module, exports) {
+parcelRegister("5RiRz", function(module, exports) {
 
-$parcel$export(module.exports, "CustomData", () => $1fe6f51abcc2549b$export$33e476ffe0c539da);
+$parcel$export(module.exports, "CustomData", () => $444088c4cb6b1773$export$33e476ffe0c539da);
 
-var $cPvrJ = parcelRequire("cPvrJ");
+var $fdLXt = parcelRequire("fdLXt");
 
-var $18MRn = parcelRequire("18MRn");
+var $5TLwl = parcelRequire("5TLwl");
 
-var $eAASF = parcelRequire("eAASF");
-
-
+var $hlBPA = parcelRequire("hlBPA");
 
 
-class $1fe6f51abcc2549b$export$33e476ffe0c539da extends (0, $18MRn.Serializable) {
+
+
+class $444088c4cb6b1773$export$33e476ffe0c539da extends (0, $5TLwl.Serializable) {
     constructor(){
         super();
     }
@@ -2259,21 +2080,21 @@ class $1fe6f51abcc2549b$export$33e476ffe0c539da extends (0, $18MRn.Serializable)
         const typeCode = reader.readUint8();
         const len = reader.readUint16();
         const data = reader.read(len);
-        const tempReader = new (parcelRequire("jrHth"))(data);
+        const tempReader = new (parcelRequire("7HDcR"))(data);
         switch(typeCode){
             case 86:
-                const { Vector3: Vector3 } = (parcelRequire("dk6FC"));
+                const { Vector3: Vector3 } = (parcelRequire("7CIAu"));
                 return Vector3.read(tempReader);
             case 81:
-                const { Quaternion: Quaternion } = (parcelRequire("jN7qd"));
+                const { Quaternion: Quaternion } = (parcelRequire("feAgZ"));
                 return Quaternion.read(tempReader);
             default:
-                const { UnimplementedCustomData: UnimplementedCustomData } = (parcelRequire("gdKWC"));
+                const { UnimplementedCustomData: UnimplementedCustomData } = (parcelRequire("8Xw5T"));
                 return new UnimplementedCustomData(typeCode, data);
         }
     }
     writeType(writer) {
-        writer.writeUint8((0, $cPvrJ.DataType).Custom);
+        writer.writeUint8((0, $fdLXt.DataType).Custom);
     }
     writeValue(writer) {
         writer.writeUint8(this.typeCode);
@@ -2285,7 +2106,7 @@ class $1fe6f51abcc2549b$export$33e476ffe0c539da extends (0, $18MRn.Serializable)
         throw new Error('write must be implemented');
     }
     getBytes() {
-        const writer = new $eAASF();
+        const writer = new (0, $hlBPA.default)();
         this.write(writer);
         return writer.toBytes();
     }
@@ -2293,18 +2114,16 @@ class $1fe6f51abcc2549b$export$33e476ffe0c539da extends (0, $18MRn.Serializable)
         return `CustomData ${this.typeCode} ${this.getBytes().toString('hex')}`;
     }
 }
-var $1fe6f51abcc2549b$export$2e2bcd8739ae039 = $1fe6f51abcc2549b$export$33e476ffe0c539da;
+var $444088c4cb6b1773$export$2e2bcd8739ae039 = $444088c4cb6b1773$export$33e476ffe0c539da;
 
 });
-parcelRegister("eAASF", function(module, exports) {
+parcelRegister("hlBPA", function(module, exports) {
 
-$parcel$defineInteropFlag(module.exports);
+$parcel$export(module.exports, "default", () => $ca11be4b9782c641$export$2e2bcd8739ae039);
 
-$parcel$export(module.exports, "ProtocolWriter", () => $a9f1093f50da3180$export$ea69f93a488f088a);
-$parcel$export(module.exports, "default", () => $a9f1093f50da3180$export$2e2bcd8739ae039);
+var $fdLXt = parcelRequire("fdLXt");
 
-var $cPvrJ = parcelRequire("cPvrJ");
-class $a9f1093f50da3180$export$ea69f93a488f088a {
+class $ca11be4b9782c641$export$ea69f93a488f088a {
     constructor(){
         this.buffers = [];
         this.length = 0;
@@ -2315,17 +2134,17 @@ class $a9f1093f50da3180$export$ea69f93a488f088a {
     }
     writeValue(value, writeType = true) {
         if (value === null || value === undefined) {
-            if (writeType) this.writeUint8((0, $cPvrJ.DataType).NullValue);
+            if (writeType) this.writeUint8((0, $fdLXt.DataType).NullValue);
             return;
         }
         if (value instanceof Array && value.every((item)=>typeof item === 'string')) {
-            if (writeType) this.writeUint8((0, $cPvrJ.DataType).StringArray);
+            if (writeType) this.writeUint8((0, $fdLXt.DataType).StringArray);
             this.writeStringArray(value);
         } else if (value.writeType && value.writeValue) {
             if (writeType) value.writeType(this);
             value.writeValue(this);
         } else if (value instanceof Object && !(value instanceof Array)) {
-            if (writeType) this.writeUint8((0, $cPvrJ.DataType).Hashtable);
+            if (writeType) this.writeUint8((0, $fdLXt.DataType).Hashtable);
             const entries = Object.entries(value);
             this.writeUint16(entries.length);
             for (const [key, val] of entries){
@@ -2333,21 +2152,21 @@ class $a9f1093f50da3180$export$ea69f93a488f088a {
                 this.writeValue(val);
             }
         } else if (value instanceof Int32Array) {
-            if (writeType) this.writeUint8((0, $cPvrJ.DataType).IntegerArray);
+            if (writeType) this.writeUint8((0, $fdLXt.DataType).IntegerArray);
             this.writeInt32(value.length);
             for (const num of value)this.writeInt32(num);
         } else if (typeof value === 'boolean') {
-            if (writeType) this.writeUint8((0, $cPvrJ.DataType).Bool);
+            if (writeType) this.writeUint8((0, $fdLXt.DataType).Bool);
             this.writeUint8(value ? 1 : 0);
         } else if (typeof value === 'string') {
-            if (writeType) this.writeUint8((0, $cPvrJ.DataType).String);
+            if (writeType) this.writeUint8((0, $fdLXt.DataType).String);
             this.writeString(value);
-        } else if (value instanceof Buffer) {
-            if (writeType) this.writeUint8((0, $cPvrJ.DataType).ByteArray);
+        } else if (value instanceof $jqpSz$buffer) {
+            if (writeType) this.writeUint8((0, $fdLXt.DataType).ByteArray);
             this.writeInt32(value.length);
             this.write(value);
         } else if (value instanceof Array) {
-            if (writeType) this.writeUint8((0, $cPvrJ.DataType).ObjectArray);
+            if (writeType) this.writeUint8((0, $fdLXt.DataType).ObjectArray);
             this.writeInt16(value.length);
             for (const item of value)this.writeValue(item);
         } else throw new Error(`Cannot serialize '${value}' (type: ${typeof value})`);
@@ -2357,7 +2176,7 @@ class $a9f1093f50da3180$export$ea69f93a488f088a {
         for (const str of strings)this.writeString(str);
     }
     writeString(str) {
-        const bytes = Buffer.from(str, 'utf8');
+        const bytes = $jqpSz$buffer.from(str, 'utf8');
         this.writeUint16(bytes.length);
         this.write(bytes);
     }
@@ -2370,74 +2189,74 @@ class $a9f1093f50da3180$export$ea69f93a488f088a {
         }
     }
     writeUint8(value) {
-        const buf = Buffer.alloc(1);
+        const buf = $jqpSz$buffer.alloc(1);
         buf.writeUInt8(value);
         this.buffers.push(buf);
         this.length += 1;
     }
     writeInt8(value) {
-        const buf = Buffer.alloc(1);
+        const buf = $jqpSz$buffer.alloc(1);
         buf.writeInt8(value);
         this.buffers.push(buf);
         this.length += 1;
     }
     writeUint16(value) {
-        const buf = Buffer.alloc(2);
+        const buf = $jqpSz$buffer.alloc(2);
         buf.writeUInt16BE(value);
         this.buffers.push(buf);
         this.length += 2;
     }
     writeInt16(value) {
-        const buf = Buffer.alloc(2);
+        const buf = $jqpSz$buffer.alloc(2);
         buf.writeInt16BE(value);
         this.buffers.push(buf);
         this.length += 2;
     }
     writeInt32(value) {
-        const buf = Buffer.alloc(4);
+        const buf = $jqpSz$buffer.alloc(4);
         buf.writeInt32BE(value);
         this.buffers.push(buf);
         this.length += 4;
     }
     writeInt64(value) {
-        const buf = Buffer.alloc(8);
+        const buf = $jqpSz$buffer.alloc(8);
         buf.writeBigInt64BE(BigInt(value));
         this.buffers.push(buf);
         this.length += 8;
     }
     writeFloat32(value) {
-        const buf = Buffer.alloc(4);
+        const buf = $jqpSz$buffer.alloc(4);
         buf.writeFloatBE(value);
         this.buffers.push(buf);
         this.length += 4;
     }
     writeFloat64(value) {
-        const buf = Buffer.alloc(8);
+        const buf = $jqpSz$buffer.alloc(8);
         buf.writeDoubleBE(value);
         this.buffers.push(buf);
         this.length += 8;
     }
     write(bytes) {
-        this.buffers.push(Buffer.from(bytes));
+        this.buffers.push($jqpSz$buffer.from(bytes));
         this.length += bytes.length;
     }
     toBytes() {
-        return Buffer.concat(this.buffers, this.length);
+        return $jqpSz$buffer.concat(this.buffers, this.length);
     }
 }
-var $a9f1093f50da3180$export$2e2bcd8739ae039 = $a9f1093f50da3180$export$ea69f93a488f088a;
+var $ca11be4b9782c641$export$2e2bcd8739ae039 = $ca11be4b9782c641$export$ea69f93a488f088a;
 
 });
 
-parcelRegister("dk6FC", function(module, exports) {
+parcelRegister("7CIAu", function(module, exports) {
 
 $parcel$defineInteropFlag(module.exports);
 
-$parcel$export(module.exports, "Vector3", () => $9b32512ee959683a$export$64b5c384219d3699);
-$parcel$export(module.exports, "default", () => $9b32512ee959683a$export$2e2bcd8739ae039);
+$parcel$export(module.exports, "Vector3", () => $58ceab26fe16a683$export$64b5c384219d3699);
+$parcel$export(module.exports, "default", () => $58ceab26fe16a683$export$2e2bcd8739ae039);
 
-var $2JOv6 = parcelRequire("2JOv6");
-class $9b32512ee959683a$export$64b5c384219d3699 extends (0, $2JOv6.CustomData) {
+var $5RiRz = parcelRequire("5RiRz");
+class $58ceab26fe16a683$export$64b5c384219d3699 extends (0, $5RiRz.CustomData) {
     static TypeCode = 86;
     constructor(f1, f2, f3){
         super();
@@ -2446,13 +2265,13 @@ class $9b32512ee959683a$export$64b5c384219d3699 extends (0, $2JOv6.CustomData) {
         this.f3 = f3;
     }
     get typeCode() {
-        return $9b32512ee959683a$export$64b5c384219d3699.TypeCode;
+        return $58ceab26fe16a683$export$64b5c384219d3699.TypeCode;
     }
     static read(reader) {
         const f1 = reader.readFloat32();
         const f2 = reader.readFloat32();
         const f3 = reader.readFloat32();
-        return new $9b32512ee959683a$export$64b5c384219d3699(f1, f2, f3);
+        return new $58ceab26fe16a683$export$64b5c384219d3699(f1, f2, f3);
     }
     write(writer) {
         writer.writeFloat32(this.f1);
@@ -2463,19 +2282,19 @@ class $9b32512ee959683a$export$64b5c384219d3699 extends (0, $2JOv6.CustomData) {
         return `Vector3(${this.f1},${this.f2},${this.f3})`;
     }
 }
-var $9b32512ee959683a$export$2e2bcd8739ae039 = $9b32512ee959683a$export$64b5c384219d3699;
+var $58ceab26fe16a683$export$2e2bcd8739ae039 = $58ceab26fe16a683$export$64b5c384219d3699;
 
 });
 
-parcelRegister("jN7qd", function(module, exports) {
+parcelRegister("feAgZ", function(module, exports) {
 
 $parcel$defineInteropFlag(module.exports);
 
-$parcel$export(module.exports, "Quaternion", () => $e68859b985ed8a82$export$23d6a54f0bbc85a3);
-$parcel$export(module.exports, "default", () => $e68859b985ed8a82$export$2e2bcd8739ae039);
+$parcel$export(module.exports, "Quaternion", () => $b1744ce1b14200a7$export$23d6a54f0bbc85a3);
+$parcel$export(module.exports, "default", () => $b1744ce1b14200a7$export$2e2bcd8739ae039);
 
-var $2JOv6 = parcelRequire("2JOv6");
-class $e68859b985ed8a82$export$23d6a54f0bbc85a3 extends (0, $2JOv6.CustomData) {
+var $5RiRz = parcelRequire("5RiRz");
+class $b1744ce1b14200a7$export$23d6a54f0bbc85a3 extends (0, $5RiRz.CustomData) {
     static TypeCode = 81;
     constructor(w, x, y, z){
         super();
@@ -2485,14 +2304,14 @@ class $e68859b985ed8a82$export$23d6a54f0bbc85a3 extends (0, $2JOv6.CustomData) {
         this.z = z;
     }
     get typeCode() {
-        return $e68859b985ed8a82$export$23d6a54f0bbc85a3.TypeCode;
+        return $b1744ce1b14200a7$export$23d6a54f0bbc85a3.TypeCode;
     }
     static read(reader) {
         const w = reader.readFloat32();
         const x = reader.readFloat32();
         const y = reader.readFloat32();
         const z = reader.readFloat32();
-        return new $e68859b985ed8a82$export$23d6a54f0bbc85a3(w, x, y, z);
+        return new $b1744ce1b14200a7$export$23d6a54f0bbc85a3(w, x, y, z);
     }
     write(writer) {
         writer.writeFloat32(this.w);
@@ -2504,20 +2323,19 @@ class $e68859b985ed8a82$export$23d6a54f0bbc85a3 extends (0, $2JOv6.CustomData) {
         return `Quaternion(w=${this.w}, x=${this.x}, y=${this.y}, z=${this.z})`;
     }
 }
-var $e68859b985ed8a82$export$2e2bcd8739ae039 = $e68859b985ed8a82$export$23d6a54f0bbc85a3;
+var $b1744ce1b14200a7$export$2e2bcd8739ae039 = $b1744ce1b14200a7$export$23d6a54f0bbc85a3;
 
 });
 
-parcelRegister("gdKWC", function(module, exports) {
+parcelRegister("8Xw5T", function(module, exports) {
 
 $parcel$defineInteropFlag(module.exports);
 
-$parcel$export(module.exports, "UnimplementedCustomData", () => $bcf2466e1e570860$export$5762eb36fd9a444e);
-$parcel$export(module.exports, "default", () => $bcf2466e1e570860$export$2e2bcd8739ae039);
+$parcel$export(module.exports, "UnimplementedCustomData", () => $685cbaa2a10b66fe$export$5762eb36fd9a444e);
+$parcel$export(module.exports, "default", () => $685cbaa2a10b66fe$export$2e2bcd8739ae039);
 
-var $2JOv6 = parcelRequire("2JOv6");
-var $bcf2466e1e570860$require$CustomData = $2JOv6.CustomData;
-class $bcf2466e1e570860$export$5762eb36fd9a444e extends $bcf2466e1e570860$require$CustomData {
+var $5RiRz = parcelRequire("5RiRz");
+class $685cbaa2a10b66fe$export$5762eb36fd9a444e extends (0, $5RiRz.CustomData) {
     constructor(typeCode, data){
         super();
         this._typeCode = typeCode;
@@ -2530,19 +2348,19 @@ class $bcf2466e1e570860$export$5762eb36fd9a444e extends $bcf2466e1e570860$requir
         writer.write(this.data);
     }
 }
-var $bcf2466e1e570860$export$2e2bcd8739ae039 = $bcf2466e1e570860$export$5762eb36fd9a444e;
+var $685cbaa2a10b66fe$export$2e2bcd8739ae039 = $685cbaa2a10b66fe$export$5762eb36fd9a444e;
 
 });
 
 
-parcelRegister("knztm", function(module, exports) {
+parcelRegister("hSghd", function(module, exports) {
 
-$parcel$export(module.exports, "SizedFloat", () => $03d4271bc67d5035$export$23c4e50d47dcaa25);
+$parcel$export(module.exports, "SizedFloat", () => $d0341b02e2aeffcc$export$23c4e50d47dcaa25);
 
-var $cPvrJ = parcelRequire("cPvrJ");
+var $fdLXt = parcelRequire("fdLXt");
 
-var $18MRn = parcelRequire("18MRn");
-class $03d4271bc67d5035$export$23c4e50d47dcaa25 extends (0, $18MRn.Serializable) {
+var $5TLwl = parcelRequire("5TLwl");
+class $d0341b02e2aeffcc$export$23c4e50d47dcaa25 extends (0, $5TLwl.Serializable) {
     constructor(value, size){
         super();
         this.value = value;
@@ -2550,22 +2368,22 @@ class $03d4271bc67d5035$export$23c4e50d47dcaa25 extends (0, $18MRn.Serializable)
         this._checkSize();
     }
     static float(value) {
-        return new $03d4271bc67d5035$export$23c4e50d47dcaa25(value, 4);
+        return new $d0341b02e2aeffcc$export$23c4e50d47dcaa25(value, 4);
     }
     static double(value) {
-        return new $03d4271bc67d5035$export$23c4e50d47dcaa25(value, 8);
+        return new $d0341b02e2aeffcc$export$23c4e50d47dcaa25(value, 8);
     }
     static read(reader, size) {
         const value = size === 4 ? reader.readFloat32() : reader.readFloat64();
-        return new $03d4271bc67d5035$export$23c4e50d47dcaa25(value, size);
+        return new $d0341b02e2aeffcc$export$23c4e50d47dcaa25(value, size);
     }
     writeType(writer) {
         switch(this.size){
             case 4:
-                writer.writeUint8((0, $cPvrJ.DataType).Float);
+                writer.writeUint8((0, $fdLXt.DataType).Float);
                 break;
             case 8:
-                writer.writeUint8((0, $cPvrJ.DataType).Double);
+                writer.writeUint8((0, $fdLXt.DataType).Double);
                 break;
             default:
                 throw new Error(`Invalid SizedFloat size ${this.size}`);
@@ -2592,18 +2410,18 @@ class $03d4271bc67d5035$export$23c4e50d47dcaa25 extends (0, $18MRn.Serializable)
         return `float${this.size * 8} ${this.value}`;
     }
 }
-var $03d4271bc67d5035$export$2e2bcd8739ae039 = $03d4271bc67d5035$export$23c4e50d47dcaa25;
+var $d0341b02e2aeffcc$export$2e2bcd8739ae039 = $d0341b02e2aeffcc$export$23c4e50d47dcaa25;
 
 });
 
-parcelRegister("kzHa0", function(module, exports) {
+parcelRegister("chy8r", function(module, exports) {
 
-$parcel$export(module.exports, "SizedInt", () => $efa88e4c6b5b2cde$export$f6bfa50653c0b77d);
+$parcel$export(module.exports, "SizedInt", () => $8f118d16b9277eb1$export$f6bfa50653c0b77d);
 
-var $cPvrJ = parcelRequire("cPvrJ");
+var $fdLXt = parcelRequire("fdLXt");
 
-var $18MRn = parcelRequire("18MRn");
-class $efa88e4c6b5b2cde$export$f6bfa50653c0b77d extends (0, $18MRn.Serializable) {
+var $5TLwl = parcelRequire("5TLwl");
+class $8f118d16b9277eb1$export$f6bfa50653c0b77d extends (0, $5TLwl.Serializable) {
     constructor(value, size){
         super();
         this.value = value;
@@ -2611,16 +2429,16 @@ class $efa88e4c6b5b2cde$export$f6bfa50653c0b77d extends (0, $18MRn.Serializable)
         this._checkSize();
     }
     static byte(value) {
-        return new $efa88e4c6b5b2cde$export$f6bfa50653c0b77d(value, 1);
+        return new $8f118d16b9277eb1$export$f6bfa50653c0b77d(value, 1);
     }
     static short(value) {
-        return new $efa88e4c6b5b2cde$export$f6bfa50653c0b77d(value, 2);
+        return new $8f118d16b9277eb1$export$f6bfa50653c0b77d(value, 2);
     }
     static int(value) {
-        return new $efa88e4c6b5b2cde$export$f6bfa50653c0b77d(value, 4);
+        return new $8f118d16b9277eb1$export$f6bfa50653c0b77d(value, 4);
     }
     static long(value) {
-        return new $efa88e4c6b5b2cde$export$f6bfa50653c0b77d(value, 8);
+        return new $8f118d16b9277eb1$export$f6bfa50653c0b77d(value, 8);
     }
     static read(reader, size) {
         let value;
@@ -2638,21 +2456,21 @@ class $efa88e4c6b5b2cde$export$f6bfa50653c0b77d extends (0, $18MRn.Serializable)
                 value = reader.readInt64();
                 break;
         }
-        return new $efa88e4c6b5b2cde$export$f6bfa50653c0b77d(value, size);
+        return new $8f118d16b9277eb1$export$f6bfa50653c0b77d(value, size);
     }
     writeType(writer) {
         switch(this.size){
             case 1:
-                writer.writeUint8((0, $cPvrJ.DataType).Byte);
+                writer.writeUint8((0, $fdLXt.DataType).Byte);
                 break;
             case 2:
-                writer.writeUint8((0, $cPvrJ.DataType).Short);
+                writer.writeUint8((0, $fdLXt.DataType).Short);
                 break;
             case 4:
-                writer.writeUint8((0, $cPvrJ.DataType).Integer);
+                writer.writeUint8((0, $fdLXt.DataType).Integer);
                 break;
             case 8:
-                writer.writeUint8((0, $cPvrJ.DataType).Long);
+                writer.writeUint8((0, $fdLXt.DataType).Long);
                 break;
             default:
                 throw new Error(`Invalid SizedInt size ${this.size}`);
@@ -2693,23 +2511,24 @@ class $efa88e4c6b5b2cde$export$f6bfa50653c0b77d extends (0, $18MRn.Serializable)
         return `int${this.size * 8} ${this.value}`;
     }
 }
-var $efa88e4c6b5b2cde$export$2e2bcd8739ae039 = $efa88e4c6b5b2cde$export$f6bfa50653c0b77d;
+var $8f118d16b9277eb1$export$2e2bcd8739ae039 = $8f118d16b9277eb1$export$f6bfa50653c0b77d;
 
 });
 
-parcelRegister("3HBkV", function(module, exports) {
+parcelRegister("jNwcC", function(module, exports) {
 
-$parcel$export(module.exports, "InitResponse", () => $2b225982bb18953c$export$a3839a2aa9a577f2);
-$parcel$export(module.exports, "OperationRequest", () => $2b225982bb18953c$export$e32a5452dc497d6e);
-$parcel$export(module.exports, "OperationResponse", () => $2b225982bb18953c$export$6ded9cda38d62d0e);
-$parcel$export(module.exports, "Event", () => $2b225982bb18953c$export$d61e24a684f9e51);
-$parcel$export(module.exports, "InternalOperationRequest", () => $2b225982bb18953c$export$513c291e03eae483);
-$parcel$export(module.exports, "InternalOperationResponse", () => $2b225982bb18953c$export$270e6f70cc44ede0);
+$parcel$export(module.exports, "InitResponse", () => $e69b92a89130bc3d$export$a3839a2aa9a577f2);
+$parcel$export(module.exports, "OperationRequest", () => $e69b92a89130bc3d$export$e32a5452dc497d6e);
+$parcel$export(module.exports, "OperationResponse", () => $e69b92a89130bc3d$export$6ded9cda38d62d0e);
+$parcel$export(module.exports, "Event", () => $e69b92a89130bc3d$export$d61e24a684f9e51);
+$parcel$export(module.exports, "InternalOperationRequest", () => $e69b92a89130bc3d$export$513c291e03eae483);
+$parcel$export(module.exports, "InternalOperationResponse", () => $e69b92a89130bc3d$export$270e6f70cc44ede0);
 
-var $cPvrJ = parcelRequire("cPvrJ");
+var $fdLXt = parcelRequire("fdLXt");
 
-var $18MRn = parcelRequire("18MRn");
-class $2b225982bb18953c$export$7c4d9b816b36a269 extends (0, $18MRn.Serializable) {
+var $5TLwl = parcelRequire("5TLwl");
+
+class $e69b92a89130bc3d$export$7c4d9b816b36a269 extends (0, $5TLwl.Serializable) {
     constructor(code, params = {}){
         super();
         this.code = code;
@@ -2719,7 +2538,7 @@ class $2b225982bb18953c$export$7c4d9b816b36a269 extends (0, $18MRn.Serializable)
         return `${this.constructor.name} ${this.code}: ${JSON.stringify(this.params)}`;
     }
 }
-class $2b225982bb18953c$export$549e8a9504cdc069 extends $2b225982bb18953c$export$7c4d9b816b36a269 {
+class $e69b92a89130bc3d$export$549e8a9504cdc069 extends $e69b92a89130bc3d$export$7c4d9b816b36a269 {
     static protocolVersion = [
         1,
         6
@@ -2734,38 +2553,38 @@ class $2b225982bb18953c$export$549e8a9504cdc069 extends $2b225982bb18953c$export
     static clientSdkIdShifted = this.clientSdkId << 1;
     constructor(appID, { isIpv6: isIpv6 = false } = {}){
         super();
-        this.appID = Buffer.from(appID);
+        this.appID = $jqpSz$buffer.from(appID);
         this.isIpv6 = isIpv6;
     }
     writeType(writer) {
-        writer.writeUint8((0, $cPvrJ.PacketType).Init);
+        writer.writeUint8((0, $fdLXt.PacketType).Init);
     }
     writeValue(writer) {
-        writer.writeUint8($2b225982bb18953c$export$549e8a9504cdc069.protocolVersion[0]);
-        writer.writeUint8($2b225982bb18953c$export$549e8a9504cdc069.protocolVersion[1]);
-        writer.writeUint8($2b225982bb18953c$export$549e8a9504cdc069.clientSdkIdShifted);
-        let versionBitField = $2b225982bb18953c$export$549e8a9504cdc069.clientVersion[0] << 4 | $2b225982bb18953c$export$549e8a9504cdc069.clientVersion[1];
+        writer.writeUint8($e69b92a89130bc3d$export$549e8a9504cdc069.protocolVersion[0]);
+        writer.writeUint8($e69b92a89130bc3d$export$549e8a9504cdc069.protocolVersion[1]);
+        writer.writeUint8($e69b92a89130bc3d$export$549e8a9504cdc069.clientSdkIdShifted);
+        let versionBitField = $e69b92a89130bc3d$export$549e8a9504cdc069.clientVersion[0] << 4 | $e69b92a89130bc3d$export$549e8a9504cdc069.clientVersion[1];
         versionBitField = this.isIpv6 ? versionBitField | 0x80 : versionBitField & 0x7F;
         writer.writeUint8(versionBitField);
-        writer.writeUint8($2b225982bb18953c$export$549e8a9504cdc069.clientVersion[2]);
-        writer.writeUint8($2b225982bb18953c$export$549e8a9504cdc069.clientVersion[3]);
+        writer.writeUint8($e69b92a89130bc3d$export$549e8a9504cdc069.clientVersion[2]);
+        writer.writeUint8($e69b92a89130bc3d$export$549e8a9504cdc069.clientVersion[3]);
         writer.writeUint8(0);
-        const appIDBuffer = Buffer.alloc(32);
+        const appIDBuffer = $jqpSz$buffer.alloc(32);
         this.appID.copy(appIDBuffer, 0, 0, Math.min(this.appID.length, 32));
         writer.write(appIDBuffer);
     }
 }
-class $2b225982bb18953c$export$a3839a2aa9a577f2 extends $2b225982bb18953c$export$7c4d9b816b36a269 {
+class $e69b92a89130bc3d$export$a3839a2aa9a577f2 extends $e69b92a89130bc3d$export$7c4d9b816b36a269 {
     constructor(){
         super(0);
     }
     static read(reader) {
         const code = reader.readInt8();
         if (code !== 0) throw new Error(`Invalid InitResponse code: ${code}`);
-        return new $2b225982bb18953c$export$a3839a2aa9a577f2();
+        return new $e69b92a89130bc3d$export$a3839a2aa9a577f2();
     }
     writeType(writer) {
-        writer.writeUint8((0, $cPvrJ.PacketType).InitResponse);
+        writer.writeUint8((0, $fdLXt.PacketType).InitResponse);
     }
     writeValue(writer) {
         writer.writeUint8(this.code);
@@ -2774,24 +2593,24 @@ class $2b225982bb18953c$export$a3839a2aa9a577f2 extends $2b225982bb18953c$export
         return 'InitResponse';
     }
 }
-class $2b225982bb18953c$export$e32a5452dc497d6e extends $2b225982bb18953c$export$7c4d9b816b36a269 {
+class $e69b92a89130bc3d$export$e32a5452dc497d6e extends $e69b92a89130bc3d$export$7c4d9b816b36a269 {
     constructor(code, params){
         super(code, params);
     }
     static read(reader) {
         const code = reader.readUint8();
         const params = reader.readParameterTable();
-        return new $2b225982bb18953c$export$e32a5452dc497d6e(code, params);
+        return new $e69b92a89130bc3d$export$e32a5452dc497d6e(code, params);
     }
     writeType(writer) {
-        writer.writeUint8((0, $cPvrJ.PacketType).Operation);
+        writer.writeUint8((0, $fdLXt.PacketType).Operation);
     }
     writeValue(writer) {
         writer.writeUint8(this.code);
         writer.writeParameterTable(this.params);
     }
 }
-class $2b225982bb18953c$export$6ded9cda38d62d0e extends $2b225982bb18953c$export$7c4d9b816b36a269 {
+class $e69b92a89130bc3d$export$6ded9cda38d62d0e extends $e69b92a89130bc3d$export$7c4d9b816b36a269 {
     constructor(code, debugMessage, returnCode, params){
         super(code, params);
         this.debugMessage = debugMessage;
@@ -2802,10 +2621,10 @@ class $2b225982bb18953c$export$6ded9cda38d62d0e extends $2b225982bb18953c$export
         const returnCode = reader.readInt16();
         const debugMessage = reader.readValue();
         const params = reader.readParameterTable();
-        return new $2b225982bb18953c$export$6ded9cda38d62d0e(code, debugMessage, returnCode, params);
+        return new $e69b92a89130bc3d$export$6ded9cda38d62d0e(code, debugMessage, returnCode, params);
     }
     writeType(writer) {
-        writer.writeUint8((0, $cPvrJ.PacketType).OperationResponse);
+        writer.writeUint8((0, $fdLXt.PacketType).OperationResponse);
     }
     writeValue(writer) {
         writer.writeUint8(this.code);
@@ -2817,41 +2636,41 @@ class $2b225982bb18953c$export$6ded9cda38d62d0e extends $2b225982bb18953c$export
         return `OperationResponse ${this.code} (return=${this.returnCode}, msg=${this.debugMessage}): ${JSON.stringify(this.params)}`;
     }
 }
-class $2b225982bb18953c$export$d61e24a684f9e51 extends $2b225982bb18953c$export$7c4d9b816b36a269 {
+class $e69b92a89130bc3d$export$d61e24a684f9e51 extends $e69b92a89130bc3d$export$7c4d9b816b36a269 {
     constructor(code, params){
         super(code, params);
     }
     static read(reader) {
         const code = reader.readUint8();
         const params = reader.readParameterTable();
-        return new $2b225982bb18953c$export$d61e24a684f9e51(code, params);
+        return new $e69b92a89130bc3d$export$d61e24a684f9e51(code, params);
     }
     writeType(writer) {
-        writer.writeUint8((0, $cPvrJ.PacketType).Event);
+        writer.writeUint8((0, $fdLXt.PacketType).Event);
     }
     writeValue(writer) {
         writer.writeUint8(this.code);
         writer.writeParameterTable(this.params);
     }
 }
-class $2b225982bb18953c$export$513c291e03eae483 extends $2b225982bb18953c$export$7c4d9b816b36a269 {
+class $e69b92a89130bc3d$export$513c291e03eae483 extends $e69b92a89130bc3d$export$7c4d9b816b36a269 {
     constructor(code, params){
         super(code, params);
     }
     static read(reader) {
         const code = reader.readUint8();
         const params = reader.readParameterTable();
-        return new $2b225982bb18953c$export$513c291e03eae483(code, params);
+        return new $e69b92a89130bc3d$export$513c291e03eae483(code, params);
     }
     writeType(writer) {
-        writer.writeUint8((0, $cPvrJ.PacketType).InternalOperationRequest);
+        writer.writeUint8((0, $fdLXt.PacketType).InternalOperationRequest);
     }
     writeValue(writer) {
         writer.writeUint8(this.code);
         writer.writeParameterTable(this.params);
     }
 }
-class $2b225982bb18953c$export$270e6f70cc44ede0 extends $2b225982bb18953c$export$7c4d9b816b36a269 {
+class $e69b92a89130bc3d$export$270e6f70cc44ede0 extends $e69b92a89130bc3d$export$7c4d9b816b36a269 {
     constructor(code, debugMessage, returnCode, params){
         super(code, params);
         this.debugMessage = debugMessage;
@@ -2862,10 +2681,10 @@ class $2b225982bb18953c$export$270e6f70cc44ede0 extends $2b225982bb18953c$export
         const returnCode = reader.readInt16();
         const debugMessage = reader.readValue();
         const params = reader.readParameterTable();
-        return new $2b225982bb18953c$export$270e6f70cc44ede0(code, debugMessage, returnCode, params);
+        return new $e69b92a89130bc3d$export$270e6f70cc44ede0(code, debugMessage, returnCode, params);
     }
     writeType(writer) {
-        writer.writeUint8((0, $cPvrJ.PacketType).InternalOperationResponse);
+        writer.writeUint8((0, $fdLXt.PacketType).InternalOperationResponse);
     }
     writeValue(writer) {
         writer.writeUint8(this.code);
@@ -2877,16 +2696,271 @@ class $2b225982bb18953c$export$270e6f70cc44ede0 extends $2b225982bb18953c$export
         return `InternalOperationResponse ${this.code} (return=${this.returnCode}, msg=${this.debugMessage}): ${JSON.stringify(this.params)}`;
     }
 }
-var $2b225982bb18953c$export$2e2bcd8739ae039 = {
-    PacketWithPayload: $2b225982bb18953c$export$7c4d9b816b36a269,
-    InitPacket: $2b225982bb18953c$export$549e8a9504cdc069,
-    InitResponse: $2b225982bb18953c$export$a3839a2aa9a577f2,
-    OperationRequest: $2b225982bb18953c$export$e32a5452dc497d6e,
-    OperationResponse: $2b225982bb18953c$export$6ded9cda38d62d0e,
-    Event: $2b225982bb18953c$export$d61e24a684f9e51,
-    InternalOperationRequest: $2b225982bb18953c$export$513c291e03eae483,
-    InternalOperationResponse: $2b225982bb18953c$export$270e6f70cc44ede0
+var $e69b92a89130bc3d$export$2e2bcd8739ae039 = {
+    PacketWithPayload: $e69b92a89130bc3d$export$7c4d9b816b36a269,
+    InitPacket: $e69b92a89130bc3d$export$549e8a9504cdc069,
+    InitResponse: $e69b92a89130bc3d$export$a3839a2aa9a577f2,
+    OperationRequest: $e69b92a89130bc3d$export$e32a5452dc497d6e,
+    OperationResponse: $e69b92a89130bc3d$export$6ded9cda38d62d0e,
+    Event: $e69b92a89130bc3d$export$d61e24a684f9e51,
+    InternalOperationRequest: $e69b92a89130bc3d$export$513c291e03eae483,
+    InternalOperationResponse: $e69b92a89130bc3d$export$270e6f70cc44ede0
 };
+
+});
+
+
+parcelRegister("3T6OO", function(module, exports) {
+
+$parcel$export(module.exports, "PhotonClient", () => $2d4bcc28edbba255$export$ff44adeb1575cf4b);
+/*
+    Wonky way to do things, but if it works, it works
+*/ 
+var $jaTQV = parcelRequire("jaTQV");
+
+var $f8njZ = parcelRequire("f8njZ");
+
+var $hFnZm = parcelRequire("hFnZm");
+
+var $g1qy9 = parcelRequire("g1qy9");
+class $2d4bcc28edbba255$export$ff44adeb1575cf4b {
+    constructor({ originalSend: originalSend, socket: socket }){
+        this.opParameters = new Map();
+        this.socket = socket;
+        this.originalSend = originalSend;
+    }
+    /**
+     * Raises an event to be sent to other clients or cached for new clients
+     * @param {number} eventCode - Identifies the type of event
+     * @param {Object} customEventContent - The custom content/data to be sent with the event
+     * @param {RaiseEventOptions} raiseEventOptions - Options that control the behavior of the event
+     * @param {SendOptions} sendOptions - Options for the send operation
+     * @returns {boolean} True if operation was sent successfully
+     */ OpRaiseEvent(eventCode, customEventContent, raiseEventOptions, sendOptions) {
+        // Clear the parameters map for reuse
+        this.opParameters.clear();
+        if (raiseEventOptions) {
+            // Handle caching options
+            if (raiseEventOptions.CachingOption !== (0, $jaTQV.EventCaching).DoNotCache) this.opParameters.set(ParameterCode.Cache, PhotonPacketBuilder.types.byte(raiseEventOptions.CachingOption));
+            // Handle different caching cases
+            switch(raiseEventOptions.CachingOption){
+                case (0, $jaTQV.EventCaching).SliceSetIndex:
+                case (0, $jaTQV.EventCaching).SlicePurgeIndex:
+                case (0, $jaTQV.EventCaching).SlicePurgeUpToIndex:
+                    // In the original code, there's a commented section about CacheSliceIndex
+                    // and then immediately returns with SendOperation call
+                    return this.SendOperation(OperationCode.RaiseEvent, this.opParameters, sendOptions);
+                case (0, $jaTQV.EventCaching).SliceIncreaseIndex:
+                case (0, $jaTQV.EventCaching).RemoveFromRoomCacheForActorsLeft:
+                    return this.SendOperation(OperationCode.RaiseEvent, this.opParameters, sendOptions);
+                case (0, $jaTQV.EventCaching).RemoveFromRoomCache:
+                    if (raiseEventOptions.TargetActors) this.opParameters.set(ParameterCode.ActorList, PhotonPacketBuilder.types.integerArray(raiseEventOptions.TargetActors));
+                    break;
+                default:
+                    if (raiseEventOptions.TargetActors) this.opParameters.set(ParameterCode.ActorList, PhotonPacketBuilder.types.integerArray(raiseEventOptions.TargetActors));
+                    else if (raiseEventOptions.InterestGroup !== 0) this.opParameters.set(ParameterCode.Group, PhotonPacketBuilder.types.byte(raiseEventOptions.InterestGroup));
+                    else if (raiseEventOptions.Receivers !== (0, $f8njZ.ReceiverGroup).Others) this.opParameters.set(ParameterCode.ReceiverGroup, PhotonPacketBuilder.types.byte(raiseEventOptions.Receivers));
+                    if (raiseEventOptions.Flags.HttpForward) this.opParameters.set(ParameterCode.EventForward, PhotonPacketBuilder.types.byte(raiseEventOptions.Flags.WebhookFlags));
+                    break;
+            }
+        }
+        // Add event code parameter
+        this.opParameters.set(ParameterCode.Code, PhotonPacketBuilder.types.byte(eventCode));
+        // Add custom event content if provided
+        if (customEventContent !== null && customEventContent !== undefined) // Here we would need to determine the proper type based on the customEventContent
+        // For simplicity, we'll use a generic approach
+        this.opParameters.set(ParameterCode.Data, this.convertToPhotonType(customEventContent));
+        // Send the operation
+        return this.SendOperation(OperationCode.RaiseEvent, this.opParameters, sendOptions);
+    }
+    /**
+     * Converts JavaScript values to proper Photon types
+     * @param {*} value - Value to convert
+     * @returns {Object} - Photon type object
+     */ convertToPhotonType(value) {
+        if (value === null || value === undefined) return PhotonPacketBuilder.types.null();
+        switch(typeof value){
+            case 'string':
+                return PhotonPacketBuilder.types.string(value);
+            case 'boolean':
+                return PhotonPacketBuilder.types.boolean(value);
+            case 'number':
+                // Check if it's an integer or float
+                if (Number.isInteger(value)) return PhotonPacketBuilder.types.integer(value);
+                else return PhotonPacketBuilder.types.float(value);
+            case 'object':
+                if (Array.isArray(value)) {
+                    // Special case for integer arrays which need special handling
+                    // This is critical for compatibility with C# int[] expectation
+                    if (value.every((item)=>typeof item === 'number' && Number.isInteger(item))) return PhotonPacketBuilder.types.integerArray(value); // Use intArray explicitly
+                    // Determine array type (this is a simplified approach)
+                    if (value.length === 0) return PhotonPacketBuilder.types.objectArray([]);
+                    const firstItemType = typeof value[0];
+                    if (firstItemType === 'string') return PhotonPacketBuilder.types.stringArray(value);
+                    else {
+                        // Convert each item in the array and return objectArray
+                        const convertedItems = value.map((item)=>this.convertToPhotonType(item));
+                        return PhotonPacketBuilder.types.objectArray(convertedItems);
+                    }
+                } else {
+                    // For objects, create a hashtable
+                    const entries = Object.entries(value).map(([key, val])=>[
+                            PhotonPacketBuilder.types.string(key),
+                            this.convertToPhotonType(val)
+                        ]);
+                    return PhotonPacketBuilder.types.hashTable(entries);
+                }
+            default:
+                // Default to string for any other types
+                return PhotonPacketBuilder.types.string(String(value));
+        }
+    }
+    /**
+     * Alternative implementation using the OpRaiseEvent method
+     * @param {number} viewID - The view ID of the object to transfer ownership of
+     * @param {number} playerID - The player ID of the new owner
+     * @returns {boolean} True if the operation was sent successfully
+     */ TransferOwnership(viewID, playerID) {
+        // Create event options - set receivers to All
+        const eventOptions = new (0, $hFnZm.RaiseEventOptions)();
+        eventOptions.Receivers = (0, $f8njZ.ReceiverGroup).All;
+        // Create send options - set to reliable
+        const sendOptions = new (0, $g1qy9.SendOptions)();
+        sendOptions.Reliability = true;
+        // PunEvent.OwnershipTransfer is 210
+        const ownershipTransferEventCode = 210;
+        // Custom handler for this specific event to ensure proper Int32[] serialization
+        const originalConvert = client.convertToPhotonType;
+        this.convertToPhotonType = function(value) {
+            // If this is our ownership transfer array, ensure it's treated as intArray
+            if (Array.isArray(value) && value.length === 2 && typeof value[0] === 'number' && typeof value[1] === 'number') return PhotonPacketBuilder.types.integerArray(value);
+            // Use original method for other cases
+            return originalConvert.call(this, value);
+        };
+        const data = [
+            viewID,
+            playerID
+        ];
+        const result = this.OpRaiseEvent(ownershipTransferEventCode, data, eventOptions, sendOptions);
+        this.convertToPhotonType = originalConvert;
+        return result;
+    }
+    /**
+     * Instantiates a prefab on all clients in the room
+     * @param {string} prefabName - The name of the prefab to instantiate
+     * @param {Vector3} position - The position to instantiate at
+     * @param {Quaternion} rotation - The rotation to instantiate with
+     * @param {number} group - The group this object belongs to
+     * @param {object} customData - Any additional custom data to include
+     * @returns {boolean} Whether the event was sent successfully
+     */ Instantiate(prefabName, position, rotation, group, customData) {
+        // Validate inputs
+        if (!prefabName || typeof prefabName !== 'string') {
+            console.error("Invalid prefab name");
+            return false;
+        }
+        // Create event options with proper receivers
+        const eventOptions = new (0, $hFnZm.RaiseEventOptions)();
+        eventOptions.Receivers = (0, $f8njZ.ReceiverGroup).All;
+        // Create send options for reliability
+        const sendOptions = new (0, $g1qy9.SendOptions)();
+        sendOptions.Reliability = true;
+        // Use the correct event code for instantiation
+        // Photon's instantiate event is typically code 202
+        const instantiateEventCode = 202;
+        // Create the content to send
+        // We need to format the data properly for network transmission
+        const networkData = {
+            prefabName: prefabName,
+            position: this.SerializeVector3(position),
+            rotation: this.SerializeQuaternion(rotation),
+            groupId: group || 0,
+            data: customData || null,
+            viewId: this.GetNextViewId(),
+            ownerId: this.photonView.Owner.ActorNumber // Current actor number as owner
+        };
+        // Send the event to all clients including ourselves
+        return this.OpRaiseEvent(instantiateEventCode, networkData, eventOptions, sendOptions);
+    }
+}
+var // Example usage:
+// In a browser environment with Photon client:
+// const packet = client.TransferOwnership(123, 456);
+// webSocket.send(packet.toBuffer());
+// Export the classes for use in other modules
+$2d4bcc28edbba255$export$2e2bcd8739ae039 = {
+    PhotonClient: $2d4bcc28edbba255$export$ff44adeb1575cf4b,
+    RaiseEventOptions: $hFnZm.RaiseEventOptions,
+    SendOptions: $g1qy9.SendOptions,
+    EventCaching: $jaTQV.EventCaching,
+    ReceiverGroup: $f8njZ.ReceiverGroup
+};
+
+});
+parcelRegister("jaTQV", function(module, exports) {
+
+$parcel$export(module.exports, "EventCaching", () => $df5a46aa8940b9c1$export$3d2274495cff5221);
+const $df5a46aa8940b9c1$export$3d2274495cff5221 = {
+    DoNotCache: 0,
+    MergeCache: 1,
+    ReplaceCache: 2,
+    RemoveCache: 3,
+    AddToRoomCache: 4,
+    AddToRoomCacheGlobal: 5,
+    RemoveFromRoomCache: 6,
+    RemoveFromRoomCacheForActorsLeft: 7,
+    SliceIncreaseIndex: 10,
+    SliceSetIndex: 11,
+    SlicePurgeIndex: 12,
+    SlicePurgeUpToIndex: 13
+};
+var $df5a46aa8940b9c1$export$2e2bcd8739ae039 = $df5a46aa8940b9c1$export$3d2274495cff5221;
+
+});
+
+parcelRegister("f8njZ", function(module, exports) {
+
+$parcel$export(module.exports, "ReceiverGroup", () => $b049b183a34e851f$export$da51ffd7819cf58f);
+const $b049b183a34e851f$export$da51ffd7819cf58f = {
+    Others: 0,
+    All: 1,
+    MasterClient: 2
+};
+var $b049b183a34e851f$export$2e2bcd8739ae039 = $b049b183a34e851f$export$da51ffd7819cf58f;
+
+});
+
+parcelRegister("hFnZm", function(module, exports) {
+
+$parcel$export(module.exports, "RaiseEventOptions", () => $cdc8dfa99d41bd77$export$4e41dc56ffcd93cd);
+class $cdc8dfa99d41bd77$export$4e41dc56ffcd93cd {
+    constructor(){
+        this.CachingOption = EventCaching.DoNotCache;
+        this.TargetActors = null;
+        this.InterestGroup = 0;
+        this.Receivers = ReceiverGroup.Others;
+        this.Flags = {
+            HttpForward: false,
+            WebhookFlags: 0
+        };
+        this.CacheSliceIndex = 0;
+    }
+}
+var $cdc8dfa99d41bd77$export$2e2bcd8739ae039 = $cdc8dfa99d41bd77$export$4e41dc56ffcd93cd;
+
+});
+
+parcelRegister("g1qy9", function(module, exports) {
+
+$parcel$export(module.exports, "SendOptions", () => $baa1558e6fb3a6c5$export$2486db4d5359fb2f);
+class $baa1558e6fb3a6c5$export$2486db4d5359fb2f {
+    constructor(){
+        this.Reliability = true;
+        this.Channel = 0;
+        this.Encrypt = false;
+    }
+}
+var $baa1558e6fb3a6c5$export$2e2bcd8739ae039 = $baa1558e6fb3a6c5$export$2486db4d5359fb2f;
 
 });
 
@@ -2894,5 +2968,5 @@ var $2b225982bb18953c$export$2e2bcd8739ae039 = {
 
 
 
-parcelRequire("iac3y");
+parcelRequire("dkk4n");
 

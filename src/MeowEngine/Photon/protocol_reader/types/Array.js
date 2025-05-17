@@ -1,7 +1,7 @@
 import { DataType } from '../constants';
-const Serializable = require('./Serializable');
+import Serializable from './Serializable';
 
-class ProtocolArray extends Serializable {
+export class ProtocolArray extends Serializable {
   constructor(innerDataType, data) {
     super();
     this.innerDataType = innerDataType;
@@ -35,4 +35,4 @@ class ProtocolArray extends Serializable {
   }
 }
 
-module.exports = { ProtocolArray };
+export default ProtocolArray;

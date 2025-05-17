@@ -1,4 +1,6 @@
 import { DataType } from './constants';
+var Buffer = require('buffer');
+
 
 export class ProtocolWriter {
   constructor() {

@@ -13,6 +13,7 @@ import {
   PacketWithPayload
 } from './types/packets';
 
+var Buffer = require('buffer');
 
 export class ProtocolReader {
   constructor(buffer) {

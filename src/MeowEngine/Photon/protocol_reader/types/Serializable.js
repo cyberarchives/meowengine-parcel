@@ -6,6 +6,6 @@ export class Serializable {
     writeValue(writer) {
       throw new Error('writeValue must be implemented');
     }
-  }
+}
   
-  export default Serializable;
+export default Serializable;

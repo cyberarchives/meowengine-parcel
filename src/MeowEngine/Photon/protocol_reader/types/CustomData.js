@@ -1,6 +1,6 @@
 import { DataType } from '../constants';
 import { Serializable } from './Serializable';
-const ProtocolWriter = require('../ProtocolWriter');
+import ProtocolWriter from '../ProtocolWriter';
 
 export class CustomData extends Serializable {
   constructor() {

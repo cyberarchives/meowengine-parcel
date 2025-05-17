@@ -1,4 +1,4 @@
-const { CustomData } = require('./CustomData.js');
+import { CustomData } from './CustomData.js';
 
 export class UnimplementedCustomData extends CustomData {
   constructor(typeCode, data) {

@@ -21,6 +21,14 @@ class GameUtils {
         };
         checkUnityInstance();
     }
+
+    static cleanUsername(rawName) {
+        let cleaned = rawName.replaceAll(/<color=#[A-Fa-f0-9]{6}>/g, '').replaceAll('</color>', '');
+
+        cleaned = cleaned.replaceAll(/^\[[^\]]+\]/g, '');
+
+        return cleaned.trim();
+    }
 }
 
 export default GameUtils;
