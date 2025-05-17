@@ -1,6 +1,6 @@
 # MeowEngine Parcel
 
-A high-performance JavaScript engine rebuilt with Parcel bundler for optimized performance and enhanced code organization.
+A high-performance Bullet Force Cheat Engine rebuilt with Parcel bundler for optimized performance and enhanced code organization.
 
 ## Overview
 
@@ -17,86 +17,98 @@ MeowEngine Parcel has been completely redesigned using Parcel bundler to deliver
 
 ```
 MeowEngine Parcel/
-├── index.js # Main entry point
-├── meowengine.user.js
-├── Browser/
-│   ├── Utility/
-│   │   ├── GameUtils.js
-│   ├── GlobalTypeDefs.js
-├── Bullet Force/
-│   ├── API/
-│   │   ├── Account.js
-│   ├── FairPlayAPI/
-│   │   └── FairCollection.js
-├── Menu/
-│   ├── Components/ # UI components
-│   │   ├── 3DViewPort.js
-│   │   ├── Button.js
-│   │   ├── ButtonGroup.js
-│   │   ├── ColorPicker.js
-│   │   ├── ConfirmModal.js
-│   │   ├── Console.js
-│   │   ├── Container.js
-│   │   ├── ContentArea.js
-│   │   ├── Devider.js
-│   │   ├── Dropdown.js
-│   │   ├── DynamicListBox.js
-│   │   ├── GameConsole.js
-│   │   ├── Header.js
-│   │   ├── Label.js
-│   │   ├── Notification.js
-│   │   ├── PanelContainer.js
-│   │   ├── SideNav.js
-│   │   ├── Slider.js
-│   │   ├── Spacer.js
-│   │   ├── Tab.js
-│   │   ├── TextInput.js
-│   │   ├── ToggleGroup.js
-│   │   ├── ToggleSwitch.js
-│   ├── UIManager.js
-├── MeowEngine/
-│   ├── Bot/
-│   │   ├── PhotonBot.js
+├── dist/ # Built files
+│   ├── index.js
+│   └── meowengine.user.js
+├── node_modules/
+├── src/
+│   ├── Browser/
+│   │   ├── Utility/
+│   │   │   └── GameUtils.js
+│   │   └── GlobalTypeDefs.js
+│   ├── Bullet Force/
+│   │   ├── API/
+│   │   │   └── Account.js
+│   │   └── FairPlayAPI/
+│   │       └── FairCollection.js
+│   ├── Menu/
+│   │   ├── Components/ # UI components
+│   │   │   ├── 3DViewPort.js
+│   │   │   ├── Button.js
+│   │   │   ├── ButtonGroup.js
+│   │   │   ├── ColorPicker.js
+│   │   │   ├── ConfirmModal.js
+│   │   │   ├── Console.js
+│   │   │   ├── Container.js
+│   │   │   ├── ContentArea.js
+│   │   │   ├── Devider.js
+│   │   │   ├── Dropdown.js
+│   │   │   ├── DynamicListBox.js
+│   │   │   ├── GameConsole.js
+│   │   │   ├── Header.js
+│   │   │   ├── Label.js
+│   │   │   ├── Notification.js
+│   │   │   ├── PanelContainer.js
+│   │   │   ├── SideNav.js
+│   │   │   ├── Slider.js
+│   │   │   ├── Spacer.js
+│   │   │   ├── Tab.js
+│   │   │   ├── TextInput.js
+│   │   │   ├── ToggleGroup.js
+│   │   │   └── ToggleSwitch.js
+│   │   └── UIManager.js
+│   ├── MeowEngine/
+│   │   ├── Bot/
+│   │   │   └── PhotonBot.js
+│   │   └── Photon/
+│   │       ├── Instance/
+│   │       │   └── GameSocket.js
+│   │       └── protocol_reader/
+│   │           ├── types/
+│   │           │   ├── Array.js
+│   │           │   ├── CustomData.js
+│   │           │   ├── packets.js
+│   │           │   ├── Quaternion.js
+│   │           │   ├── Serializable.js
+│   │           │   ├── SizedFloat.js
+│   │           │   ├── SizedInt.js
+│   │           │   ├── UnimplementedCustomData.js
+│   │           │   └── Vector3.js
+│   │           ├── constants.js
+│   │           ├── ProtocolReader.js
+│   │           └── ProtocolWriter.js
 │   ├── Photon/
-│   │   └── Instance/
-│   │       ├── GameSocket.js
-│   │   └── protocol_reader/
-│   │       └── types/
-│   │           ├── Array.js
-│   │           ├── CustomData.js
-│   │           ├── packets.js
-│   │           ├── Quaternion.js
-│   │           ├── Serializable.js
-│   │           ├── SizedFloat.js
-│   │           ├── SizedInt.js
-│   │           ├── UnimplementedCustomData.js
-│   │           ├── Vector3.js
-│   │       └── constants.js
-│   │       └── ProtocolReader.js
-│   │       └── ProtocolWriter.js
-├── Photon/
-│   ├── Enums/
-│   │   ├── DataType.js
-│   │   ├── EventCaching.js
-│   │   ├── EventCode.js
-│   │   ├── InternalOperationCode.js
-│   │   ├── OperationCode.js
-│   │   ├── PacketType.js
-│   │   ├── ParameterCode.js
-│   │   ├── ReceiverGroup.js
-│   ├── Handlers/
-│   │   ├── RoomProperties.js
-│   ├── StaticDefinitions/
-│   │   ├── RaiseEventOptions.js
-│   │   ├── SendOptions.js
-│   ├── Utils/ # Utility functions
-│   │   ├── Deserializer.js
-│   │   ├── Packet.js
-│   │   ├── PacketBuilder.js
-│   │   ├── Serializer.js
-│   ├── PhotonNetwork.js
-│   ├── SocketManager.js
-├── index.js # Main entry point
+│   │   ├── Enums/
+│   │   │   ├── DataType.js
+│   │   │   ├── EventCaching.js
+│   │   │   ├── EventCode.js
+│   │   │   ├── InternalOperationCode.js
+│   │   │   ├── OperationCode.js
+│   │   │   ├── PacketType.js
+│   │   │   ├── ParameterCode.js
+│   │   │   └── ReceiverGroup.js
+│   │   ├── Handlers/
+│   │   │   └── RoomProperties.js
+│   │   ├── StaticDefinitions/
+│   │   │   ├── RaiseEventOptions.js
+│   │   │   └── SendOptions.js
+│   │   ├── Utils/ # Utility functions
+│   │   │   ├── Deserializer.js
+│   │   │   ├── Packet.js
+│   │   │   ├── PacketBuilder.js
+│   │   │   └── Serializer.js
+│   │   ├── PhotonNetwork.js
+│   │   └── SocketManager.js
+│   └── index.js # Main entry point
+├── .parcelrc # Parcel configuration
+├── bundle.js
+├── header.js
+├── index.js
+├── old.user.js
+├── package.json # Project dependencies and scripts
+├── pnpm-lock.yaml
+├── pnpm-workspace.yaml
+└── README.md
 ```
 
 ## Installation
