@@ -3,6 +3,10 @@ function $parcel$export(e, n, v, s) {
   Object.defineProperty(e, n, {get: v, set: s, enumerable: true, configurable: true});
 }
 
+function $parcel$defineInteropFlag(a) {
+  Object.defineProperty(a, '__esModule', {value: true, configurable: true});
+}
+
       var $parcel$global = globalThis;
     
 var $parcel$modules = {};
@@ -38,11 +42,23 @@ if (parcelRequire == null) {
 var parcelRegister = parcelRequire.register;
 parcelRegister("iac3y", function(module, exports) {
 
+var $7gE5K = parcelRequire("7gE5K");
+
 var $1HznK = parcelRequire("1HznK");
 
+var $K3MZ6 = parcelRequire("K3MZ6");
+
 var $lbgFd = parcelRequire("lbgFd");
+parcelRequire("8Z6sh");
+
+var $22q2M = parcelRequire("22q2M");
 if (!window.location.href.includes('https://bullet-force-multiplayer.game-files.crazygames.com/unity/unity2020/bullet-force-multiplayer.html')) return;
 (0, $1HznK.default).waitForUnityInstance(()=>{
+    // set up GlobalTypeDefs
+    (0, $7gE5K.default).FairCollection.InitOperation = (0, $K3MZ6.default).InitOperation;
+    (0, $7gE5K.default).FairCollection.Instance = (0, $K3MZ6.default);
+    (0, $7gE5K.default).SDK.FairCollection = (0, $K3MZ6.default);
+    overrideSocket();
     // Create the main container
     const newContainer = document.createElement('div');
     newContainer.id = `ui-container-${Date.now()}`;
@@ -114,30 +130,10 @@ if (!window.location.href.includes('https://bullet-force-multiplayer.game-files.
         container.appendChild(stopRainbowButton);
         return container;
     }
-});
-
-});
-parcelRegister("1HznK", function(module, exports) {
-
-$parcel$export(module.exports, "default", () => $13d540b50b7d13d1$export$2e2bcd8739ae039);
-
-var $7gE5K = parcelRequire("7gE5K");
-class $13d540b50b7d13d1$var$GameUtils {
-    static waitForUnityInstance(callback, checkInterval = 100, timeout = 10000) {
-        const startTime = Date.now();
-        const checkUnityInstance = ()=>{
-            if (typeof unityGameInstance !== 'undefined' && unityGameInstance !== null && typeof unityGameInstance.SendMessage === 'function') {
-                console.log('Unity instance is ready!');
-                (0, $7gE5K.default).UnityInstance.SendMessage = unityGameInstance.SendMessage;
-                (0, $7gE5K.default).UnityInstance.Module = unityGameInstance.Module;
-                callback();
-            } else if (Date.now() - startTime > timeout) console.error('Timeout: Unity instance not ready.');
-            else setTimeout(checkUnityInstance, checkInterval);
-        };
-        checkUnityInstance();
+    function overrideSocket() {
+        (0, $22q2M.default).overrideSocket();
     }
-}
-var $13d540b50b7d13d1$export$2e2bcd8739ae039 = $13d540b50b7d13d1$var$GameUtils;
+});
 
 });
 parcelRegister("7gE5K", function(module, exports) {
@@ -155,6 +151,9 @@ const $54a920672f7c0302$export$979b404d080c1d6c = {
             AppVersion: "1.104.5_HC_1.105",
             Region: "eu/*"
         }
+    },
+    PhotonClient: {
+        Instance: null
     },
     FairCollection: {
         InitOperation: null,
@@ -181,6 +180,331 @@ var $54a920672f7c0302$export$2e2bcd8739ae039 = $54a920672f7c0302$export$979b404d
 
 });
 
+parcelRegister("1HznK", function(module, exports) {
+
+$parcel$export(module.exports, "default", () => $13d540b50b7d13d1$export$2e2bcd8739ae039);
+
+var $7gE5K = parcelRequire("7gE5K");
+class $13d540b50b7d13d1$var$GameUtils {
+    static waitForUnityInstance(callback, checkInterval = 100, timeout = 10000) {
+        const startTime = Date.now();
+        const checkUnityInstance = ()=>{
+            if (typeof unityGameInstance !== 'undefined' && unityGameInstance !== null && typeof unityGameInstance.SendMessage === 'function') {
+                console.log('Unity instance is ready!');
+                (0, $7gE5K.default).UnityInstance.SendMessage = unityGameInstance.SendMessage;
+                (0, $7gE5K.default).UnityInstance.Module = unityGameInstance.Module;
+                callback();
+            } else if (Date.now() - startTime > timeout) console.error('Timeout: Unity instance not ready.');
+            else setTimeout(checkUnityInstance, checkInterval);
+        };
+        checkUnityInstance();
+    }
+}
+var $13d540b50b7d13d1$export$2e2bcd8739ae039 = $13d540b50b7d13d1$var$GameUtils;
+
+});
+
+parcelRegister("K3MZ6", function(module, exports) {
+
+$parcel$export(module.exports, "default", () => $08a73c6c78ab5162$export$2e2bcd8739ae039);
+/**
+ * FairCollection - A utility class for secure data handling in browser environments.
+ * 
+ * Provides encryption and decryption utilities for various data types 
+ * including numbers, strings, and vector objects.
+ */ const $08a73c6c78ab5162$var$WEB_ADDRESS = "https://server.blayzegames.com/OnlineAccountSystem/fairplay_spec.php";
+const $08a73c6c78ab5162$var$MAGIC = "1983031920131006";
+const $08a73c6c78ab5162$var$SEC_SIZE = 16;
+class $08a73c6c78ab5162$export$323828bb5f07a5ac {
+    static #off1 = 0;
+    static #off2 = 0;
+    static #sec1 = new Uint8Array($08a73c6c78ab5162$var$SEC_SIZE);
+    static #sec2 = new Uint8Array($08a73c6c78ab5162$var$SEC_SIZE);
+    static #response = "";
+    static #enabled = false;
+    /**
+     * Makes an initialization request to the server.
+     * @private
+     */ static async #initRequest() {
+        try {
+            const params = new URLSearchParams();
+            params.append('magic', $08a73c6c78ab5162$var$MAGIC);
+            const response = await fetch($08a73c6c78ab5162$var$WEB_ADDRESS, {
+                method: 'POST',
+                headers: {
+                    accept: '*/*',
+                    'accept-language': 'en-US,en;q=0.9',
+                    'content-type': 'application/x-www-form-urlencoded'
+                },
+                body: params.toString()
+            });
+            if (!response.ok) throw Error(response.statusText);
+            this.#response = await response.text();
+        } catch (error) {
+            console.error("FairCollection initialization failed:", error);
+            throw error;
+        }
+    }
+    /**
+     * Initializes internal data structures from the server response.
+     * @private
+     */ static #initData() {
+        const bytes = this.#hexStringToUint8Array(this.#response);
+        if (bytes[1] !== 0) return;
+        this.#off1 = bytes[3];
+        this.#off2 = bytes[4];
+        for(let i = 0; i < $08a73c6c78ab5162$var$SEC_SIZE; ++i){
+            this.#sec1[i] = bytes[i + 5];
+            this.#sec2[i] = bytes[i + 5 + $08a73c6c78ab5162$var$SEC_SIZE];
+        }
+        this.#enabled = true;
+    }
+    /**
+     * Converts a hex string to Uint8Array.
+     * @private
+     * @param {string} hexString - The hex string to convert
+     * @returns {Uint8Array} - The resulting byte array
+     */ static #hexStringToUint8Array(hexString) {
+        if (hexString.length % 2 !== 0) throw new Error('Hex string must have an even number of characters');
+        const bytes = new Uint8Array(hexString.length / 2);
+        for(let i = 0; i < hexString.length; i += 2)bytes[i / 2] = parseInt(hexString.substring(i, i + 2), 16);
+        return bytes;
+    }
+    /**
+     * Transforms an ArrayBuffer using the security parameters.
+     * @private
+     * @param {ArrayBuffer} buf - The buffer to transform
+     * @param {Uint8Array} sec - The security array to use
+     * @param {number} off - The offset to use
+     */ static #transformArrayBuffer(buf, sec, off) {
+        const bytes = new Uint8Array(buf);
+        let k = 0;
+        for(let i = 0; i < bytes.length; ++i){
+            const secIndex = off + (k >>> 1);
+            if (k & 1) bytes[i] ^= sec[secIndex] >>> 4;
+            else bytes[i] ^= sec[secIndex] & 0xF;
+            ++k;
+            if (k >= sec.length) k = 0;
+        }
+    }
+    /**
+     * Initializes the FairCollection system.
+     * Must be called before using any encryption/decryption methods.
+     * @returns {Promise<void>}
+     */ static async InitOperation() {
+        if (!this.#enabled) {
+            await this.#initRequest();
+            this.#initData();
+        }
+    }
+    /**
+     * Encrypts a double precision floating point number.
+     * @param {number} value - The value to encrypt
+     * @returns {number} - The encrypted value
+     */ static GetEncryptedDouble(value) {
+        if (!this.#enabled) return value;
+        const arr = new Float64Array(1);
+        arr[0] = value;
+        this.#transformArrayBuffer(arr.buffer, this.#sec1, this.#off1);
+        return arr[0];
+    }
+    /**
+     * Decrypts a double precision floating point number.
+     * @param {number} value - The value to decrypt
+     * @returns {number} - The decrypted value
+     */ static GetDecryptedDouble(value) {
+        if (!this.#enabled) return value;
+        const arr = new Float64Array(1);
+        arr[0] = value;
+        this.#transformArrayBuffer(arr.buffer, this.#sec2, this.#off2);
+        return arr[0];
+    }
+    /**
+     * Encrypts a single precision floating point number.
+     * @param {number} value - The value to encrypt
+     * @returns {number} - The encrypted value
+     */ static GetEncryptedFloat(value) {
+        if (!this.#enabled) return value;
+        const arr = new Float32Array(1);
+        arr[0] = value;
+        this.#transformArrayBuffer(arr.buffer, this.#sec1, this.#off1);
+        return arr[0];
+    }
+    /**
+     * Decrypts a single precision floating point number.
+     * @param {number} value - The value to decrypt
+     * @returns {number} - The decrypted value
+     */ static GetDecryptedFloat(value) {
+        if (!this.#enabled) return value;
+        const arr = new Float32Array(1);
+        arr[0] = value;
+        this.#transformArrayBuffer(arr.buffer, this.#sec2, this.#off2);
+        return arr[0];
+    }
+    /**
+     * Encrypts an integer.
+     * @param {number} value - The value to encrypt
+     * @returns {number} - The encrypted value
+     */ static GetEncryptedInteger(value) {
+        if (!this.#enabled) return value;
+        const arr = new Int32Array(1);
+        arr[0] = value;
+        this.#transformArrayBuffer(arr.buffer, this.#sec1, this.#off1);
+        return arr[0];
+    }
+    /**
+     * Decrypts an integer.
+     * @param {number} value - The value to decrypt
+     * @returns {number} - The decrypted value
+     */ static GetDecryptedInteger(value) {
+        if (!this.#enabled) return value;
+        const arr = new Int32Array(1);
+        arr[0] = value;
+        this.#transformArrayBuffer(arr.buffer, this.#sec2, this.#off2);
+        return arr[0];
+    }
+    /**
+     * Encrypts a string.
+     * @param {string} value - The string to encrypt
+     * @returns {string} - The encrypted string
+     */ static GetEncryptedString(value) {
+        if (!this.#enabled) return value;
+        const arr = new TextEncoder().encode(value);
+        this.#transformArrayBuffer(arr.buffer, this.#sec1, this.#off1);
+        return new TextDecoder().decode(arr);
+    }
+    /**
+     * Decrypts a string.
+     * @param {string} value - The string to decrypt
+     * @returns {string} - The decrypted string
+     */ static GetDecryptedString(value) {
+        if (!this.#enabled) return value;
+        const arr = new TextEncoder().encode(value);
+        this.#transformArrayBuffer(arr.buffer, this.#sec2, this.#off2);
+        return new TextDecoder().decode(arr);
+    }
+    /**
+     * Encrypts a 2D vector.
+     * @param {Object} value - The vector to encrypt {x, y}
+     * @returns {Object} - The encrypted vector
+     */ static GetEncryptedVector2(value) {
+        if (!this.#enabled) return value;
+        return {
+            x: this.GetEncryptedFloat(value.x),
+            y: this.GetEncryptedFloat(value.y)
+        };
+    }
+    /**
+     * Decrypts a 2D vector.
+     * @param {Object} value - The vector to decrypt {x, y}
+     * @returns {Object} - The decrypted vector
+     */ static GetDecryptedVector2(value) {
+        if (!this.#enabled) return value;
+        return {
+            x: this.GetDecryptedFloat(value.x),
+            y: this.GetDecryptedFloat(value.y)
+        };
+    }
+    /**
+     * Encrypts a 2D integer vector.
+     * @param {Object} value - The vector to encrypt {x, y}
+     * @returns {Object} - The encrypted vector
+     */ static GetEncryptedVector2Int(value) {
+        if (!this.#enabled) return value;
+        return {
+            x: this.GetEncryptedInteger(value.x),
+            y: this.GetEncryptedInteger(value.y)
+        };
+    }
+    /**
+     * Decrypts a 2D integer vector.
+     * @param {Object} value - The vector to decrypt {x, y}
+     * @returns {Object} - The decrypted vector
+     */ static GetDecryptedVector2Int(value) {
+        if (!this.#enabled) return value;
+        return {
+            x: this.GetDecryptedInteger(value.x),
+            y: this.GetDecryptedInteger(value.y)
+        };
+    }
+    /**
+     * Encrypts a 3D vector.
+     * @param {Object} value - The vector to encrypt {x, y, z}
+     * @returns {Object} - The encrypted vector
+     */ static GetEncryptedVector3(value) {
+        if (!this.#enabled) return value;
+        return {
+            x: this.GetEncryptedFloat(value.x),
+            y: this.GetEncryptedFloat(value.y),
+            z: this.GetEncryptedFloat(value.z)
+        };
+    }
+    /**
+     * Decrypts a 3D vector.
+     * @param {Object} value - The vector to decrypt {x, y, z}
+     * @returns {Object} - The decrypted vector
+     */ static GetDecryptedVector3(value) {
+        if (!this.#enabled) return value;
+        return {
+            x: this.GetDecryptedFloat(value.x),
+            y: this.GetDecryptedFloat(value.y),
+            z: this.GetDecryptedFloat(value.z)
+        };
+    }
+    /**
+     * Encrypts a 3D integer vector.
+     * @param {Object} value - The vector to encrypt {x, y, z}
+     * @returns {Object} - The encrypted vector
+     */ static GetEncryptedVector3Int(value) {
+        if (!this.#enabled) return value;
+        return {
+            x: this.GetEncryptedInteger(value.x),
+            y: this.GetEncryptedInteger(value.y),
+            z: this.GetEncryptedInteger(value.z)
+        };
+    }
+    /**
+     * Decrypts a 3D integer vector.
+     * @param {Object} value - The vector to decrypt {x, y, z}
+     * @returns {Object} - The decrypted vector
+     */ static GetDecryptedVector3Int(value) {
+        if (!this.#enabled) return value;
+        return {
+            x: this.GetDecryptedInteger(value.x),
+            y: this.GetDecryptedInteger(value.y),
+            z: this.GetDecryptedInteger(value.z)
+        };
+    }
+    /**
+     * Encrypts a 4D vector.
+     * @param {Object} value - The vector to encrypt {x, y, z, w}
+     * @returns {Object} - The encrypted vector
+     */ static GetEncryptedVector4(value) {
+        if (!this.#enabled) return value;
+        return {
+            x: this.GetEncryptedFloat(value.x),
+            y: this.GetEncryptedFloat(value.y),
+            z: this.GetEncryptedFloat(value.z),
+            w: this.GetEncryptedFloat(value.w)
+        };
+    }
+    /**
+     * Decrypts a 4D vector.
+     * @param {Object} value - The vector to decrypt {x, y, z, w}
+     * @returns {Object} - The decrypted vector
+     */ static GetDecryptedVector4(value) {
+        if (!this.#enabled) return value;
+        return {
+            x: this.GetDecryptedFloat(value.x),
+            y: this.GetDecryptedFloat(value.y),
+            z: this.GetDecryptedFloat(value.z),
+            w: this.GetDecryptedFloat(value.w)
+        };
+    }
+}
+var $08a73c6c78ab5162$export$2e2bcd8739ae039 = $08a73c6c78ab5162$export$323828bb5f07a5ac;
+
+});
 
 parcelRegister("lbgFd", function(module, exports) {
 
@@ -1200,6 +1524,1373 @@ class $f6b78d1e2ab47dff$export$4b08aed5f1ec6952 {
 var $f6b78d1e2ab47dff$export$2e2bcd8739ae039 = $f6b78d1e2ab47dff$export$4b08aed5f1ec6952;
 
 });
+
+parcelRegister("8Z6sh", function(module, exports) {
+
+$parcel$export(module.exports, "PhotonClient", () => $68a90713ca65a7df$export$ff44adeb1575cf4b);
+/*
+    Wonky way to do things, but if it works, it works
+*/ 
+var $1bHDE = parcelRequire("1bHDE");
+
+var $7wqrk = parcelRequire("7wqrk");
+
+var $7oyC4 = parcelRequire("7oyC4");
+
+var $4rS7j = parcelRequire("4rS7j");
+class $68a90713ca65a7df$export$ff44adeb1575cf4b {
+    constructor({ originalSend: originalSend, socket: socket }){
+        this.opParameters = new Map();
+        this.socket = socket;
+        this.originalSend = originalSend;
+    }
+    /**
+     * Raises an event to be sent to other clients or cached for new clients
+     * @param {number} eventCode - Identifies the type of event
+     * @param {Object} customEventContent - The custom content/data to be sent with the event
+     * @param {RaiseEventOptions} raiseEventOptions - Options that control the behavior of the event
+     * @param {SendOptions} sendOptions - Options for the send operation
+     * @returns {boolean} True if operation was sent successfully
+     */ OpRaiseEvent(eventCode, customEventContent, raiseEventOptions, sendOptions) {
+        // Clear the parameters map for reuse
+        this.opParameters.clear();
+        if (raiseEventOptions) {
+            // Handle caching options
+            if (raiseEventOptions.CachingOption !== (0, $1bHDE.EventCaching).DoNotCache) this.opParameters.set(ParameterCode.Cache, PhotonPacketBuilder.types.byte(raiseEventOptions.CachingOption));
+            // Handle different caching cases
+            switch(raiseEventOptions.CachingOption){
+                case (0, $1bHDE.EventCaching).SliceSetIndex:
+                case (0, $1bHDE.EventCaching).SlicePurgeIndex:
+                case (0, $1bHDE.EventCaching).SlicePurgeUpToIndex:
+                    // In the original code, there's a commented section about CacheSliceIndex
+                    // and then immediately returns with SendOperation call
+                    return this.SendOperation(OperationCode.RaiseEvent, this.opParameters, sendOptions);
+                case (0, $1bHDE.EventCaching).SliceIncreaseIndex:
+                case (0, $1bHDE.EventCaching).RemoveFromRoomCacheForActorsLeft:
+                    return this.SendOperation(OperationCode.RaiseEvent, this.opParameters, sendOptions);
+                case (0, $1bHDE.EventCaching).RemoveFromRoomCache:
+                    if (raiseEventOptions.TargetActors) this.opParameters.set(ParameterCode.ActorList, PhotonPacketBuilder.types.integerArray(raiseEventOptions.TargetActors));
+                    break;
+                default:
+                    if (raiseEventOptions.TargetActors) this.opParameters.set(ParameterCode.ActorList, PhotonPacketBuilder.types.integerArray(raiseEventOptions.TargetActors));
+                    else if (raiseEventOptions.InterestGroup !== 0) this.opParameters.set(ParameterCode.Group, PhotonPacketBuilder.types.byte(raiseEventOptions.InterestGroup));
+                    else if (raiseEventOptions.Receivers !== (0, $7wqrk.ReceiverGroup).Others) this.opParameters.set(ParameterCode.ReceiverGroup, PhotonPacketBuilder.types.byte(raiseEventOptions.Receivers));
+                    if (raiseEventOptions.Flags.HttpForward) this.opParameters.set(ParameterCode.EventForward, PhotonPacketBuilder.types.byte(raiseEventOptions.Flags.WebhookFlags));
+                    break;
+            }
+        }
+        // Add event code parameter
+        this.opParameters.set(ParameterCode.Code, PhotonPacketBuilder.types.byte(eventCode));
+        // Add custom event content if provided
+        if (customEventContent !== null && customEventContent !== undefined) // Here we would need to determine the proper type based on the customEventContent
+        // For simplicity, we'll use a generic approach
+        this.opParameters.set(ParameterCode.Data, this.convertToPhotonType(customEventContent));
+        // Send the operation
+        return this.SendOperation(OperationCode.RaiseEvent, this.opParameters, sendOptions);
+    }
+    /**
+     * Converts JavaScript values to proper Photon types
+     * @param {*} value - Value to convert
+     * @returns {Object} - Photon type object
+     */ convertToPhotonType(value) {
+        if (value === null || value === undefined) return PhotonPacketBuilder.types.null();
+        switch(typeof value){
+            case 'string':
+                return PhotonPacketBuilder.types.string(value);
+            case 'boolean':
+                return PhotonPacketBuilder.types.boolean(value);
+            case 'number':
+                // Check if it's an integer or float
+                if (Number.isInteger(value)) return PhotonPacketBuilder.types.integer(value);
+                else return PhotonPacketBuilder.types.float(value);
+            case 'object':
+                if (Array.isArray(value)) {
+                    // Special case for integer arrays which need special handling
+                    // This is critical for compatibility with C# int[] expectation
+                    if (value.every((item)=>typeof item === 'number' && Number.isInteger(item))) return PhotonPacketBuilder.types.integerArray(value); // Use intArray explicitly
+                    // Determine array type (this is a simplified approach)
+                    if (value.length === 0) return PhotonPacketBuilder.types.objectArray([]);
+                    const firstItemType = typeof value[0];
+                    if (firstItemType === 'string') return PhotonPacketBuilder.types.stringArray(value);
+                    else {
+                        // Convert each item in the array and return objectArray
+                        const convertedItems = value.map((item)=>this.convertToPhotonType(item));
+                        return PhotonPacketBuilder.types.objectArray(convertedItems);
+                    }
+                } else {
+                    // For objects, create a hashtable
+                    const entries = Object.entries(value).map(([key, val])=>[
+                            PhotonPacketBuilder.types.string(key),
+                            this.convertToPhotonType(val)
+                        ]);
+                    return PhotonPacketBuilder.types.hashTable(entries);
+                }
+            default:
+                // Default to string for any other types
+                return PhotonPacketBuilder.types.string(String(value));
+        }
+    }
+    /**
+     * Alternative implementation using the OpRaiseEvent method
+     * @param {number} viewID - The view ID of the object to transfer ownership of
+     * @param {number} playerID - The player ID of the new owner
+     * @returns {boolean} True if the operation was sent successfully
+     */ TransferOwnership(viewID, playerID) {
+        // Create event options - set receivers to All
+        const eventOptions = new (0, $7oyC4.RaiseEventOptions)();
+        eventOptions.Receivers = (0, $7wqrk.ReceiverGroup).All;
+        // Create send options - set to reliable
+        const sendOptions = new (0, $4rS7j.SendOptions)();
+        sendOptions.Reliability = true;
+        // PunEvent.OwnershipTransfer is 210
+        const ownershipTransferEventCode = 210;
+        // Custom handler for this specific event to ensure proper Int32[] serialization
+        const originalConvert = client.convertToPhotonType;
+        this.convertToPhotonType = function(value) {
+            // If this is our ownership transfer array, ensure it's treated as intArray
+            if (Array.isArray(value) && value.length === 2 && typeof value[0] === 'number' && typeof value[1] === 'number') return PhotonPacketBuilder.types.integerArray(value);
+            // Use original method for other cases
+            return originalConvert.call(this, value);
+        };
+        const data = [
+            viewID,
+            playerID
+        ];
+        const result = this.OpRaiseEvent(ownershipTransferEventCode, data, eventOptions, sendOptions);
+        this.convertToPhotonType = originalConvert;
+        return result;
+    }
+    /**
+     * Instantiates a prefab on all clients in the room
+     * @param {string} prefabName - The name of the prefab to instantiate
+     * @param {Vector3} position - The position to instantiate at
+     * @param {Quaternion} rotation - The rotation to instantiate with
+     * @param {number} group - The group this object belongs to
+     * @param {object} customData - Any additional custom data to include
+     * @returns {boolean} Whether the event was sent successfully
+     */ Instantiate(prefabName, position, rotation, group, customData) {
+        // Validate inputs
+        if (!prefabName || typeof prefabName !== 'string') {
+            console.error("Invalid prefab name");
+            return false;
+        }
+        // Create event options with proper receivers
+        const eventOptions = new (0, $7oyC4.RaiseEventOptions)();
+        eventOptions.Receivers = (0, $7wqrk.ReceiverGroup).All;
+        // Create send options for reliability
+        const sendOptions = new (0, $4rS7j.SendOptions)();
+        sendOptions.Reliability = true;
+        // Use the correct event code for instantiation
+        // Photon's instantiate event is typically code 202
+        const instantiateEventCode = 202;
+        // Create the content to send
+        // We need to format the data properly for network transmission
+        const networkData = {
+            prefabName: prefabName,
+            position: this.SerializeVector3(position),
+            rotation: this.SerializeQuaternion(rotation),
+            groupId: group || 0,
+            data: customData || null,
+            viewId: this.GetNextViewId(),
+            ownerId: this.photonView.Owner.ActorNumber // Current actor number as owner
+        };
+        // Send the event to all clients including ourselves
+        return this.OpRaiseEvent(instantiateEventCode, networkData, eventOptions, sendOptions);
+    }
+}
+var // Example usage:
+// In a browser environment with Photon client:
+// const packet = client.TransferOwnership(123, 456);
+// webSocket.send(packet.toBuffer());
+// Export the classes for use in other modules
+$68a90713ca65a7df$export$2e2bcd8739ae039 = {
+    PhotonClient: $68a90713ca65a7df$export$ff44adeb1575cf4b,
+    RaiseEventOptions: $7oyC4.RaiseEventOptions,
+    SendOptions: $4rS7j.SendOptions,
+    EventCaching: $1bHDE.EventCaching,
+    ReceiverGroup: $7wqrk.ReceiverGroup
+};
+
+});
+parcelRegister("1bHDE", function(module, exports) {
+
+$parcel$export(module.exports, "EventCaching", () => $0dd8ab3e3e69bbec$export$3d2274495cff5221);
+const $0dd8ab3e3e69bbec$export$3d2274495cff5221 = {
+    DoNotCache: 0,
+    MergeCache: 1,
+    ReplaceCache: 2,
+    RemoveCache: 3,
+    AddToRoomCache: 4,
+    AddToRoomCacheGlobal: 5,
+    RemoveFromRoomCache: 6,
+    RemoveFromRoomCacheForActorsLeft: 7,
+    SliceIncreaseIndex: 10,
+    SliceSetIndex: 11,
+    SlicePurgeIndex: 12,
+    SlicePurgeUpToIndex: 13
+};
+var $0dd8ab3e3e69bbec$export$2e2bcd8739ae039 = $0dd8ab3e3e69bbec$export$3d2274495cff5221;
+
+});
+
+parcelRegister("7wqrk", function(module, exports) {
+
+$parcel$export(module.exports, "ReceiverGroup", () => $57a007fa506955cc$export$da51ffd7819cf58f);
+const $57a007fa506955cc$export$da51ffd7819cf58f = {
+    Others: 0,
+    All: 1,
+    MasterClient: 2
+};
+var $57a007fa506955cc$export$2e2bcd8739ae039 = $57a007fa506955cc$export$da51ffd7819cf58f;
+
+});
+
+parcelRegister("7oyC4", function(module, exports) {
+
+$parcel$export(module.exports, "RaiseEventOptions", () => $56259fbda006940d$export$4e41dc56ffcd93cd);
+class $56259fbda006940d$export$4e41dc56ffcd93cd {
+    constructor(){
+        this.CachingOption = EventCaching.DoNotCache;
+        this.TargetActors = null;
+        this.InterestGroup = 0;
+        this.Receivers = ReceiverGroup.Others;
+        this.Flags = {
+            HttpForward: false,
+            WebhookFlags: 0
+        };
+        this.CacheSliceIndex = 0;
+    }
+}
+var $56259fbda006940d$export$2e2bcd8739ae039 = $56259fbda006940d$export$4e41dc56ffcd93cd;
+
+});
+
+parcelRegister("4rS7j", function(module, exports) {
+
+$parcel$export(module.exports, "SendOptions", () => $33d3a98e852b75a6$export$2486db4d5359fb2f);
+class $33d3a98e852b75a6$export$2486db4d5359fb2f {
+    constructor(){
+        this.Reliability = true;
+        this.Channel = 0;
+        this.Encrypt = false;
+    }
+}
+var $33d3a98e852b75a6$export$2e2bcd8739ae039 = $33d3a98e852b75a6$export$2486db4d5359fb2f;
+
+});
+
+
+parcelRegister("22q2M", function(module, exports) {
+
+$parcel$export(module.exports, "default", () => $17bff86cb3a62f22$export$2e2bcd8739ae039);
+
+var $7gE5K = parcelRequire("7gE5K");
+
+var $jrHth = parcelRequire("jrHth");
+
+var $8Z6sh = parcelRequire("8Z6sh");
+class $17bff86cb3a62f22$export$c91428cbd4f5850d {
+    static overrideSocket() {
+        let originalSend = WebSocket.prototype.send;
+        const OriginalWebSocket = WebSocket;
+        window.WebSocket = function(url, protocols) {
+            const socket = new OriginalWebSocket(url, protocols);
+            var photonClient = new (0, $8Z6sh.PhotonClient)({
+                originalSend: originalSend,
+                socket: socket
+            });
+            (0, $7gE5K.default).PhotonClient.Instance = photonClient;
+            (0, $7gE5K.default).Networking.Instantiate = photonClient.Instantiate;
+            (0, $7gE5K.default).Networking.TransferOwnership = photonClient.TransferOwnership;
+            (0, $7gE5K.default).LoadBalancingClient.OpRaiseEvent = photonClient.OpRaiseEvent;
+            socket.send = function(...args) {
+                const message = args[0];
+                if (!(message instanceof ArrayBuffer)) return originalSend.apply(this, args);
+                const uint8Array = new Uint8Array(message);
+                let reader = new (0, $jrHth.default)(uint8Array.buffer);
+                const packet = reader.readPacket();
+                console.log(packet);
+            };
+        };
+    }
+    static addListener(event, callback) {}
+}
+var $17bff86cb3a62f22$export$2e2bcd8739ae039 = $17bff86cb3a62f22$export$c91428cbd4f5850d;
+
+});
+parcelRegister("jrHth", function(module, exports) {
+
+$parcel$defineInteropFlag(module.exports);
+
+$parcel$export(module.exports, "ProtocolReader", () => $e282426f0627aef8$export$30afd0d1dfcfaf9c);
+$parcel$export(module.exports, "default", () => $e282426f0627aef8$export$2e2bcd8739ae039);
+
+var $cPvrJ = parcelRequire("cPvrJ");
+
+var $2NMWT = parcelRequire("2NMWT");
+
+var $2JOv6 = parcelRequire("2JOv6");
+
+var $knztm = parcelRequire("knztm");
+
+var $kzHa0 = parcelRequire("kzHa0");
+
+var $3HBkV = parcelRequire("3HBkV");
+class $e282426f0627aef8$export$30afd0d1dfcfaf9c {
+    constructor(buffer){
+        this.buffer = Buffer.from(buffer);
+        this.offset = 0;
+    }
+    readValue(type = null) {
+        type = type ?? this.readUint8();
+        switch(type){
+            case (0, $cPvrJ.DataType).NullValue:
+                return null;
+            case (0, $cPvrJ.DataType).Dictionary:
+                throw new Error('Unimplemented data type Dictionary');
+            case (0, $cPvrJ.DataType).StringArray:
+                return this.readStringArray();
+            case (0, $cPvrJ.DataType).Byte:
+                return (0, $kzHa0.SizedInt).read(this, 1);
+            case (0, $cPvrJ.DataType).Custom:
+                return (0, $2JOv6.CustomData).read(this);
+            case (0, $cPvrJ.DataType).Double:
+                return (0, $knztm.SizedFloat).read(this, 8);
+            case (0, $cPvrJ.DataType).EventData:
+                throw new Error('Unimplemented data type EventData');
+            case (0, $cPvrJ.DataType).Float:
+                return (0, $knztm.SizedFloat).read(this, 4);
+            case (0, $cPvrJ.DataType).Hashtable:
+                return this.readHashTable();
+            case (0, $cPvrJ.DataType).Integer:
+                return (0, $kzHa0.SizedInt).read(this, 4);
+            case (0, $cPvrJ.DataType).Short:
+                return (0, $kzHa0.SizedInt).read(this, 2);
+            case (0, $cPvrJ.DataType).Long:
+                return (0, $kzHa0.SizedInt).read(this, 8);
+            case (0, $cPvrJ.DataType).IntegerArray:
+                return this.readIntArray();
+            case (0, $cPvrJ.DataType).Bool:
+                return this.readUint8() !== 0;
+            case (0, $cPvrJ.DataType).OperationResponse:
+                throw new Error('Unimplemented data type OperationResponse');
+            case (0, $cPvrJ.DataType).OperationRequest:
+                throw new Error('Unimplemented data type OperationRequest');
+            case (0, $cPvrJ.DataType).String:
+                return this.readString();
+            case (0, $cPvrJ.DataType).ByteArray:
+                return this.readByteArray();
+            case (0, $cPvrJ.DataType).Array:
+                return (0, $2NMWT.ProtocolArray).read(this);
+            case (0, $cPvrJ.DataType).ObjectArray:
+                return this.readObjectArray();
+            default:
+                throw new Error(`Unknown data type ${type}`);
+        }
+    }
+    readPacket() {
+        const magic = this.readUint8();
+        if (magic !== 0xF3) throw new Error(`Invalid magic byte: ${magic}`);
+        const type = this.readUint8();
+        switch(type){
+            case (0, $cPvrJ.PacketType).Init:
+                throw new Error('Init packet parsing not implemented');
+            case (0, $cPvrJ.PacketType).InitResponse:
+                return (0, $3HBkV.InitResponse).read(this);
+            case (0, $cPvrJ.PacketType).Operation:
+                return (0, $3HBkV.OperationRequest).read(this);
+            case (0, $cPvrJ.PacketType).OperationResponse:
+                return (0, $3HBkV.OperationResponse).read(this);
+            case (0, $cPvrJ.PacketType).Event:
+                return (0, $3HBkV.Event).read(this);
+            case (0, $cPvrJ.PacketType).InternalOperationRequest:
+                return (0, $3HBkV.InternalOperationRequest).read(this);
+            case (0, $cPvrJ.PacketType).InternalOperationResponse:
+                return (0, $3HBkV.InternalOperationResponse).read(this);
+            case (0, $cPvrJ.PacketType).Disconnect:
+                console.log('Received Disconnect packet');
+                return {
+                    type: 'Disconnect'
+                };
+            case (0, $cPvrJ.PacketType).InitResponse:
+                return new (0, $3HBkV.InitResponse)();
+            case (0, $cPvrJ.PacketType).Message:
+            case (0, $cPvrJ.PacketType).RawMessage:
+                throw new Error(`Unimplemented packet type ${type}`);
+            default:
+                throw new Error(`Unknown packet type ${type}`);
+        }
+    }
+    readString() {
+        const len = this.readUint16();
+        if (len === 0) return '';
+        const str = this.buffer.toString('utf8', this.offset, this.offset + len);
+        this.offset += len;
+        return str;
+    }
+    readByteArray() {
+        const len = this.readInt32();
+        const data = this.buffer.slice(this.offset, this.offset + len);
+        this.offset += len;
+        return data;
+    }
+    readIntArray() {
+        const len = this.readInt32();
+        const list = new Int32Array(len);
+        for(let i = 0; i < len; i++)list[i] = this.readInt32();
+        return list;
+    }
+    readStringArray() {
+        const len = this.readInt16();
+        const list = new Array(len);
+        for(let i = 0; i < len; i++)list[i] = this.readString();
+        return list;
+    }
+    readObjectArray() {
+        const len = this.readUint16();
+        const list = new Array(len);
+        for(let i = 0; i < len; i++)list[i] = this.readValue();
+        return list;
+    }
+    readHashTable() {
+        const value = {};
+        const len = this.readInt16();
+        for(let i = 0; i < len; i++){
+            const key = this.readValue();
+            const val = this.readValue();
+            value[key] = val;
+        }
+        return value;
+    }
+    readParameterTable() {
+        const value = {};
+        const len = this.readInt16();
+        for(let i = 0; i < len; i++){
+            const key = this.readUint8();
+            const val = this.readValue();
+            value[key] = val;
+        }
+        return value;
+    }
+    readUint8() {
+        const value = this.buffer.readUInt8(this.offset);
+        this.offset += 1;
+        return value;
+    }
+    readInt8() {
+        const value = this.buffer.readInt8(this.offset);
+        this.offset += 1;
+        return value;
+    }
+    readUint16() {
+        const value = this.buffer.readUInt16BE(this.offset);
+        this.offset += 2;
+        return value;
+    }
+    readInt16() {
+        const value = this.buffer.readInt16BE(this.offset);
+        this.offset += 2;
+        return value;
+    }
+    readInt32() {
+        const value = this.buffer.readInt32BE(this.offset);
+        this.offset += 4;
+        return value;
+    }
+    readInt64() {
+        const value = this.buffer.readBigInt64BE(this.offset);
+        this.offset += 8;
+        return Number(value);
+    }
+    readFloat32() {
+        const value = this.buffer.readFloatBE(this.offset);
+        this.offset += 4;
+        return value;
+    }
+    readFloat64() {
+        const value = this.buffer.readDoubleBE(this.offset);
+        this.offset += 8;
+        return value;
+    }
+    read(length) {
+        const data = this.buffer.slice(this.offset, this.offset + length);
+        this.offset += length;
+        return data;
+    }
+}
+var $e282426f0627aef8$export$2e2bcd8739ae039 = $e282426f0627aef8$export$30afd0d1dfcfaf9c;
+
+});
+parcelRegister("cPvrJ", function(module, exports) {
+
+$parcel$export(module.exports, "DataType", () => $9572a40d449588bd$export$45c69700ee30a78c);
+$parcel$export(module.exports, "PacketType", () => $9572a40d449588bd$export$84d4095e16c6fc19);
+class $9572a40d449588bd$export$45c69700ee30a78c {
+    static NullValue = 42;
+    static Dictionary = 68;
+    static StringArray = 97;
+    static Byte = 98;
+    static Custom = 99;
+    static Double = 100;
+    static EventData = 101;
+    static Float = 102;
+    static Hashtable = 104;
+    static Integer = 105;
+    static Short = 107;
+    static Long = 108;
+    static IntegerArray = 110;
+    static Bool = 111;
+    static OperationResponse = 112;
+    static OperationRequest = 113;
+    static String = 115;
+    static ByteArray = 120;
+    static Array = 121;
+    static ObjectArray = 122;
+}
+class $9572a40d449588bd$export$84d4095e16c6fc19 {
+    static Init = 0;
+    static InitResponse = 1;
+    static Operation = 2;
+    static OperationResponse = 3;
+    static Event = 4;
+    static InternalOperationRequest = 6;
+    static InternalOperationResponse = 7;
+    static Message = 8;
+    static RawMessage = 9;
+    static Disconnect = 5;
+}
+class $9572a40d449588bd$export$a5e61cd3c11c8828 {
+    static InitEncryption = 0;
+    static Ping = 1;
+}
+class $9572a40d449588bd$export$6e71357f8f04bc3e {
+    static GetGameList = 217;
+    static ServerSettings = 218;
+    static WebRpc = 219;
+    static GetRegions = 220;
+    static GetLobbyStats = 221;
+    static FindFriends = 222;
+    static CancelJoinRandom = 224;
+    static JoinRandomGame = 225;
+    static JoinGame = 226;
+    static CreateGame = 227;
+    static LeaveLobby = 228;
+    static JoinLobby = 229;
+    static Authenticate = 230;
+    static AuthenticateOnce = 231;
+    static ChangeGroups = 248;
+    static ExchangeKeysForEncryption = 250;
+    static GetProperties = 251;
+    static SetProperties = 252;
+    static RaiseEvent = 253;
+    static Leave = 254;
+    static Join = 255;
+}
+class $9572a40d449588bd$export$321530e93eee298c {
+    static AzureNodeInfo = 210;
+    static AuthEvent = 223;
+    static LobbyStats = 224;
+    static AppStats = 226;
+    static Match = 227;
+    static QueueState = 228;
+    static GameListUpdate = 229;
+    static GameList = 230;
+    static CacheSliceChanged = 250;
+    static ErrorInfo = 251;
+    static PropertiesChanged = 253;
+    static SetProperties = 253;
+    static Leave = 254;
+    static Join = 255;
+}
+class $9572a40d449588bd$export$33c90a15721f7830 {
+    static FindFriendsRequestList = 1;
+    static FindFriendsResponseOnlineList = 1;
+    static FindFriendsOptions = 2;
+    static FindFriendsResponseRoomIdList = 2;
+    static RoomOptionFlags = 191;
+    static EncryptionData = 192;
+    static EncryptionMode = 193;
+    static CustomInitData = 194;
+    static ExpectedProtocol = 195;
+    static PluginVersion = 200;
+    static PluginName = 201;
+    static NickName = 202;
+    static MasterClientId = 203;
+    static Plugins = 204;
+    static CacheSliceIndex = 205;
+    static WebRpcReturnMessage = 206;
+    static WebRpcReturnCode = 207;
+    static AzureMasterNodeId = 208;
+    static WebRpcParameters = 208;
+    static AzureLocalNodeId = 209;
+    static UriPath = 209;
+    static AzureNodeInfo = 210;
+    static Region = 210;
+    static LobbyStats = 211;
+    static LobbyType = 212;
+    static LobbyName = 213;
+    static ClientAuthenticationData = 214;
+    static CreateIfNotExists = 215;
+    static JoinMode = 215;
+    static ClientAuthenticationParams = 216;
+    static ClientAuthenticationType = 217;
+    static Info = 218;
+    static AppVersion = 220;
+    static Secret = 221;
+    static GameList = 222;
+    static MatchMakingType = 223;
+    static Position = 223;
+    static ApplicationId = 224;
+    static UserId = 225;
+    static MasterPeerCount = 227;
+    static GameCount = 228;
+    static PeerCount = 229;
+    static Address = 230;
+    static ExpectedValues = 231;
+    static CheckUserOnJoin = 232;
+    static IsComingBack = 233;
+    static IsInactive = 233;
+    static EventForward = 234;
+    static PlayerTTL = 235;
+    static EmptyRoomTTL = 236;
+    static SuppressRoomEvents = 237;
+    static Add = 238;
+    static PublishUserId = 239;
+    static Remove = 239;
+    static Group = 240;
+    static CleanupCacheOnLeave = 241;
+    static Code = 244;
+    static CustomEventContent = 245;
+    static Data = 245;
+    static ReceiverGroup = 246;
+    static Cache = 247;
+    static GameProperties = 248;
+    static PlayerProperties = 249;
+    static Broadcast = 250;
+    static Properties = 251;
+    static ActorList = 252;
+    static TargetActorNr = 253;
+    static ActorNr = 254;
+    static RoomName = 255;
+}
+var $9572a40d449588bd$export$2e2bcd8739ae039 = {
+    DataType: $9572a40d449588bd$export$45c69700ee30a78c,
+    PacketType: $9572a40d449588bd$export$84d4095e16c6fc19,
+    InternalOperationCode: $9572a40d449588bd$export$a5e61cd3c11c8828,
+    OperationCode: $9572a40d449588bd$export$6e71357f8f04bc3e,
+    EventCode: $9572a40d449588bd$export$321530e93eee298c,
+    ParameterCode: $9572a40d449588bd$export$33c90a15721f7830
+};
+
+});
+
+parcelRegister("2NMWT", function(module, exports) {
+
+var $cPvrJ = parcelRequire("cPvrJ");
+
+var $18MRn = parcelRequire("18MRn");
+class $20a620951384ae85$var$ProtocolArray extends $18MRn {
+    constructor(innerDataType, data){
+        super();
+        this.innerDataType = innerDataType;
+        this.data = data;
+    }
+    static read(reader) {
+        const len = reader.readUint16();
+        const innerDataType = reader.readUint8();
+        const data = new Array(len);
+        for(let i = 0; i < len; i++)data[i] = reader.readValue(innerDataType);
+        return new $20a620951384ae85$var$ProtocolArray(innerDataType, data);
+    }
+    writeType(writer) {
+        writer.writeUint8((0, $cPvrJ.DataType).Array);
+    }
+    writeValue(writer) {
+        writer.writeUint16(this.data.length);
+        writer.writeUint8(this.innerDataType);
+        for (const obj of this.data)writer.writeValue(obj, false);
+    }
+    toString() {
+        return `ProtocolArray ${this.innerDataType}: ${JSON.stringify(this.data)}`;
+    }
+}
+module.exports = {
+    ProtocolArray: $20a620951384ae85$var$ProtocolArray
+};
+
+});
+parcelRegister("18MRn", function(module, exports) {
+
+$parcel$defineInteropFlag(module.exports);
+
+$parcel$export(module.exports, "Serializable", () => $0d4c70587d5f84dd$export$64782a6a7800f48c);
+$parcel$export(module.exports, "default", () => $0d4c70587d5f84dd$export$2e2bcd8739ae039);
+class $0d4c70587d5f84dd$export$64782a6a7800f48c {
+    writeType(writer) {
+        throw new Error('writeType must be implemented');
+    }
+    writeValue(writer) {
+        throw new Error('writeValue must be implemented');
+    }
+}
+var $0d4c70587d5f84dd$export$2e2bcd8739ae039 = $0d4c70587d5f84dd$export$64782a6a7800f48c;
+
+});
+
+
+parcelRegister("2JOv6", function(module, exports) {
+
+$parcel$export(module.exports, "CustomData", () => $1fe6f51abcc2549b$export$33e476ffe0c539da);
+
+var $cPvrJ = parcelRequire("cPvrJ");
+
+var $18MRn = parcelRequire("18MRn");
+
+var $eAASF = parcelRequire("eAASF");
+
+
+
+
+class $1fe6f51abcc2549b$export$33e476ffe0c539da extends (0, $18MRn.Serializable) {
+    constructor(){
+        super();
+    }
+    static read(reader) {
+        const typeCode = reader.readUint8();
+        const len = reader.readUint16();
+        const data = reader.read(len);
+        const tempReader = new (parcelRequire("jrHth"))(data);
+        switch(typeCode){
+            case 86:
+                const { Vector3: Vector3 } = (parcelRequire("dk6FC"));
+                return Vector3.read(tempReader);
+            case 81:
+                const { Quaternion: Quaternion } = (parcelRequire("jN7qd"));
+                return Quaternion.read(tempReader);
+            default:
+                const { UnimplementedCustomData: UnimplementedCustomData } = (parcelRequire("gdKWC"));
+                return new UnimplementedCustomData(typeCode, data);
+        }
+    }
+    writeType(writer) {
+        writer.writeUint8((0, $cPvrJ.DataType).Custom);
+    }
+    writeValue(writer) {
+        writer.writeUint8(this.typeCode);
+        const data = this.getBytes();
+        writer.writeUint16(data.length);
+        writer.write(data);
+    }
+    write(writer) {
+        throw new Error('write must be implemented');
+    }
+    getBytes() {
+        const writer = new $eAASF();
+        this.write(writer);
+        return writer.toBytes();
+    }
+    toString() {
+        return `CustomData ${this.typeCode} ${this.getBytes().toString('hex')}`;
+    }
+}
+var $1fe6f51abcc2549b$export$2e2bcd8739ae039 = $1fe6f51abcc2549b$export$33e476ffe0c539da;
+
+});
+parcelRegister("eAASF", function(module, exports) {
+
+$parcel$defineInteropFlag(module.exports);
+
+$parcel$export(module.exports, "ProtocolWriter", () => $a9f1093f50da3180$export$ea69f93a488f088a);
+$parcel$export(module.exports, "default", () => $a9f1093f50da3180$export$2e2bcd8739ae039);
+
+var $cPvrJ = parcelRequire("cPvrJ");
+class $a9f1093f50da3180$export$ea69f93a488f088a {
+    constructor(){
+        this.buffers = [];
+        this.length = 0;
+    }
+    writePacket(packet) {
+        this.writeUint8(0xF3);
+        this.writeValue(packet);
+    }
+    writeValue(value, writeType = true) {
+        if (value === null || value === undefined) {
+            if (writeType) this.writeUint8((0, $cPvrJ.DataType).NullValue);
+            return;
+        }
+        if (value instanceof Array && value.every((item)=>typeof item === 'string')) {
+            if (writeType) this.writeUint8((0, $cPvrJ.DataType).StringArray);
+            this.writeStringArray(value);
+        } else if (value.writeType && value.writeValue) {
+            if (writeType) value.writeType(this);
+            value.writeValue(this);
+        } else if (value instanceof Object && !(value instanceof Array)) {
+            if (writeType) this.writeUint8((0, $cPvrJ.DataType).Hashtable);
+            const entries = Object.entries(value);
+            this.writeUint16(entries.length);
+            for (const [key, val] of entries){
+                this.writeValue(key);
+                this.writeValue(val);
+            }
+        } else if (value instanceof Int32Array) {
+            if (writeType) this.writeUint8((0, $cPvrJ.DataType).IntegerArray);
+            this.writeInt32(value.length);
+            for (const num of value)this.writeInt32(num);
+        } else if (typeof value === 'boolean') {
+            if (writeType) this.writeUint8((0, $cPvrJ.DataType).Bool);
+            this.writeUint8(value ? 1 : 0);
+        } else if (typeof value === 'string') {
+            if (writeType) this.writeUint8((0, $cPvrJ.DataType).String);
+            this.writeString(value);
+        } else if (value instanceof Buffer) {
+            if (writeType) this.writeUint8((0, $cPvrJ.DataType).ByteArray);
+            this.writeInt32(value.length);
+            this.write(value);
+        } else if (value instanceof Array) {
+            if (writeType) this.writeUint8((0, $cPvrJ.DataType).ObjectArray);
+            this.writeInt16(value.length);
+            for (const item of value)this.writeValue(item);
+        } else throw new Error(`Cannot serialize '${value}' (type: ${typeof value})`);
+    }
+    writeStringArray(strings) {
+        this.writeInt16(strings.length);
+        for (const str of strings)this.writeString(str);
+    }
+    writeString(str) {
+        const bytes = Buffer.from(str, 'utf8');
+        this.writeUint16(bytes.length);
+        this.write(bytes);
+    }
+    writeParameterTable(params) {
+        const entries = Object.entries(params);
+        this.writeUint16(entries.length);
+        for (const [key, value] of entries){
+            this.writeUint8(Number(key));
+            this.writeValue(value);
+        }
+    }
+    writeUint8(value) {
+        const buf = Buffer.alloc(1);
+        buf.writeUInt8(value);
+        this.buffers.push(buf);
+        this.length += 1;
+    }
+    writeInt8(value) {
+        const buf = Buffer.alloc(1);
+        buf.writeInt8(value);
+        this.buffers.push(buf);
+        this.length += 1;
+    }
+    writeUint16(value) {
+        const buf = Buffer.alloc(2);
+        buf.writeUInt16BE(value);
+        this.buffers.push(buf);
+        this.length += 2;
+    }
+    writeInt16(value) {
+        const buf = Buffer.alloc(2);
+        buf.writeInt16BE(value);
+        this.buffers.push(buf);
+        this.length += 2;
+    }
+    writeInt32(value) {
+        const buf = Buffer.alloc(4);
+        buf.writeInt32BE(value);
+        this.buffers.push(buf);
+        this.length += 4;
+    }
+    writeInt64(value) {
+        const buf = Buffer.alloc(8);
+        buf.writeBigInt64BE(BigInt(value));
+        this.buffers.push(buf);
+        this.length += 8;
+    }
+    writeFloat32(value) {
+        const buf = Buffer.alloc(4);
+        buf.writeFloatBE(value);
+        this.buffers.push(buf);
+        this.length += 4;
+    }
+    writeFloat64(value) {
+        const buf = Buffer.alloc(8);
+        buf.writeDoubleBE(value);
+        this.buffers.push(buf);
+        this.length += 8;
+    }
+    write(bytes) {
+        this.buffers.push(Buffer.from(bytes));
+        this.length += bytes.length;
+    }
+    toBytes() {
+        return Buffer.concat(this.buffers, this.length);
+    }
+}
+var $a9f1093f50da3180$export$2e2bcd8739ae039 = $a9f1093f50da3180$export$ea69f93a488f088a;
+
+});
+
+parcelRegister("dk6FC", function(module, exports) {
+
+$parcel$defineInteropFlag(module.exports);
+
+$parcel$export(module.exports, "Vector3", () => $9b32512ee959683a$export$64b5c384219d3699);
+$parcel$export(module.exports, "default", () => $9b32512ee959683a$export$2e2bcd8739ae039);
+
+var $2JOv6 = parcelRequire("2JOv6");
+class $9b32512ee959683a$export$64b5c384219d3699 extends (0, $2JOv6.CustomData) {
+    static TypeCode = 86;
+    constructor(f1, f2, f3){
+        super();
+        this.f1 = f1;
+        this.f2 = f2;
+        this.f3 = f3;
+    }
+    get typeCode() {
+        return $9b32512ee959683a$export$64b5c384219d3699.TypeCode;
+    }
+    static read(reader) {
+        const f1 = reader.readFloat32();
+        const f2 = reader.readFloat32();
+        const f3 = reader.readFloat32();
+        return new $9b32512ee959683a$export$64b5c384219d3699(f1, f2, f3);
+    }
+    write(writer) {
+        writer.writeFloat32(this.f1);
+        writer.writeFloat32(this.f2);
+        writer.writeFloat32(this.f3);
+    }
+    toString() {
+        return `Vector3(${this.f1},${this.f2},${this.f3})`;
+    }
+}
+var $9b32512ee959683a$export$2e2bcd8739ae039 = $9b32512ee959683a$export$64b5c384219d3699;
+
+});
+
+parcelRegister("jN7qd", function(module, exports) {
+
+$parcel$defineInteropFlag(module.exports);
+
+$parcel$export(module.exports, "Quaternion", () => $e68859b985ed8a82$export$23d6a54f0bbc85a3);
+$parcel$export(module.exports, "default", () => $e68859b985ed8a82$export$2e2bcd8739ae039);
+
+var $2JOv6 = parcelRequire("2JOv6");
+class $e68859b985ed8a82$export$23d6a54f0bbc85a3 extends (0, $2JOv6.CustomData) {
+    static TypeCode = 81;
+    constructor(w, x, y, z){
+        super();
+        this.w = w;
+        this.x = x;
+        this.y = y;
+        this.z = z;
+    }
+    get typeCode() {
+        return $e68859b985ed8a82$export$23d6a54f0bbc85a3.TypeCode;
+    }
+    static read(reader) {
+        const w = reader.readFloat32();
+        const x = reader.readFloat32();
+        const y = reader.readFloat32();
+        const z = reader.readFloat32();
+        return new $e68859b985ed8a82$export$23d6a54f0bbc85a3(w, x, y, z);
+    }
+    write(writer) {
+        writer.writeFloat32(this.w);
+        writer.writeFloat32(this.x);
+        writer.writeFloat32(this.y);
+        writer.writeFloat32(this.z);
+    }
+    toString() {
+        return `Quaternion(w=${this.w}, x=${this.x}, y=${this.y}, z=${this.z})`;
+    }
+}
+var $e68859b985ed8a82$export$2e2bcd8739ae039 = $e68859b985ed8a82$export$23d6a54f0bbc85a3;
+
+});
+
+parcelRegister("gdKWC", function(module, exports) {
+
+$parcel$defineInteropFlag(module.exports);
+
+$parcel$export(module.exports, "UnimplementedCustomData", () => $bcf2466e1e570860$export$5762eb36fd9a444e);
+$parcel$export(module.exports, "default", () => $bcf2466e1e570860$export$2e2bcd8739ae039);
+
+var $2JOv6 = parcelRequire("2JOv6");
+var $bcf2466e1e570860$require$CustomData = $2JOv6.CustomData;
+class $bcf2466e1e570860$export$5762eb36fd9a444e extends $bcf2466e1e570860$require$CustomData {
+    constructor(typeCode, data){
+        super();
+        this._typeCode = typeCode;
+        this.data = data;
+    }
+    get typeCode() {
+        return this._typeCode;
+    }
+    write(writer) {
+        writer.write(this.data);
+    }
+}
+var $bcf2466e1e570860$export$2e2bcd8739ae039 = $bcf2466e1e570860$export$5762eb36fd9a444e;
+
+});
+
+
+parcelRegister("knztm", function(module, exports) {
+
+$parcel$export(module.exports, "SizedFloat", () => $03d4271bc67d5035$export$23c4e50d47dcaa25);
+
+var $cPvrJ = parcelRequire("cPvrJ");
+
+var $18MRn = parcelRequire("18MRn");
+class $03d4271bc67d5035$export$23c4e50d47dcaa25 extends (0, $18MRn.Serializable) {
+    constructor(value, size){
+        super();
+        this.value = value;
+        this.size = size;
+        this._checkSize();
+    }
+    static float(value) {
+        return new $03d4271bc67d5035$export$23c4e50d47dcaa25(value, 4);
+    }
+    static double(value) {
+        return new $03d4271bc67d5035$export$23c4e50d47dcaa25(value, 8);
+    }
+    static read(reader, size) {
+        const value = size === 4 ? reader.readFloat32() : reader.readFloat64();
+        return new $03d4271bc67d5035$export$23c4e50d47dcaa25(value, size);
+    }
+    writeType(writer) {
+        switch(this.size){
+            case 4:
+                writer.writeUint8((0, $cPvrJ.DataType).Float);
+                break;
+            case 8:
+                writer.writeUint8((0, $cPvrJ.DataType).Double);
+                break;
+            default:
+                throw new Error(`Invalid SizedFloat size ${this.size}`);
+        }
+    }
+    writeValue(writer) {
+        switch(this.size){
+            case 4:
+                writer.writeFloat32(this.value);
+                break;
+            case 8:
+                writer.writeFloat64(this.value);
+                break;
+            default:
+                throw new Error(`Invalid SizedFloat size ${this.size}`);
+        }
+    }
+    _checkSize() {
+        if (this.value == null) throw new Error('Null value not allowed');
+        if (this.size > 8) throw new Error('Size is greater than 8');
+        if (this.size !== 4 && this.size !== 8) throw new Error(`Size ${this.size} is not 4 or 8`);
+    }
+    toString() {
+        return `float${this.size * 8} ${this.value}`;
+    }
+}
+var $03d4271bc67d5035$export$2e2bcd8739ae039 = $03d4271bc67d5035$export$23c4e50d47dcaa25;
+
+});
+
+parcelRegister("kzHa0", function(module, exports) {
+
+$parcel$export(module.exports, "SizedInt", () => $efa88e4c6b5b2cde$export$f6bfa50653c0b77d);
+
+var $cPvrJ = parcelRequire("cPvrJ");
+
+var $18MRn = parcelRequire("18MRn");
+class $efa88e4c6b5b2cde$export$f6bfa50653c0b77d extends (0, $18MRn.Serializable) {
+    constructor(value, size){
+        super();
+        this.value = value;
+        this.size = size;
+        this._checkSize();
+    }
+    static byte(value) {
+        return new $efa88e4c6b5b2cde$export$f6bfa50653c0b77d(value, 1);
+    }
+    static short(value) {
+        return new $efa88e4c6b5b2cde$export$f6bfa50653c0b77d(value, 2);
+    }
+    static int(value) {
+        return new $efa88e4c6b5b2cde$export$f6bfa50653c0b77d(value, 4);
+    }
+    static long(value) {
+        return new $efa88e4c6b5b2cde$export$f6bfa50653c0b77d(value, 8);
+    }
+    static read(reader, size) {
+        let value;
+        switch(size){
+            case 1:
+                value = reader.readUint8();
+                break;
+            case 2:
+                value = reader.readInt16();
+                break;
+            case 4:
+                value = reader.readInt32();
+                break;
+            case 8:
+                value = reader.readInt64();
+                break;
+        }
+        return new $efa88e4c6b5b2cde$export$f6bfa50653c0b77d(value, size);
+    }
+    writeType(writer) {
+        switch(this.size){
+            case 1:
+                writer.writeUint8((0, $cPvrJ.DataType).Byte);
+                break;
+            case 2:
+                writer.writeUint8((0, $cPvrJ.DataType).Short);
+                break;
+            case 4:
+                writer.writeUint8((0, $cPvrJ.DataType).Integer);
+                break;
+            case 8:
+                writer.writeUint8((0, $cPvrJ.DataType).Long);
+                break;
+            default:
+                throw new Error(`Invalid SizedInt size ${this.size}`);
+        }
+    }
+    writeValue(writer) {
+        switch(this.size){
+            case 1:
+                writer.writeUint8(this.value);
+                break;
+            case 2:
+                writer.writeInt16(this.value);
+                break;
+            case 4:
+                writer.writeInt32(this.value);
+                break;
+            case 8:
+                writer.writeInt64(this.value);
+                break;
+            default:
+                throw new Error(`Invalid SizedInt size ${this.size}`);
+        }
+    }
+    _checkSize() {
+        if (this.value == null) throw new Error('Null value not allowed');
+        if (this.size > 8) throw new Error('Size is greater than 8');
+        if (![
+            1,
+            2,
+            4,
+            8
+        ].includes(this.size)) throw new Error(`Size ${this.size} is not a power of 2`);
+        if (this.size === 1 && (this.value > 0xFF || this.value < 0)) throw new Error(`Value ${this.value} is out of range for a byte`);
+        if (this.size === 2 && (this.value > 0x7FFF || this.value < -32768)) throw new Error(`Value ${this.value} is out of range for a short`);
+        if (this.size === 4 && (this.value > 0x7FFFFFFF || this.value < -2147483648)) throw new Error(`Value ${this.value} is out of range for an int`);
+    }
+    toString() {
+        return `int${this.size * 8} ${this.value}`;
+    }
+}
+var $efa88e4c6b5b2cde$export$2e2bcd8739ae039 = $efa88e4c6b5b2cde$export$f6bfa50653c0b77d;
+
+});
+
+parcelRegister("3HBkV", function(module, exports) {
+
+$parcel$export(module.exports, "InitResponse", () => $2b225982bb18953c$export$a3839a2aa9a577f2);
+$parcel$export(module.exports, "OperationRequest", () => $2b225982bb18953c$export$e32a5452dc497d6e);
+$parcel$export(module.exports, "OperationResponse", () => $2b225982bb18953c$export$6ded9cda38d62d0e);
+$parcel$export(module.exports, "Event", () => $2b225982bb18953c$export$d61e24a684f9e51);
+$parcel$export(module.exports, "InternalOperationRequest", () => $2b225982bb18953c$export$513c291e03eae483);
+$parcel$export(module.exports, "InternalOperationResponse", () => $2b225982bb18953c$export$270e6f70cc44ede0);
+
+var $cPvrJ = parcelRequire("cPvrJ");
+
+var $18MRn = parcelRequire("18MRn");
+class $2b225982bb18953c$export$7c4d9b816b36a269 extends (0, $18MRn.Serializable) {
+    constructor(code, params = {}){
+        super();
+        this.code = code;
+        this.params = params;
+    }
+    toString() {
+        return `${this.constructor.name} ${this.code}: ${JSON.stringify(this.params)}`;
+    }
+}
+class $2b225982bb18953c$export$549e8a9504cdc069 extends $2b225982bb18953c$export$7c4d9b816b36a269 {
+    static protocolVersion = [
+        1,
+        6
+    ];
+    static clientVersion = [
+        4,
+        1,
+        2,
+        16
+    ];
+    static clientSdkId = 15;
+    static clientSdkIdShifted = this.clientSdkId << 1;
+    constructor(appID, { isIpv6: isIpv6 = false } = {}){
+        super();
+        this.appID = Buffer.from(appID);
+        this.isIpv6 = isIpv6;
+    }
+    writeType(writer) {
+        writer.writeUint8((0, $cPvrJ.PacketType).Init);
+    }
+    writeValue(writer) {
+        writer.writeUint8($2b225982bb18953c$export$549e8a9504cdc069.protocolVersion[0]);
+        writer.writeUint8($2b225982bb18953c$export$549e8a9504cdc069.protocolVersion[1]);
+        writer.writeUint8($2b225982bb18953c$export$549e8a9504cdc069.clientSdkIdShifted);
+        let versionBitField = $2b225982bb18953c$export$549e8a9504cdc069.clientVersion[0] << 4 | $2b225982bb18953c$export$549e8a9504cdc069.clientVersion[1];
+        versionBitField = this.isIpv6 ? versionBitField | 0x80 : versionBitField & 0x7F;
+        writer.writeUint8(versionBitField);
+        writer.writeUint8($2b225982bb18953c$export$549e8a9504cdc069.clientVersion[2]);
+        writer.writeUint8($2b225982bb18953c$export$549e8a9504cdc069.clientVersion[3]);
+        writer.writeUint8(0);
+        const appIDBuffer = Buffer.alloc(32);
+        this.appID.copy(appIDBuffer, 0, 0, Math.min(this.appID.length, 32));
+        writer.write(appIDBuffer);
+    }
+}
+class $2b225982bb18953c$export$a3839a2aa9a577f2 extends $2b225982bb18953c$export$7c4d9b816b36a269 {
+    constructor(){
+        super(0);
+    }
+    static read(reader) {
+        const code = reader.readInt8();
+        if (code !== 0) throw new Error(`Invalid InitResponse code: ${code}`);
+        return new $2b225982bb18953c$export$a3839a2aa9a577f2();
+    }
+    writeType(writer) {
+        writer.writeUint8((0, $cPvrJ.PacketType).InitResponse);
+    }
+    writeValue(writer) {
+        writer.writeUint8(this.code);
+    }
+    toString() {
+        return 'InitResponse';
+    }
+}
+class $2b225982bb18953c$export$e32a5452dc497d6e extends $2b225982bb18953c$export$7c4d9b816b36a269 {
+    constructor(code, params){
+        super(code, params);
+    }
+    static read(reader) {
+        const code = reader.readUint8();
+        const params = reader.readParameterTable();
+        return new $2b225982bb18953c$export$e32a5452dc497d6e(code, params);
+    }
+    writeType(writer) {
+        writer.writeUint8((0, $cPvrJ.PacketType).Operation);
+    }
+    writeValue(writer) {
+        writer.writeUint8(this.code);
+        writer.writeParameterTable(this.params);
+    }
+}
+class $2b225982bb18953c$export$6ded9cda38d62d0e extends $2b225982bb18953c$export$7c4d9b816b36a269 {
+    constructor(code, debugMessage, returnCode, params){
+        super(code, params);
+        this.debugMessage = debugMessage;
+        this.returnCode = returnCode;
+    }
+    static read(reader) {
+        const code = reader.readUint8();
+        const returnCode = reader.readInt16();
+        const debugMessage = reader.readValue();
+        const params = reader.readParameterTable();
+        return new $2b225982bb18953c$export$6ded9cda38d62d0e(code, debugMessage, returnCode, params);
+    }
+    writeType(writer) {
+        writer.writeUint8((0, $cPvrJ.PacketType).OperationResponse);
+    }
+    writeValue(writer) {
+        writer.writeUint8(this.code);
+        writer.writeInt16(this.returnCode);
+        writer.writeValue(this.debugMessage);
+        writer.writeParameterTable(this.params);
+    }
+    toString() {
+        return `OperationResponse ${this.code} (return=${this.returnCode}, msg=${this.debugMessage}): ${JSON.stringify(this.params)}`;
+    }
+}
+class $2b225982bb18953c$export$d61e24a684f9e51 extends $2b225982bb18953c$export$7c4d9b816b36a269 {
+    constructor(code, params){
+        super(code, params);
+    }
+    static read(reader) {
+        const code = reader.readUint8();
+        const params = reader.readParameterTable();
+        return new $2b225982bb18953c$export$d61e24a684f9e51(code, params);
+    }
+    writeType(writer) {
+        writer.writeUint8((0, $cPvrJ.PacketType).Event);
+    }
+    writeValue(writer) {
+        writer.writeUint8(this.code);
+        writer.writeParameterTable(this.params);
+    }
+}
+class $2b225982bb18953c$export$513c291e03eae483 extends $2b225982bb18953c$export$7c4d9b816b36a269 {
+    constructor(code, params){
+        super(code, params);
+    }
+    static read(reader) {
+        const code = reader.readUint8();
+        const params = reader.readParameterTable();
+        return new $2b225982bb18953c$export$513c291e03eae483(code, params);
+    }
+    writeType(writer) {
+        writer.writeUint8((0, $cPvrJ.PacketType).InternalOperationRequest);
+    }
+    writeValue(writer) {
+        writer.writeUint8(this.code);
+        writer.writeParameterTable(this.params);
+    }
+}
+class $2b225982bb18953c$export$270e6f70cc44ede0 extends $2b225982bb18953c$export$7c4d9b816b36a269 {
+    constructor(code, debugMessage, returnCode, params){
+        super(code, params);
+        this.debugMessage = debugMessage;
+        this.returnCode = returnCode;
+    }
+    static read(reader) {
+        const code = reader.readUint8();
+        const returnCode = reader.readInt16();
+        const debugMessage = reader.readValue();
+        const params = reader.readParameterTable();
+        return new $2b225982bb18953c$export$270e6f70cc44ede0(code, debugMessage, returnCode, params);
+    }
+    writeType(writer) {
+        writer.writeUint8((0, $cPvrJ.PacketType).InternalOperationResponse);
+    }
+    writeValue(writer) {
+        writer.writeUint8(this.code);
+        writer.writeInt16(this.returnCode);
+        writer.writeValue(this.debugMessage);
+        writer.writeParameterTable(this.params);
+    }
+    toString() {
+        return `InternalOperationResponse ${this.code} (return=${this.returnCode}, msg=${this.debugMessage}): ${JSON.stringify(this.params)}`;
+    }
+}
+var $2b225982bb18953c$export$2e2bcd8739ae039 = {
+    PacketWithPayload: $2b225982bb18953c$export$7c4d9b816b36a269,
+    InitPacket: $2b225982bb18953c$export$549e8a9504cdc069,
+    InitResponse: $2b225982bb18953c$export$a3839a2aa9a577f2,
+    OperationRequest: $2b225982bb18953c$export$e32a5452dc497d6e,
+    OperationResponse: $2b225982bb18953c$export$6ded9cda38d62d0e,
+    Event: $2b225982bb18953c$export$d61e24a684f9e51,
+    InternalOperationRequest: $2b225982bb18953c$export$513c291e03eae483,
+    InternalOperationResponse: $2b225982bb18953c$export$270e6f70cc44ede0
+};
+
+});
+
+
 
 
 

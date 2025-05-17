@@ -3,6 +3,7 @@ import GameUtils from './Browser/Utility/GameUtils';
 import FairCollection from './Bullet Force/FairPlayAPI/FairCollection';
 import { UI } from './Menu/UIManager';
 import PhotonNetwork from './Photon/PhotonNetwork';
+import SocketManager from './Photon/SocketManager';
 
 if (!window.location.href.includes('https://bullet-force-multiplayer.game-files.crazygames.com/unity/unity2020/bullet-force-multiplayer.html')) return;
 
@@ -11,6 +12,8 @@ GameUtils.waitForUnityInstance(() => {
     MeowEngine.FairCollection.InitOperation = FairCollection.InitOperation;
     MeowEngine.FairCollection.Instance = FairCollection;
     MeowEngine.SDK.FairCollection = FairCollection;
+
+    overrideSocket();
     
     // Create the main container
     const newContainer = document.createElement('div');
@@ -96,5 +99,9 @@ GameUtils.waitForUnityInstance(() => {
         container.appendChild(stopRainbowButton);
 
         return container;
+    }
+
+    function overrideSocket() {
+        SocketManager.overrideSocket();
     }
 });
