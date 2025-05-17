@@ -139,7 +139,7 @@ MeowEngine Parcel/
 1. Clone the repository:
    ```bash
    git clone https://github.com/cyberarchives/meowengine-parcel.git
-   cd meowengine-parce
+   cd meowengine-parcel
    ```
 
 2. Install dependencies:
