@@ -1,3 +1,4 @@
+import MeowEngine from "../Browser/GlobalTypeDefs";
 import PlayerList from "./Handlers/PlayerList";
 
 export class HttpRequestManager {
@@ -9,6 +10,9 @@ export class HttpRequestManager {
 
             if (parsedUrl.includes('leftV2.php')) {
                 PlayerList.clearPlayerlist();
+
+                MeowEngine.Log.Instance.debug("Player list cleared");
+                MeowEngine.Log.Instance.debug("You left the room!");
             }
 
             return originalFetch(input, init);
