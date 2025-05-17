@@ -17,8 +17,8 @@ MeowEngine Parcel has been completely redesigned using Parcel bundler to deliver
 
 ```
 MeowEngine Parcel/
-├── index.js # Main entry point
-├── meowengine.user.js
+├── index.js
+├── meowengine.user.js # userscript
 ├── Browser/
 │   ├── Utility/
 │   │   ├── GameUtils.js
