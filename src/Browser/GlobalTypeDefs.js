@@ -32,6 +32,8 @@ export const MeowEngine = {
         },
         version: "1.0.0",
         debug: false,
+        debugOutgoingPackets: false,
+        debugIncomingPackets: false
     },
     UnityInstance: {
         Module: null,
@@ -42,6 +44,18 @@ export const MeowEngine = {
     },
     Log: {
         Instance: null
+    },
+    LocalPlayer: {
+        ActorNr: 1,
+        ViewId: 1001,
+        Username: "",
+        Position: { x: 0, y: 0, z: 0 },
+        Rotation: { w: 0, x: 0, y: 0, z: 0 },
+        Pitch: 3600,
+        Yaw: 3600,
+        Health: 10000,
+        Ping: 999,
+        Perks: []
     }
 };
 

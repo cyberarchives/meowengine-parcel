@@ -1,6 +1,7 @@
 import MeowEngine from "../Browser/GlobalTypeDefs";
 import ProtocolReader from "../MeowEngine/Photon/protocol_reader/ProtocolReader";
 import OperationCode from "./Enums/OperationCode";
+import OpCode201 from "./Handlers/OpCode201";
 import PlayerList from "./Handlers/PlayerList";
 import { PhotonClient } from "./PhotonNetwork";
 
@@ -30,6 +31,15 @@ export class SocketManager {
                     const uint8Array = new Uint8Array(message);
                     let reader = new ProtocolReader(uint8Array.buffer);
                     const packet = reader.readPacket();
+
+                    if (MeowEngine.Config.debugOutgoingPackets) {
+                        MeowEngine.Log.Instance.info("Outgoing packet:", packet);
+                    }
+
+                    if (packet.code == 253 && packet.params["245"]) {
+                        const parser = new OpCode201(packet);
+                        OpCode201.handleLocalPlayerUpdate(parser.parseOutgoing());
+                    }
                 }
                 
                 // Always pass the message to the original send method
@@ -44,6 +54,15 @@ export class SocketManager {
                 // Initialize the reader with the data
                 let reader = new ProtocolReader(uint8Array.buffer);
                 const packet = reader.readPacket();
+
+                if (MeowEngine.Config.debugIncomingPackets) {
+                    MeowEngine.Log.Instance.info("Incoming packet:", packet);
+                }
+                
+                if (packet.code == 201 && packet.params["245"]) {
+                    const parser = new OpCode201(packet);
+                    OpCode201.handlePlayerUpdate(parser.parseIncoming());
+                }
         
                 // Check if the packet has a parameter with the key, 249
                 if (packet.code == OperationCode.JoinGame && packet.params["249"]) {

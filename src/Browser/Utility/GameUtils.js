@@ -108,6 +108,46 @@ class GameUtils {
         
         return cleaned;
     }
+
+    /**
+     * Converts a PhotonView Id to an Actor Number
+     * @param {number} viewId - PhotonView Id
+     * @returns {number} - Returns the PhotonView Id
+     */
+    static viewIdToActorNr(viewId) {
+        // In Photon, viewId is typically calculated as:
+        // viewId = actorNr * 1000 + offset (0-9)
+        // So to get actorNr from viewId, we divide by 1000 and floor the result
+        return Math.floor(viewId / 1000);
+    }
+  
+    /**
+     * Gets the offset for the PhotonView Id
+     * @param {number} viewId - PhotonView Id
+     * @returns {number} - Returns the offset for the PhotonView Id
+     */
+    static getViewIdOffset(viewId) {
+        // Get the offset (0-9) from a viewId
+        // The offset is the last digit of the viewId
+        return viewId % 10;
+    }
+    
+    /**
+     * Converts an Actor Number to a PhotonView Id
+     * @param {number} actorNr - Actor Number
+     * @param {number} offset - The PhotonView Id offset
+     * @returns {number} - Returns the PhotonView Id
+     */
+    static actorNrToViewId(actorNr, viewIdOffset = 0) {
+        // Make sure offset is within valid range (0-9)
+        if (viewIdOffset < 0 || viewIdOffset > 9) {
+            console.warn("ViewID offset should be between 0-9, adjusting to valid range");
+            viewIdOffset = Math.abs(viewIdOffset) % 10;
+        }
+        
+        // Default Photon formula: viewId = actorNr * 1000 + offset (0-9)
+        return actorNr * 1000 + viewIdOffset;
+    }
     
     /**
      * Initialize GameUtils with custom logging settings
