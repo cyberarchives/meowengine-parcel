@@ -1,5 +1,5 @@
 import { DataType } from './constants';
-import { Buffer } from 'buffer/index.js';
+const Buffer = import("buffer/").Buffer;
 
 export class ProtocolWriter {
   constructor() {

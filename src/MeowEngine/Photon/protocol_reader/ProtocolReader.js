@@ -13,7 +13,7 @@ import {
   PacketWithPayload
 } from './types/packets';
 
-import { Buffer } from 'buffer/index.js';
+const Buffer = import("buffer/").Buffer;
 
 export class ProtocolReader {
   constructor(buffer) {

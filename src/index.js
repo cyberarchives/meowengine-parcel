@@ -13,15 +13,15 @@ if (!window.location.href.includes('https://bullet-force-multiplayer.game-files.
 GameUtils.waitForUnityInstance(() => {
     // Ensure MeowEngine is set to window globally
     window.MeowEngine = MeowEngine;
-    
+
     // set up GlobalTypeDefs
     MeowEngine.FairCollection.InitOperation = FairCollection.InitOperation;
     MeowEngine.FairCollection.Instance = FairCollection;
     MeowEngine.SDK.FairCollection = FairCollection;
 
     // Override socket to add Photon reading and writing logic
-    overrideSocket();
-
+    SocketManager.overrideSocket();
+    
     // Initialize UI
     // TODO: Remove the example UI elements and add a proper UI and features
     
@@ -109,9 +109,5 @@ GameUtils.waitForUnityInstance(() => {
         container.appendChild(stopRainbowButton);
 
         return container;
-    }
-
-    function overrideSocket() {
-        SocketManager.overrideSocket();
     }
 });
