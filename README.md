@@ -17,7 +17,6 @@ MeowEngine Parcel has been completely redesigned using Parcel bundler to deliver
 
 ```
 MeowEngine Parcel/
-<<<<<<< HEAD
 ├── dist/ # Built files
 │   ├── index.js
 │   └── meowengine.user.js
@@ -78,48 +77,6 @@ MeowEngine Parcel/
 │   │           ├── constants.js
 │   │           ├── ProtocolReader.js
 │   │           └── ProtocolWriter.js
-=======
-├── index.js
-├── meowengine.user.js # userscript
-├── Browser/
-│   ├── Utility/
-│   │   ├── GameUtils.js
-│   ├── GlobalTypeDefs.js
-├── Bullet Force/
-│   ├── API/
-│   │   ├── Account.js
-│   ├── FairPlayAPI/
-│   │   └── FairCollection.js
-├── Menu/
-│   ├── Components/ # UI components
-│   │   ├── 3DViewPort.js
-│   │   ├── Button.js
-│   │   ├── ButtonGroup.js
-│   │   ├── ColorPicker.js
-│   │   ├── ConfirmModal.js
-│   │   ├── Console.js
-│   │   ├── Container.js
-│   │   ├── ContentArea.js
-│   │   ├── Devider.js
-│   │   ├── Dropdown.js
-│   │   ├── DynamicListBox.js
-│   │   ├── GameConsole.js
-│   │   ├── Header.js
-│   │   ├── Label.js
-│   │   ├── Notification.js
-│   │   ├── PanelContainer.js
-│   │   ├── SideNav.js
-│   │   ├── Slider.js
-│   │   ├── Spacer.js
-│   │   ├── Tab.js
-│   │   ├── TextInput.js
-│   │   ├── ToggleGroup.js
-│   │   ├── ToggleSwitch.js
-│   ├── UIManager.js
-├── MeowEngine/
-│   ├── Bot/
-│   │   ├── PhotonBot.js
->>>>>>> b10193e23ba47035c2f6a181ca38e0b9efe25495
 │   ├── Photon/
 │   │   ├── Enums/
 │   │   │   ├── DataType.js
