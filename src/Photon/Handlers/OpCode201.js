@@ -166,12 +166,16 @@ export class OpCode201 {
   }
 
   static handlePlayerUpdate(data) {
-    MeowEngine.RoomInstance.Players[data.actorNr].position = data.position;
-    MeowEngine.RoomInstance.Players[data.actorNr].rotation = data.rotation;
-    MeowEngine.RoomInstance.Players[data.actorNr].health = data.health;
-    MeowEngine.RoomInstance.Players[data.actorNr].pitch = data.pitch;
-    MeowEngine.RoomInstance.Players[data.actorNr].yaw = data.yaw;
-    MeowEngine.RoomInstance.Players[data.actorNr].ping = data.ping;
+    const playerEntry = MeowEngine.RoomInstance.Players.find(player => 
+        Object.keys(player).includes(data.actorNr.toString())
+    );
+    
+    playerEntry[data.actorNr].position = data.position;
+    playerEntry[data.actorNr].rotation = data.rotation;
+    playerEntry[data.actorNr].health = data.health;
+    playerEntry[data.actorNr].pitch = data.pitch;
+    playerEntry[data.actorNr].yaw = data.yaw;
+    playerEntry[data.actorNr].ping = data.ping;
   }
 
   static handleLocalPlayerUpdate(data) {

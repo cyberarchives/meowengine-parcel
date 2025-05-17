@@ -73,6 +73,7 @@ MeowEngine Parcel/
 │   │   │   ├── TextInput.js
 │   │   │   ├── ToggleGroup.js
 │   │   │   └── ToggleSwitch.js
+│   │   ├── Examples.md
 │   │   └── UIManager.js
 │   ├── MeowEngine/
 │   │   ├── Bot/
@@ -170,6 +171,112 @@ To run in development mode with hot reloading:
 ```bash
 pnpm dev
 ```
+
+## Making Your Own Mod
+
+### Key Files
+
+- The main entry file is located at `/src/index.js`. This is where you can add or modify UI elements and core functionality.
+- UI components can be found in the `/src/components/` directory.
+
+### Getting Started with Modding
+
+1. Begin by exploring `/src/index.js` which serves as the application's entry point.
+2. To create new UI elements:
+   - Look at src/Menu/Examples.md
+
+3. Modify existing features by editing the corresponding files in the core directory.
+
+# Player Management System
+
+## Overview
+The MeowEngine includes a robust player management system that provides access to detailed player information across your game environment. This functionality is crucial for implementing multiplayer features, leaderboards, and player interactions.
+
+## Accessing Players
+
+You can retrieve all players in the current room instance using the following method:
+
+```javascript
+function GetPlayers() {
+   return MeowEngine.RoomInstance.Players;
+}
+
+const players = GetPlayers();
+```
+
+## Player Object Structure
+
+Each player is represented by an object containing the following properties:
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `actorNr` | Integer | Unique player identifier within the room |
+| `name` | String | Player's display name |
+| `rank` | Integer | Player's current ranking |
+| `kd` | Float | Player's kill/death ratio |
+| `team` | Integer | Team identifier (0, 1, etc.) |
+| `kills` | Integer | Current kill count |
+| `platform` | String | Platform identifier (e.g., "WebGLPlayer") |
+| `position` | Object | Player's current position coordinates |
+| `rotation` | Object | Player's current rotation values |
+| `pitch` | Float | Player's current pitch angle |
+| `yaw` | Float | Player's current yaw angle |
+| `health` | Integer | Player's current health value |
+| `ping` | Integer | Player's connection latency in ms |
+
+## Example Output
+
+```javascript
+[
+  {
+    33: {
+      actorNr: 33,
+      name: "PC-howtobenon",
+      rank: 16,
+      kd: 0.5584825873374939,
+      team: 0,
+      kills: 0,
+      platform: "WebGLPlayer",
+      position: {},
+      rotation: {},
+      pitch: 0,
+      yaw: 0,
+      health: 0,
+      ping: 0,
+    },
+  },
+  {
+    13: {
+      actorNr: 13,
+      name: "PC-JEIMGAM123",
+      rank: 200,
+      kd: 0.7697934508323669,
+      team: 1,
+      kills: 0,
+      platform: "WebGLPlayer",
+      position: {},
+      rotation: {},
+      pitch: 0,
+      yaw: 0,
+      health: 0,
+      ping: 0,
+    },
+  },
+]
+```
+
+## Common Use Cases
+
+- **Team Assignment**: Filter players by their `team` property
+- **Leaderboards**: Sort players based on `rank` or `kd` ratio
+- **Proximity Features**: Calculate distances between players using `position` data
+
+### Best Practices
+
+- Keep UI components separate from core functionality
+- Use the existing SDK for network-related operations
+- Test thoroughly in development mode before building
+- Consider adding comments to document your modifications
 
 ## Contributing
 
