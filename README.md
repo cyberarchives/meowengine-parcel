@@ -32,6 +32,9 @@ This custom implementation allows developers to use familiar Photon-style networ
 
 ![image](https://github.com/user-attachments/assets/51f54ed4-5392-4802-9a7c-da952a107cb5)
 
+## Network Patches
+- Check [Patching File](https://github.com/cyberarchives/meowengine-parcel/blob/main/src/MeowEngine/Patching/Entry.js) for more details
+
 ## Project Structure
 
 ```
@@ -91,7 +94,7 @@ meowengine-parcel/
 │   │   ├── Bot/
 │   │   │   └── PhotonBot.js
 │   │   ├── Patching/
-│   │   │   └── Entry.js
+│   │   │   └── Entry.js # Patch listeners (Add your own patches here)
 │   │   └── Photon/
 │   │       ├── Instance/
 │   │       │   └── GameSocket.js
