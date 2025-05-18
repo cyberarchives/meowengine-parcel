@@ -24,7 +24,6 @@ GameUtils.waitForUnityInstance(() => {
     // set up GlobalTypeDefs
     MeowEngine.FairCollection.InitOperation = FairCollection.InitOperation;
     MeowEngine.FairCollection.Instance = FairCollection;
-    MeowEngine.SDK.FairCollection = FairCollection;
 
     // Override socket to add Photon reading and writing logic
     SocketManager.overrideSocket();

@@ -17,7 +17,7 @@ export class HttpRequestManager {
             }
 
             if (parsedUrl.includes("get_multiplayer_auth_code.php")) {
-                let result = await MeowEngine.FairCollection.InitOperation();
+                let result = await FairCollection.InitOperation();
 
                 MeowEngine.Log.Instance.info(`Decoding FairCollection properties with ${result}`);
             }

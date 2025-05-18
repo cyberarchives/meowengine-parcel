@@ -1,5 +1,6 @@
 import MeowEngine from "../../Browser/GlobalTypeDefs";
 import GameUtils from "../../Browser/Utility/GameUtils";
+import FairCollection from "../../Bullet Force/FairPlayAPI/FairCollection";
 
 // New parser for the structured JSON data
 export class OpCode201 {
@@ -170,7 +171,7 @@ export class OpCode201 {
         Object.keys(player).includes(data.actorNr.toString())
     );
     
-    let position = MeowEngine.FairCollection.Instance.GetDecryptedVector3({ x: data.position.f1, y: data.position.f2, z: data.position.f3 });
+    let position = FairCollection.GetDecryptedVector3({ x: data.position.f1, y: data.position.f2, z: data.position.f3 });
 
     playerEntry[data.actorNr].position = position;
     playerEntry[data.actorNr].rotation = data.rotation;
@@ -181,7 +182,7 @@ export class OpCode201 {
   }
 
   static handleLocalPlayerUpdate(data) {
-    let position = MeowEngine.FairCollection.Instance.GetDecryptedVector3({ x: data.position.f1, y: data.position.f2, z: data.position.f3 });
+    let position = FairCollection.GetDecryptedVector3({ x: data.position.f1, y: data.position.f2, z: data.position.f3 });
     MeowEngine.LocalPlayer.ViewId = data.photonViewId;
     MeowEngine.LocalPlayer.ActorNr = GameUtils.viewIdToActorNr(data.photonViewId);
     MeowEngine.LocalPlayer.Position = position;
