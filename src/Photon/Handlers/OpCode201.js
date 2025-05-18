@@ -179,12 +179,15 @@ export class OpCode201 {
   }
 
   static handleLocalPlayerUpdate(data) {
+    MeowEngine.LocalPlayer.ViewId = data.photonViewId;
+    MeowEngine.LocalPlayer.ActorNr = GameUtils.viewIdToActorNr(data.photonViewId);
     MeowEngine.LocalPlayer.Position = data.position;
     MeowEngine.LocalPlayer.Rotation = data.rotation;
     MeowEngine.LocalPlayer.Health = data.health;
     MeowEngine.LocalPlayer.Pitch = data.pitch;
     MeowEngine.LocalPlayer.Yaw = data.yaw;
     MeowEngine.LocalPlayer.Ping = data.ping;
+    MeowEngine.LocalPlayer.Username = "(NOT IMPLEMENTED)";
   }
 }
 

@@ -36,7 +36,11 @@ export class SocketManager {
                         MeowEngine.Log.Instance.info("Outgoing packet:", packet);
                     }
 
-                    if (packet.code == 253 && packet.params["245"]) {
+                    if (packet.code === 253 && 
+                        packet.params && 
+                        packet.params["245"] && 
+                        packet.params["245"]["int8 10"] && 
+                        packet.params["245"]["int8 10"].length > 10) {
                         const parser = new OpCode201(packet);
                         OpCode201.handleLocalPlayerUpdate(parser.parseOutgoing());
                     }

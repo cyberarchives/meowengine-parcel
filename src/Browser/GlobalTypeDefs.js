@@ -56,6 +56,13 @@ export const MeowEngine = {
         Health: 10000,
         Ping: 999,
         Perks: []
+    },
+    CanvasConsole: {
+        Log: null,
+        Enabled: true
+    },
+    PerformancePanel: {
+        Enabled: true
     }
 };
 

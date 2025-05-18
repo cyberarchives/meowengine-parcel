@@ -11,8 +11,8 @@ export class HttpRequestManager {
             if (parsedUrl.includes('leftV2.php')) {
                 PlayerList.clearPlayerlist();
 
-                MeowEngine.Log.Instance.debug("Player list cleared");
-                MeowEngine.Log.Instance.debug("You left the room!");
+                MeowEngine.Log.Instance.info("Player list cleared");
+                MeowEngine.Log.Instance.info("You left the room!");
             }
 
             return originalFetch(input, init);

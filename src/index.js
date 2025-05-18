@@ -2,6 +2,8 @@ import MeowEngine from './Browser/GlobalTypeDefs';
 import CustomLogs from './Browser/Utility/CustomLogs';
 import GameUtils from './Browser/Utility/GameUtils';
 import FairCollection from './Bullet Force/FairPlayAPI/FairCollection';
+import CanvasConsole from './Menu/CanvasComponents/CanvasConsole';
+import PerformancePanel from './Menu/CanvasComponents/PerformancePanel';
 import { UI } from './Menu/UIManager';
 import HttpRequestManager from './Photon/HttpRequestManager';
 import SocketManager from './Photon/SocketManager';
@@ -40,6 +42,45 @@ GameUtils.waitForUnityInstance(() => {
 
     // Initialize UI
     const ui = new UI(newContainer.id);
+
+    // Create a canvas to disable cursor events when the menu is shown
+    const canvas = document.createElement('canvas');
+    canvas.id = 'overlayCanvas';
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    Object.assign(canvas.style, {
+        position: 'fixed',
+        top: '0',
+        left: '0',
+        width: '100%',
+        height: '100%',
+        zIndex: '9999',
+        backgroundColor: 'transparent',
+        opacity: '1',
+        pointerEvents: 'auto'
+    });
+
+    document.body.appendChild(canvas);
+
+    function toggleCanvas() {
+        if (canvas.style.opacity === '0') {
+            canvas.style.opacity = '1';
+            canvas.style.pointerEvents = 'auto';
+            ui.show();
+        } else {
+            canvas.style.opacity = '0';
+            canvas.style.pointerEvents = 'none';
+            ui.hide();
+        }
+    }
+    
+    document.addEventListener('keydown', (event) => {
+        if (event.key === 'v') {
+            toggleCanvas();
+        }
+    });
+
     // Create tabs
     const tabs = [
         {
@@ -117,5 +158,16 @@ GameUtils.waitForUnityInstance(() => {
         container.appendChild(stopRainbowButton);
 
         return container;
+    }
+
+    // You can toggle this by setting Enabled to true or false in '/src/Browser/GlobalTypeDefs.js'
+    if (MeowEngine.CanvasConsole.Enabled) {
+        CanvasConsole.createConsole();
+    }
+
+    // You can toggle this by setting Enabled to true or false in '/src/Browser/GlobalTypeDefs.js'
+    if (MeowEngine.PerformancePanel.Enabled) {
+        const performancePanel = PerformancePanel.initialize();
+        performancePanel.setPosition("topRight");
     }
 });

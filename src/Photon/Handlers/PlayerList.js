@@ -16,6 +16,7 @@ class PlayerList {
       const platform = value.platform ?? "Unknown";
 
       MeowEngine.Log.Instance.info(`[${actorNr}] ${name} joined the game`);
+      MeowEngine.CanvasConsole.Log(`[<color=#00ffaa>MeowEngine</color>] [<color=#9B59B6>JOIN</color>]: [${actorNr}] ${name}`)
 
       // Utilize the player entry
       let usrEntry = {};
@@ -63,6 +64,7 @@ class PlayerList {
         const platform = value.platform ?? "Unknown";
 
         MeowEngine.Log.Instance.join(`[${actorNr}] ${name}`);
+        MeowEngine.CanvasConsole.Log(`[<color=#00ffaa>MeowEngine</color>] [<color=#9B59B6>JOIN</color>]: [${actorNr}] ${name}`)
 
         // Create the player entry
         let usrEntry = {};
@@ -109,6 +111,8 @@ class PlayerList {
       const playerEntry = MeowEngine.RoomInstance.Players[playerIndex];
       const player = playerEntry[leavingPlayerId];
       MeowEngine.Log.Instance.leave(player.name);
+
+      MeowEngine.CanvasConsole.Log(`[<color=#00ffaa>MeowEngine</color>] [<color=#34495E>LEAVE</color>]: [${leavingPlayerId}] ${player.name}`)
 
       // Remove the player from the array
       MeowEngine.RoomInstance.Players.splice(playerIndex, 1);

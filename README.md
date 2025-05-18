@@ -32,7 +32,7 @@ This custom implementation allows developers to use familiar Photon-style networ
 
 ```
 meowengine-parcel/
-├── dist/ # Built files (Not included in repo)
+├── dist/ # Built files
 │   ├── index.js # Main entry point
 │   └── meowengine.user.js
 ├── lib/
@@ -51,6 +51,9 @@ meowengine-parcel/
 │   │   └── FairPlayAPI/
 │   │       └── FairCollection.js
 │   ├── Menu/
+│   │   ├── CanvasComponents/
+│   │   │   ├── CanvasConsole.js
+│   │   │   └── PerformancePanel.js
 │   │   ├── Components/ # UI components
 │   │   │   ├── 3DViewPort.js
 │   │   │   ├── Button.js
