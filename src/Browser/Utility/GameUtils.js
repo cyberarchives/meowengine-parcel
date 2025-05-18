@@ -8,7 +8,7 @@ class GameUtils {
     // Create a dedicated logger for GameUtils
     static logger = new CustomLogs({ 
         title: 'MeowEngine',
-        minLevel: 'MEOW'
+        minLevel: 'DEBUG'
     });
 
     /**

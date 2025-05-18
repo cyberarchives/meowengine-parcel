@@ -71,7 +71,7 @@ export class CustomLogs {
 
     // Add title
     formatString += "%c[%s]";
-    parts.push(`color: #444; font-weight: bold;`, this.title);
+    parts.push(`color: #00ffaa; font-weight: bold;`, this.title);
 
     // Add log level
     formatString += "%c[%s]:%c";
