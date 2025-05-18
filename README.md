@@ -1,5 +1,19 @@
 # MeowEngine Parcel
 
+## Table of Contents
+- [Disclaimer](#disclaimer)
+- [Overview](#overview)
+- [Features](#features)
+- [SDK](#sdk)
+- [Network Patches](#network-patches)
+- [Project Structure](#project-structure)
+- [Installation](#installation)
+- [Development](#development)
+- [Making Your Own Mod](#making-your-own-mod)
+- [Player Management System](#player-management-system)
+- [Contributing](#contributing)
+- [License](#license)
+
 A high-performance Bullet Force Cheat Engine rebuilt with Parcel bundler for optimized performance and enhanced code organization.
 
 ## ⚠️ Disclaimer: This project is intended for educational and personal use only.
