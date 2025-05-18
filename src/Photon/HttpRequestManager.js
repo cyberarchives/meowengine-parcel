@@ -1,4 +1,5 @@
 import MeowEngine from "../Browser/GlobalTypeDefs";
+import FairCollection from "../Bullet Force/FairPlayAPI/FairCollection";
 import PlayerList from "./Handlers/PlayerList";
 
 export class HttpRequestManager {
@@ -13,6 +14,12 @@ export class HttpRequestManager {
 
                 MeowEngine.Log.Instance.info("Player list cleared");
                 MeowEngine.Log.Instance.info("You left the room!");
+            }
+
+            if (parsedUrl.includes("get_multiplayer_auth_code.php")) {
+                let result = await MeowEngine.FairCollection.InitOperation();
+
+                MeowEngine.Log.Instance.info(`Decoding FairCollection properties with ${result}`);
             }
 
             return originalFetch(input, init);

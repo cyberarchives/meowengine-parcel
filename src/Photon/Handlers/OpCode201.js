@@ -170,7 +170,9 @@ export class OpCode201 {
         Object.keys(player).includes(data.actorNr.toString())
     );
     
-    playerEntry[data.actorNr].position = data.position;
+    let position = MeowEngine.FairCollection.Instance.GetDecryptedVector3({ x: data.position.f1, y: data.position.f2, z: data.position.f3 });
+
+    playerEntry[data.actorNr].position = position;
     playerEntry[data.actorNr].rotation = data.rotation;
     playerEntry[data.actorNr].health = data.health;
     playerEntry[data.actorNr].pitch = data.pitch;
@@ -179,9 +181,10 @@ export class OpCode201 {
   }
 
   static handleLocalPlayerUpdate(data) {
+    let position = MeowEngine.FairCollection.Instance.GetDecryptedVector3({ x: data.position.f1, y: data.position.f2, z: data.position.f3 });
     MeowEngine.LocalPlayer.ViewId = data.photonViewId;
     MeowEngine.LocalPlayer.ActorNr = GameUtils.viewIdToActorNr(data.photonViewId);
-    MeowEngine.LocalPlayer.Position = data.position;
+    MeowEngine.LocalPlayer.Position = position;
     MeowEngine.LocalPlayer.Rotation = data.rotation;
     MeowEngine.LocalPlayer.Health = data.health;
     MeowEngine.LocalPlayer.Pitch = data.pitch;

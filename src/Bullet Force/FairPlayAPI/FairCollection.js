@@ -122,10 +122,15 @@ export class FairCollection {
      * @returns {Promise<void>}
      */
     static async InitOperation() {
+        let res = "";
         if (!this.#enabled) {
             await this.#initRequest();
             this.#initData();
+
+            res = this.#response;
         }
+
+        return res;
     }
 
     /**
