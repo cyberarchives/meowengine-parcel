@@ -217,21 +217,14 @@ export class PhotonClient {
   }
 
   TransferOwnership(viewID, playerID) {
-    const packet = PacketBuilder.createRequest(OperationCode.RaiseEvent)
-      .addParam(ParameterCode.Code, PacketBuilder.types.byte(210))
-      //.addParam(ParameterCode.ActorList, PacketBuilder.types.integerArray([viewID, playerID]))
-      .addParam(
-        ParameterCode.Data,
-        PacketBuilder.types.integerArray([viewID, playerID])
-      )
-      .addParam(
-        ParameterCode.ReceiverGroup,
-        PacketBuilder.types.byte(ReceiverGroup.All)
-      );
-
-    let args = [];
-    args[0] = packet.toBuffer();
-    this.originalSend.apply(this.socket, args);
+    let raiseEventOptions = new RaiseEventOptions();
+    raiseEventOptions.CachingOption = EventCaching.AddToRoomCache;
+    raiseEventOptions.Receivers = ReceiverGroup.All;
+    
+    let sendOptions = new SendOptions();
+    sendOptions.Reliability = true;
+    
+    return this.OpRaiseEvent(210, [viewID, playerID], raiseEventOptions, sendOptions);
   }
 }
 

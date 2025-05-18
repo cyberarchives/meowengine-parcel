@@ -5,7 +5,7 @@ import OpRaiseEventHandler from "../Patches/OpRaiseEvent";
 import OperationCode from "./Enums/OperationCode";
 import OpCode201 from "./Handlers/OpCode201";
 import PlayerList from "./Handlers/PlayerList";
-import { PhotonClient } from "./PhotonNetwork";
+import { PhotonClient } from "./PhotonClient";
 
 export class SocketManager {
     static packetCount = 0;

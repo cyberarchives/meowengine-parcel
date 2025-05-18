@@ -162,7 +162,7 @@ meowengine-parcel/
 │   │   │   ├── PacketBuilder.js
 │   │   │   └── Serializer.js
 │   │   ├── HttpRequestManager.js
-│   │   ├── PhotonNetwork.js
+│   │   ├── PhotonClient.js
 │   │   └── SocketManager.js
 │   └── index.js # Main entry point
 ├── .parcelrc # Parcel configuration
