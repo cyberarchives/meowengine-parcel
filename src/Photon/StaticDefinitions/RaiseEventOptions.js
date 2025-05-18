@@ -1,3 +1,6 @@
+import { EventCaching } from "../Enums/EventCaching";
+import { ReceiverGroup } from "../Enums/ReceiverGroup";
+
 export class RaiseEventOptions {
     constructor() {
         this.CachingOption = EventCaching.DoNotCache;

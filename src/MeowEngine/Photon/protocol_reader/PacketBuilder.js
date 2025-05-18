@@ -1,263 +1,412 @@
-import { DataType, PacketType } from './constants';
-import { ProtocolWriter } from './ProtocolWriter';
-import { Buffer } from "../../../Browser/Utility/Buffer";
+import { Writer } from "./Old/OldWriter";
 
-/**
- * PacketBuilder - A utility class for building protocol packets
- * 
- * This class provides a fluent interface for constructing various types of packets
- * based on the protocol defined in ProtocolReader and ProtocolWriter.
- */
 export class PacketBuilder {
   /**
-   * Create a new PacketBuilder instance
+   * Creates a new request packet (type 2)
+   * @param {number} opCode - The operation code for the request
+   * @returns {Object} A new Photon packet object
    */
-  constructor() {
-    this.writer = new ProtocolWriter();
-    this.packetType = null;
-    this.operationCode = null;
-    this.parameters = {};
+  static createRequest(opCode) {
+      return {
+          magic: 0xf3,
+          type: 2,
+          op_code: opCode,
+          encrypted: false,
+          relay: false,
+          sections: [],
+          // Helper method to add a parameter to the packet
+          addParam(key, typeObj) {
+              this.sections.push([key, typeObj]);
+              return this;
+          },
+          // Serializes the packet to an ArrayBuffer, this is used most of the time, this serializes the data and allows it to be sent back
+          toBuffer() {
+              const serializer = new Writer(this);
+              return serializer.serialize();
+          },
+          // Converts the packet to a base64 string if needed
+          toBase64() {
+              const buffer = this.toBuffer();
+              const bytes = new Uint8Array(buffer);
+              const binary = Array.from(bytes)
+                  .map(byte => String.fromCharCode(byte))
+                  .join('');
+              return btoa(binary);
+          },
+          // Converts the packet to a hex string, most likely used in rare cases
+          toHex() {
+              const buffer = this.toBuffer();
+              return Array.from(new Uint8Array(buffer))
+                  .map(b => b.toString(16).padStart(2, '0'))
+                  .join('');
+          },
+      };
   }
 
   /**
-   * Start building an OperationRequest packet
-   * @param {number} operationCode - The operation code for the request
-   * @returns {PacketBuilder} - Returns this for chaining
+   * Creates a new event packet (type 4)
+   * @param {number} eventId - The event ID
+   * @returns {Object} A new Photon packet object
    */
-  operation(operationCode) {
-    this.packetType = PacketType.Operation;
-    this.operationCode = operationCode;
-    return this;
+  static createEvent(eventId) {
+      return {
+          magic: 0xf3,
+          type: 4,
+          event_id: eventId,
+          encrypted: false,
+          relay: false,
+          sections: [],
+          // Helper method to add a parameter to the packet
+          addParam(key, typeObj) {
+              this.sections.push([key, typeObj]);
+              return this;
+          },
+          // Serializes the packet to an ArrayBuffer
+          toBuffer() {
+              const serializer = new Writer(this);
+              return serializer.serialize();
+          },
+          // Converts the packet to a base64 string
+          toBase64() {
+              const buffer = this.toBuffer();
+              const bytes = new Uint8Array(buffer);
+              const binary = Array.from(bytes)
+                  .map(byte => String.fromCharCode(byte))
+                  .join('');
+              return btoa(binary);
+          },
+          // Converts the packet to a hex string
+          toHex() {
+              const buffer = this.toBuffer();
+              return Array.from(new Uint8Array(buffer))
+                  .map(b => b.toString(16).padStart(2, '0'))
+                  .join('');
+          },
+      };
   }
 
   /**
-   * Start building an InternalOperationRequest packet
-   * @param {number} operationCode - The operation code for the request
-   * @returns {PacketBuilder} - Returns this for chaining
+   * Creates a new response packet (type 3)
+   * @param {number} returnCode - The return code for the response
+   * @param {string} debugMessage - Debug message (optional)
+   * @returns {Object} A new Photon packet object
    */
-  internalOperation(operationCode) {
-    this.packetType = PacketType.InternalOperationRequest;
-    this.operationCode = operationCode;
-    return this;
+  static createResponse(returnCode, debugMessage = '') {
+      return {
+          magic: 0xf3,
+          type: 3,
+          return_code: returnCode,
+          debug_message: {
+              type: 0x73,
+              data: debugMessage,
+          },
+          encrypted: false,
+          relay: false,
+          sections: [],
+          // Helper method to add a parameter to the packet
+          addParam(key, typeObj) {
+              this.sections.push([key, typeObj]);
+              return this;
+          },
+          // Serializes the packet to an ArrayBuffer
+          toBuffer() {
+              const serializer = new Writer(this);
+              return serializer.serialize();
+          },
+          // Converts the packet to a base64 string
+          toBase64() {
+              const buffer = this.toBuffer();
+              const bytes = new Uint8Array(buffer);
+              const binary = Array.from(bytes)
+                  .map(byte => String.fromCharCode(byte))
+                  .join('');
+              return btoa(binary);
+          },
+          // Converts the packet to a hex string
+          toHex() {
+              const buffer = this.toBuffer();
+              return Array.from(new Uint8Array(buffer))
+                  .map(b => b.toString(16).padStart(2, '0'))
+                  .join('');
+          },
+      };
   }
 
   /**
-   * Start building an Event packet
-   * @param {number} eventCode - The event code
-   * @returns {PacketBuilder} - Returns this for chaining
+   * Creates a new ping packet (magic 0xF0)
+   * @param {number} serverTime - Server time
+   * @param {number} clientTime - Client time
+   * @returns {Object} A new Photon packet object
    */
-  event(eventCode) {
-    this.packetType = PacketType.Event;
-    this.operationCode = eventCode; // reusing operationCode field for eventCode
-    return this;
+  static createPing(serverTime, clientTime) {
+      return {
+          magic: 0xf0,
+          server_time: serverTime,
+          client_time: clientTime,
+          // Serializes the packet to an ArrayBuffer
+          toBuffer() {
+              const serializer = new Writer(this);
+              return serializer.serialize();
+          },
+          // Converts the packet to a base64 string
+          toBase64() {
+              const buffer = this.toBuffer();
+              return btoa(String.fromCharCode(...new Uint8Array(buffer)));
+          },
+      };
   }
 
   /**
-   * Start building an InitResponse packet
-   * @returns {PacketBuilder} - Returns this for chaining
+   * Helper to create common Photon type objects
    */
-  initResponse() {
-    this.packetType = PacketType.InitResponse;
-    return this;
-  }
+  static types = {
+      // Null value
+      null() {
+          return {
+              type: 0x2a,
+              data: null,
+          };
+      },
+      // String value
+      string(value) {
+          return {
+              type: 0x73,
+              data: value,
+          };
+      },
+      // Boolean value
+      boolean(value) {
+          return {
+              type: 0x6f,
+              data: !!value,
+          };
+      },
+      // Integer value
+      integer(value) {
+          return {
+              type: 0x69,
+              data: value,
+          };
+      },
+      // Short value
+      short(value) {
+          return {
+              type: 0x6b,
+              data: value,
+          };
+      },
+      // Byte value
+      byte(value) {
+          return {
+              type: 0x62,
+              data: value,
+          };
+      },
+      // Float value
+      float(value) {
+          return {
+              type: 0x66,
+              data: value,
+          };
+      },
+      // Double value
+      double(value) {
+          return {
+              type: 0x64,
+              data: value,
+          };
+      },
+      // Long value (BigInt)
+      long(value) {
+          return {
+              type: 0x6c,
+              data: BigInt(value),
+          };
+      },
+      // ByteArray value
+      byteArray(value) {
+          return {
+              type: 0x78,
+              data: value,
+          };
+      },
+      // IntArray value
+      intArray(value) {
+          return {
+              type: 0x6e,
+              data: value,
+          };
+      },
+      // StringArray value
+      stringArray(value) {
+          return {
+              type: 0x61,
+              data: value,
+          };
+      },
+      // ObjectArray value
+      objectArray(value) {
+          return {
+              type: 0x7a,
+              data: value,
+          };
+      },
+      // Dictionary value
+      dictionary(keyType, valType, entries = []) {
+          const map = new Map();
+          for (const [key, val] of entries) {
+              map.set(key, val);
+          }
 
-  /**
-   * Add a string parameter to the packet
-   * @param {number} key - The parameter key
-   * @param {string} value - The string value
-   * @returns {PacketBuilder} - Returns this for chaining
-   */
-  withString(key, value) {
-    this.parameters[key] = value;
-    return this;
-  }
+          // Add helper methods
+          const extendMap = map => {
+              map.rawGet = map.get;
+              map.rawSet = map.set;
+              map.get = function(key) {
+                  return map.rawGet(
+                      Array.from(map.keys()).find(
+                          x => x.type === key.type && x.data === key.data
+                      )
+                  );
+              };
+              map.set = function(key, value) {
+                  return map.rawSet(
+                      Array.from(map.keys()).find(
+                          x => x.type === key.type && x.data === key.data
+                      ),
+                      value
+                  );
+              };
+              map.byIndex = function(idx) {
+                  let index = 0;
+                  for (const value of map.values()) {
+                      if (index === idx) return value;
+                      index++;
+                  }
+                  return undefined;
+              };
+          };
+          extendMap(map);
+          return {
+              type: 0x44,
+              data: {
+                  keyType,
+                  valType,
+                  map,
+              },
+          };
+      },
+      // HashTable value
+      hashTable(entries = []) {
+          const map = new Map();
+          for (const [key, val] of entries) {
+              map.set(key, val);
+          }
 
-  /**
-   * Add a byte array parameter to the packet
-   * @param {number} key - The parameter key
-   * @param {Buffer|Uint8Array} value - The byte array value
-   * @returns {PacketBuilder} - Returns this for chaining
-   */
-  withBytes(key, value) {
-    this.parameters[key] = Buffer.from(value);
-    return this;
-  }
-
-  /**
-   * Add an integer parameter to the packet
-   * @param {number} key - The parameter key
-   * @param {number} value - The integer value
-   * @returns {PacketBuilder} - Returns this for chaining
-   */
-  withInteger(key, value) {
-    this.parameters[key] = { 
-      writeType: (writer) => writer.writeUint8(DataType.Integer),
-      writeValue: (writer) => writer.writeInt32(value)
-    };
-    return this;
-  }
-
-  /**
-   * Add a short parameter to the packet
-   * @param {number} key - The parameter key
-   * @param {number} value - The short value
-   * @returns {PacketBuilder} - Returns this for chaining
-   */
-  withShort(key, value) {
-    this.parameters[key] = { 
-      writeType: (writer) => writer.writeUint8(DataType.Short),
-      writeValue: (writer) => writer.writeInt16(value)
-    };
-    return this;
-  }
-
-  /**
-   * Add a boolean parameter to the packet
-   * @param {number} key - The parameter key
-   * @param {boolean} value - The boolean value
-   * @returns {PacketBuilder} - Returns this for chaining
-   */
-  withBoolean(key, value) {
-    this.parameters[key] = value;
-    return this;
-  }
-
-  /**
-   * Add a float parameter to the packet
-   * @param {number} key - The parameter key
-   * @param {number} value - The float value
-   * @returns {PacketBuilder} - Returns this for chaining
-   */
-  withFloat(key, value) {
-    this.parameters[key] = { 
-      writeType: (writer) => writer.writeUint8(DataType.Float),
-      writeValue: (writer) => writer.writeFloat32(value)
-    };
-    return this;
-  }
-
-  /**
-   * Add a double parameter to the packet
-   * @param {number} key - The parameter key
-   * @param {number} value - The double value
-   * @returns {PacketBuilder} - Returns this for chaining
-   */
-  withDouble(key, value) {
-    this.parameters[key] = { 
-      writeType: (writer) => writer.writeUint8(DataType.Double),
-      writeValue: (writer) => writer.writeFloat64(value)
-    };
-    return this;
-  }
-
-  /**
-   * Add a string array parameter to the packet
-   * @param {number} key - The parameter key
-   * @param {string[]} value - The string array value
-   * @returns {PacketBuilder} - Returns this for chaining
-   */
-  withStringArray(key, value) {
-    this.parameters[key] = value;
-    return this;
-  }
-
-  /**
-   * Add an integer array parameter to the packet
-   * @param {number} key - The parameter key
-   * @param {number[]} value - The integer array value
-   * @returns {PacketBuilder} - Returns this for chaining
-   */
-  withIntArray(key, value) {
-    this.parameters[key] = new Int32Array(value);
-    return this;
-  }
-
-  /**
-   * Add a hashtable parameter to the packet
-   * @param {number} key - The parameter key
-   * @param {Object} value - The hashtable value
-   * @returns {PacketBuilder} - Returns this for chaining
-   */
-  withHashtable(key, value) {
-    this.parameters[key] = value;
-    return this;
-  }
-
-  /**
-   * Add a generic object array parameter to the packet
-   * @param {number} key - The parameter key
-   * @param {Array} value - The object array value
-   * @returns {PacketBuilder} - Returns this for chaining
-   */
-  withObjectArray(key, value) {
-    this.parameters[key] = value;
-    return this;
-  }
-
-  /**
-   * Add a null parameter to the packet
-   * @param {number} key - The parameter key
-   * @returns {PacketBuilder} - Returns this for chaining
-   */
-  withNull(key) {
-    this.parameters[key] = null;
-    return this;
-  }
-
-  /**
-   * Add a custom parameter to the packet
-   * @param {number} key - The parameter key
-   * @param {any} value - The parameter value
-   * @returns {PacketBuilder} - Returns this for chaining
-   */
-  withParam(key, value) {
-    this.parameters[key] = value;
-    return this;
-  }
-
-  /**
-   * Build the packet and return it as a Buffer
-   * @returns {Buffer} - The constructed packet as a Buffer
-   * @throws {Error} - If packet type is not set
-   */
-  build() {
-    if (this.packetType === null) {
-      throw new Error('Packet type not set');
-    }
-
-    const writer = new ProtocolWriter();
-    writer.writeUint8(0xF3); // Magic byte
-    writer.writeUint8(this.packetType);
-
-    switch (this.packetType) {
-      case PacketType.Operation:
-      case PacketType.InternalOperationRequest:
-        writer.writeUint8(this.operationCode);
-        writer.writeParameterTable(this.parameters);
-        break;
-      case PacketType.Event:
-        writer.writeUint8(this.operationCode); // Event code
-        writer.writeParameterTable(this.parameters);
-        break;
-      case PacketType.InitResponse:
-        // Implement InitResponse packet structure
-        // This might need customization based on the specifics
-        writer.writeParameterTable(this.parameters);
-        break;
-      default:
-        throw new Error(`Unsupported packet type: ${this.packetType}`);
-    }
-
-    return writer.toBytes();
-  }
-}
-
-/**
- * Convenience function to create a new PacketBuilder
- * @returns {PacketBuilder} - A new PacketBuilder instance
- */
-export function createPacket() {
-  return new PacketBuilder();
+          // Add helper methods
+          const extendMap = map => {
+              map.rawGet = map.get;
+              map.rawSet = map.set;
+              map.get = function(key) {
+                  return map.rawGet(
+                      Array.from(map.keys()).find(
+                          x => x.type === key.type && x.data === key.data
+                      )
+                  );
+              };
+              map.set = function(key, value) {
+                  return map.rawSet(
+                      Array.from(map.keys()).find(
+                          x => x.type === key.type && x.data === key.data
+                      ),
+                      value
+                  );
+              };
+              map.byIndex = function(idx) {
+                  let index = 0;
+                  for (const value of map.values()) {
+                      if (index === idx) return value;
+                      index++;
+                  }
+                  return undefined;
+              };
+          };
+          extendMap(map);
+          return {
+              type: 0x68,
+              data: map,
+          };
+      },
+      // Vector2 custom type
+      vector2(x, y) {
+          return {
+              type: 0x63,
+              data: {
+                  variant: 'W',
+                  data: {
+                      x,
+                      y,
+                  },
+              },
+          };
+      },
+      // Vector3 custom type
+      vector3(x, y, z) {
+          return {
+              type: 0x63,
+              data: {
+                  variant: 'V',
+                  data: {
+                      x,
+                      y,
+                      z,
+                  },
+              },
+          };
+      },
+      // Quaternion custom type
+      quaternion(w, x, y, z) {
+          return {
+              type: 0x63,
+              data: {
+                  variant: 'Q',
+                  data: {
+                      w,
+                      x,
+                      y,
+                      z,
+                  },
+              },
+          };
+      },
+      // PhotonPlayer custom type
+      player(playerId) {
+          return {
+              type: 0x63,
+              data: {
+                  variant: 'P',
+                  data: {
+                      player_id: playerId,
+                  },
+              },
+          };
+      },
+      integerArray(value) {
+          return {
+              type: 0x6e,
+              data: value,
+          };
+      },
+      array(elementType, elements) {
+          return {
+              type: 0x79,
+              data: {
+                  type: elementType,
+                  arr: elements,
+              },
+          };
+      },
+  };
 }
 
 export default PacketBuilder;
