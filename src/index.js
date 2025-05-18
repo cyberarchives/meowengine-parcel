@@ -1,10 +1,12 @@
 import MeowEngine from './Browser/GlobalTypeDefs';
+import UnityMessageWrapper from './Browser/UnityInteraction/UnityMessageWrapper';
 import CustomLogs from './Browser/Utility/CustomLogs';
 import GameUtils from './Browser/Utility/GameUtils';
 import FairCollection from './Bullet Force/FairPlayAPI/FairCollection';
 import CanvasConsole from './Menu/CanvasComponents/CanvasConsole';
 import PerformancePanel from './Menu/CanvasComponents/PerformancePanel';
 import { UI } from './Menu/UIManager';
+import Patching from './MeowEngine/Patching/Entry';
 import HttpRequestManager from './Photon/HttpRequestManager';
 import SocketManager from './Photon/SocketManager';
 
@@ -17,19 +19,25 @@ MeowEngine.Log.Instance = new CustomLogs({ title: "MeowEngine", enabled: true, s
 // Wait for UnityInstance to be ready
 // TODO: Add a timeout
 // TODO: Add a check for the unity version
-GameUtils.waitForUnityInstance(() => {
+GameUtils.waitForUnityInstance((instance) => {
     // Ensure MeowEngine is set to window globally
     window.MeowEngine = MeowEngine;
+
+    MeowEngine.UnityInstance = instance;
 
     // set up GlobalTypeDefs
     MeowEngine.FairCollection.InitOperation = FairCollection.InitOperation;
     MeowEngine.FairCollection.Instance = FairCollection;
+
 
     // Override socket to add Photon reading and writing logic
     SocketManager.overrideSocket();
 
     // Initialize the Http Request Manager
     HttpRequestManager.initialize();
+
+    // Initiailize network patches
+    Patching.initPatches();
     
     // Initialize UI
     // TODO: Remove the example UI elements and add a proper UI and features
@@ -77,6 +85,15 @@ GameUtils.waitForUnityInstance(() => {
     document.addEventListener('keydown', (event) => {
         if (event.key === 'v') {
             toggleCanvas();
+        }
+
+        if (event.key === "f") {
+            MeowEngine.Config.flyEnabled = !MeowEngine.Config.flyEnabled;
+            if (MeowEngine.Config.flyEnabled) {
+                UnityMessageWrapper.fly();
+            } else {
+                UnityMessageWrapper.unfly();
+            }
         }
     });
 

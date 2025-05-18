@@ -33,7 +33,8 @@ export const MeowEngine = {
         version: "1.0.0",
         debug: false,
         debugOutgoingPackets: false,
-        debugIncomingPackets: false
+        debugIncomingPackets: false,
+        flyEnabled: false
     },
     UnityInstance: {
         Module: null,

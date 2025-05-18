@@ -39,17 +39,13 @@ class GameUtils {
                     timeToLoad: `${elapsedTime}ms`,
                     checks: attemptNum
                 });
-                
-                // Store Unity instance references
-                MeowEngine.UnityInstance.SendMessage = unityGameInstance.SendMessage;
-                MeowEngine.UnityInstance.Module = unityGameInstance.Module;
-                
+                                
                 // Notify the main logger as well
                 MeowEngine.Log.Instance.success('UnityInstance was found!');
                 
                 // Execute callback
                 GameUtils.logger.info('Executing Unity ready callback');
-                callback();
+                callback(unityGameInstance);
             } else if (elapsedTime > timeout) {
                 // Timeout reached
                 const errorMsg = `Timeout: Unity instance not ready after ${timeout}ms`;

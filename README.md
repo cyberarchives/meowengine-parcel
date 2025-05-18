@@ -44,9 +44,12 @@ meowengine-parcel/
 ├── node_modules/
 ├── src/
 │   ├── Browser/
+│   │   ├── UnityInteraction/
+│   │   │   └── UnityMessageWrapper.js
 │   │   ├── Utility/
 │   │   │   ├── Buffer.js
 │   │   │   ├── CustomLogs.js
+│   │   │   ├── EventEmitter.js
 │   │   │   └── GameUtils.js
 │   │   └── GlobalTypeDefs.js
 │   ├── Bullet Force/
@@ -87,6 +90,8 @@ meowengine-parcel/
 │   ├── MeowEngine/
 │   │   ├── Bot/
 │   │   │   └── PhotonBot.js
+│   │   ├── Patching/
+│   │   │   └── Entry.js
 │   │   └── Photon/
 │   │       ├── Instance/
 │   │       │   └── GameSocket.js
@@ -110,6 +115,9 @@ meowengine-parcel/
 │   │           ├── PacketBuilder.js
 │   │           ├── ProtocolReader.js
 │   │           └── ProtocolWriter.js
+│   ├── Patches/
+│   │   ├── OnEvent.js
+│   │   └── OpRaiseEvent.js
 │   ├── Photon/
 │   │   ├── Enums/
 │   │   │   ├── DataType.js
@@ -121,7 +129,9 @@ meowengine-parcel/
 │   │   │   ├── ParameterCode.js
 │   │   │   └── ReceiverGroup.js
 │   │   ├── Handlers/
+│   │   │   ├── OnEventHandler.js
 │   │   │   ├── OpCode201.js
+│   │   │   ├── OpRaiseEventHandler.js
 │   │   │   └── PlayerList.js
 │   │   ├── StaticDefinitions/
 │   │   │   ├── RaiseEventOptions.js
