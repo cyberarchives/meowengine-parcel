@@ -32,7 +32,7 @@ export const MeowEngine = {
         },
         version: "1.0.0",
         debug: false,
-        debugOutgoingPackets: false,
+        debugOutgoingPackets: true,
         debugIncomingPackets: false,
         flyEnabled: false
     },
@@ -56,7 +56,8 @@ export const MeowEngine = {
         Yaw: 3600,
         Health: 10000,
         Ping: 999,
-        Perks: []
+        Perks: [],
+        ClanTag: ""
     },
     CanvasConsole: {
         Log: null,

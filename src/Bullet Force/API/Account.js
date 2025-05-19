@@ -10,7 +10,17 @@ export class Account {
      * @param {string} input - The input string to hash.
      * @returns {string} The SHA-512 hash of the input string.
      */
-    hashSHA512(input) {
+    static async hashSHA512(input) {
+        const encoder = new TextEncoder();
+        const data = encoder.encode(input);
+        return crypto.subtle.digest('SHA-512', data).then(buffer => {
+            return Array.from(new Uint8Array(buffer))
+                .map(byte => byte.toString(16).padStart(2, '0'))
+                .join('');
+        });
+    }
+
+    async hashSHA512(input) {
         const encoder = new TextEncoder();
         const data = encoder.encode(input);
         return crypto.subtle.digest('SHA-512', data).then(buffer => {
@@ -58,6 +68,24 @@ export class Account {
                 reason: responseData,
             };
         }
+    }
+
+    static async getMultiplayerAuthCode(username, password) {
+        password = await this.hashSHA512(password);
+        const response = await fetch("https://server.blayzegames.com/OnlineAccountSystem/get_multiplayer_auth_code.php?requiredForMobile=1856338943", {
+            "headers": {
+              "accept": "*/*",
+              "accept-language": "en-US,en;q=0.9,ja;q=0.8",
+              "content-type": "application/x-www-form-urlencoded",
+              "Referer": "https://bullet-force-multiplayer.game-files.crazygames.com/",
+            },
+            "body": `password=${password}&username=${username}&username=${username}&password=${password}`,
+            "method": "POST"
+          });
+
+        let authCode = await response.text();
+
+        return authCode;
     }
 }
 

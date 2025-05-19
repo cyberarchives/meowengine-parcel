@@ -22,6 +22,22 @@ export class HttpRequestManager {
                 MeowEngine.Log.Instance.info(`Decoding FairCollection properties with ${result}`);
             }
 
+            if (parsedUrl.includes("player-punish")) {
+                // Temp solution, doesn't work quite yet
+                const response = await originalFetch(input, init);
+
+                let res = {
+                    "status": 4,
+                    "data": []
+                };
+
+                return new Response(JSON.stringify(res), {
+                    status: 200,
+                    statusText: 'OK',
+                    headers: response.headers,
+                });
+            }
+
             return originalFetch(input, init);
         };
     }

@@ -20,7 +20,24 @@ export class ProtocolWriter {
       }
       return;
     }
-
+    
+    // Add handling for number type
+    if (typeof value === 'number') {
+      // Check if it's an integer
+      if (Number.isInteger(value)) {
+        if (writeType) {
+          this.writeUint8(DataType.Integer);
+        }
+        this.writeInt32(value);
+      } else {
+        // Handle floating point numbers
+        if (writeType) {
+          this.writeUint8(DataType.Double);
+        }
+        this.writeFloat64(value);
+      }
+    }
+    
     if (value instanceof Array && value.every(item => typeof item === 'string')) {
       if (writeType) {
         this.writeUint8(DataType.StringArray);

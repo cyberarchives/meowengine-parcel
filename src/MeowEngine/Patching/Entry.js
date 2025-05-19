@@ -1,19 +1,48 @@
 import MeowEngine from "../../Browser/GlobalTypeDefs";
+import Account from "../../Bullet Force/API/Account";
 import OperationCode from "../../Photon/Enums/OperationCode";
 import OnEvent from "../../Photon/Handlers/OnEventHandler";
 import OpCode201 from "../../Photon/Handlers/OpCode201";
 import OpRaiseEvent from "../../Photon/Handlers/OpRaiseEventHandler";
 import PlayerList from "../../Photon/Handlers/PlayerList";
+import PhotonPacket from "../Photon/protocol_reader/Old/OldPacket";
 import ProtocolReader from "../Photon/protocol_reader/ProtocolReader";
 
 export class Patching {
   static initPatches() {
     // Patch the RaiseEvent / Socket Send func
-    OpRaiseEvent.addListener("data", ({ args, data, socket, originalSend }) => {
+    OpRaiseEvent.addListener("data", async ({ args, data, socket, originalSend }) => {
+      const message = args[0];
+      let uint8Array = new Uint8Array(message);
+      let packet = new PhotonPacket(uint8Array.buffer);
+
       if (MeowEngine.Config.debugOutgoingPackets) {
         MeowEngine.Log.Instance.info("Outgoing packet:", data);
-      }
 
+        if (packet.op_code == 252) {
+            if (packet.sections && 
+              packet.sections[0] && 
+              packet.sections[0][1] && 
+              packet.sections[0][1].data) {
+            
+              if (packet.sections[0][1].data.get({type: 98, data: 255}) && typeof (packet.sections[0][1].data.get({type: 98, data: 255}).data) == "string") {
+                let username = packet.sections[0][1].data.get({type: 98, data: 255}).data;
+                if (MeowEngine.LocalPlayer.ClanTag !== "") {
+                  packet.sections[0][1].data.get({type: 98, data: 255}).data = MeowEngine.LocalPlayer.ClanTag + username;
+                }
+              }
+
+          } 
+
+          let args = [];
+          args[0] = packet.serialize();
+          MeowEngine.Log.Instance.info("Username prop set to:", this.username, packet.sections[0][1]);
+          return originalSend.apply(socket, args);
+        }
+
+        return originalSend.apply(socket, args);
+      }
+      
       if (
         data.code === 253 &&
         data.params &&
