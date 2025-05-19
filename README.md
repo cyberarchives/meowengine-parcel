@@ -271,40 +271,257 @@ Each player is represented by an object containing the following properties:
 
 ```javascript
 [
-  {
-    33: {
-      actorNr: 33,
-      name: "PC-howtobenon",
-      rank: 16,
-      kd: 0.5584825873374939,
-      team: 0,
-      kills: 0,
-      platform: "WebGLPlayer",
-      position: {},
-      rotation: {},
-      pitch: 0,
-      yaw: 0,
-      health: 0,
-      ping: 0,
+    {
+        "13": {
+            "actorNr": 13,
+            "name": "",
+            "rank": 0,
+            "kd": 0,
+            "team": 0,
+            "kills": 0,
+            "platform": "Unknown",
+            "position": {
+                "x": -17.88554573059082,
+                "y": 1.6934276819229126,
+                "z": 6.833706855773926
+            },
+            "rotation": {
+                "w": 1,
+                "x": 0,
+                "y": 0,
+                "z": 0
+            },
+            "pitch": 2950,
+            "yaw": 3970,
+            "health": 2264,
+            "ping": 105
+        }
     },
-  },
-  {
-    13: {
-      actorNr: 13,
-      name: "PC-JEIMGAM123",
-      rank: 200,
-      kd: 0.7697934508323669,
-      team: 1,
-      kills: 0,
-      platform: "WebGLPlayer",
-      position: {},
-      rotation: {},
-      pitch: 0,
-      yaw: 0,
-      health: 0,
-      ping: 0,
+    {
+        "11": {
+            "actorNr": 11,
+            "name": "PC-Fredrickbrown",
+            "rank": 16,
+            "kd": 0.6425120830535889,
+            "team": 1,
+            "kills": 0,
+            "platform": "WebGLPlayer",
+            "position": {
+                "x": -42.128578186035156,
+                "y": 5.438340663909912,
+                "z": 24.576688766479492
+            },
+            "rotation": {
+                "w": 1,
+                "x": 0,
+                "y": 0,
+                "z": 0
+            },
+            "pitch": 1530,
+            "yaw": 3224,
+            "health": 10000,
+            "ping": 204
+        }
     },
-  },
+    {
+        "9": {
+            "actorNr": 9,
+            "name": "PC-chucky4",
+            "rank": 35,
+            "kd": 0.9057227969169617,
+            "team": 1,
+            "kills": 0,
+            "platform": "WebGLPlayer",
+            "position": {
+                "x": -50.776187896728516,
+                "y": 5.189589500427246,
+                "z": -6.514407634735107
+            },
+            "rotation": {
+                "w": 1,
+                "x": 0,
+                "y": 0,
+                "z": 0
+            },
+            "pitch": 290,
+            "yaw": -280,
+            "health": null,
+            "ping": 59
+        }
+    },
+    {
+        "8": {
+            "actorNr": 8,
+            "name": "PC-Nzeru",
+            "rank": 16,
+            "kd": 0.5938931107521057,
+            "team": 0,
+            "kills": 1,
+            "platform": "WebGLPlayer",
+            "position": {
+                "x": -8.04712963104248,
+                "y": 5.137051582336426,
+                "z": 33.926910400390625
+            },
+            "rotation": {
+                "w": 1,
+                "x": 0,
+                "y": 0,
+                "z": 0
+            },
+            "pitch": 1550,
+            "yaw": 255,
+            "health": 10000,
+            "ping": 62
+        }
+    },
+    {
+        "6": {
+            "actorNr": 6,
+            "name": "PC-eTurducken",
+            "rank": 2,
+            "kd": 0.4545454680919647,
+            "team": 0,
+            "kills": 0,
+            "platform": "WebGLPlayer",
+            "position": {
+                "x": -62.402469635009766,
+                "y": 5.1363139152526855,
+                "z": 10.234478950500488
+            },
+            "rotation": {
+                "w": 1,
+                "x": 0,
+                "y": 0,
+                "z": 0
+            },
+            "pitch": 880,
+            "yaw": 19,
+            "health": 10000,
+            "ping": 43
+        }
+    },
+    {
+        "4": {
+            "actorNr": 4,
+            "name": "PC-juicyshart",
+            "rank": 9,
+            "kd": 1.0656565427780151,
+            "team": 0,
+            "kills": 0,
+            "platform": "WebGLPlayer",
+            "position": {
+                "x": -50.3499641418457,
+                "y": 6.5234503746032715,
+                "z": -13.241415023803711
+            },
+            "rotation": {
+                "w": 1,
+                "x": 0,
+                "y": 0,
+                "z": 0
+            },
+            "pitch": 1320,
+            "yaw": -335,
+            "health": 4427,
+            "ping": 46
+        }
+    },
+    {
+        "3": {
+            "actorNr": 3,
+            "name": "PC-xxxxderrius",
+            "rank": 1,
+            "kd": 0,
+            "team": 1,
+            "kills": 0,
+            "platform": "WebGLPlayer",
+            "position": {
+                "x": -18.738447189331055,
+                "y": 1.6934278011322021,
+                "z": 8.207507133483887
+            },
+            "rotation": {
+                "w": 1,
+                "x": 0,
+                "y": 0,
+                "z": 0
+            },
+            "pitch": 1200,
+            "yaw": 2603,
+            "health": null,
+            "ping": 61
+        }
+    },
+    {
+        "1": {
+            "actorNr": 1,
+            "name": "PC-trauancoleman",
+            "rank": 19,
+            "kd": 0.17782217264175415,
+            "team": 0,
+            "kills": 0,
+            "platform": "WebGLPlayer",
+            "position": {
+                "x": -8.79213809967041,
+                "y": 5.137052059173584,
+                "z": 35.69183349609375
+            },
+            "rotation": {
+                "w": 1,
+                "x": 0,
+                "y": 0,
+                "z": 0
+            },
+            "pitch": 2810,
+            "yaw": 2965,
+            "health": null,
+            "ping": 105
+        }
+    },
+    {
+        "14": {
+            "actorNr": 14,
+            "name": "",
+            "rank": 0,
+            "kd": 0,
+            "team": 0,
+            "kills": 0,
+            "platform": "Unknown",
+            "position": {},
+            "rotation": {},
+            "pitch": 0,
+            "yaw": 0,
+            "health": 0,
+            "ping": 0
+        }
+    },
+    {
+        "15": {
+            "actorNr": 15,
+            "name": "PC-Leonardo128",
+            "rank": 1,
+            "kd": 0.5909090638160706,
+            "team": 0,
+            "kills": 0,
+            "platform": "WebGLPlayer",
+            "position": {
+                "x": -40.76292419433594,
+                "y": 6.83626651763916,
+                "z": -27.654510498046875
+            },
+            "rotation": {
+                "w": 1,
+                "x": 0,
+                "y": 0,
+                "z": 0
+            },
+            "pitch": 3100,
+            "yaw": 3606,
+            "health": 10000,
+            "ping": 226
+        }
+    }
 ]
 ```
 
