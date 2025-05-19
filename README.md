@@ -271,7 +271,7 @@ Each player is represented by an object containing the following properties:
 
 ```javascript
 [
-    {
+    { // Not sure why the game does this, it sends you an empty player packet
         "13": {
             "actorNr": 13,
             "name": "",
@@ -479,7 +479,7 @@ Each player is represented by an object containing the following properties:
             "ping": 105
         }
     },
-    {
+    { // Not sure why the game does this, it sends you an empty player packet
         "14": {
             "actorNr": 14,
             "name": "",
