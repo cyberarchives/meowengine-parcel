@@ -47,6 +47,10 @@ class PlayerList {
       // Add the player entry to the list
       MeowEngine.RoomInstance.Players.push(usrEntry);
     }
+
+    let playerCount = MeowEngine.RoomInstance.Players.length;
+    MeowEngine.RoomInstance.Information.PlayerCount = playerCount;
+    MeowEngine.PlayerListCanvasComp.Instance.updateTitle(`(${playerCount}) Active Players`);
   }
 
   static handlePlayerJoin(packet) {
@@ -93,6 +97,10 @@ class PlayerList {
         MeowEngine.RoomInstance.Players.push(usrEntry);
       }
     }
+
+    let playerCount = MeowEngine.RoomInstance.Players.length;
+    MeowEngine.RoomInstance.Information.PlayerCount = playerCount;
+    MeowEngine.PlayerListCanvasComp.Instance.updateTitle(`(${playerCount}) Active Players`);
   }
 
   static handlePlayerLeave(packet) {
@@ -126,6 +134,10 @@ class PlayerList {
         `Player with ID ${leavingPlayerId} not found in Players array`
       );
     }
+
+    let playerCount = MeowEngine.RoomInstance.Players.length;
+    MeowEngine.RoomInstance.Information.PlayerCount = playerCount;
+    MeowEngine.PlayerListCanvasComp.Instance.updateTitle(`(${playerCount}) Active Players`);
   }
 
   static clearPlayerlist() {
