@@ -1,70 +1,142 @@
 import MeowEngine from "../../Browser/GlobalTypeDefs";
+import GameUtils from "../../Browser/Utility/GameUtils";
 import Account from "../../Bullet Force/API/Account";
 import OperationCode from "../../Photon/Enums/OperationCode";
 import OnEvent from "../../Photon/Handlers/OnEventHandler";
 import OpCode201 from "../../Photon/Handlers/OpCode201";
 import OpRaiseEvent from "../../Photon/Handlers/OpRaiseEventHandler";
 import PlayerList from "../../Photon/Handlers/PlayerList";
+import {
+  ParameterCode,
+  OperationCode,
+} from "../Photon/protocol_reader/constants";
 import PhotonPacket from "../Photon/protocol_reader/Old/OldPacket";
 import ProtocolReader from "../Photon/protocol_reader/ProtocolReader";
 
 export class Patching {
   static initPatches() {
     // Patch the RaiseEvent / Socket Send func
-    OpRaiseEvent.addListener("data", async ({ args, data, socket, originalSend }) => {
-      const message = args[0];
-      let uint8Array = new Uint8Array(message);
-      let packet = new PhotonPacket(uint8Array.buffer);
+    OpRaiseEvent.addListener(
+      "data",
+      async ({ args, data, socket, originalSend }) => {
+        const message = args[0];
+        let uint8Array = new Uint8Array(message);
+        let packet = new PhotonPacket(uint8Array.buffer);
 
-      if (MeowEngine.Config.debugOutgoingPackets) {
-        MeowEngine.Log.Instance.info("Outgoing packet:", data);
+        if (MeowEngine.Config.cacheOutgoingPhotonPackets) {
+          let roomInformation = MeowEngine.RoomInstance.Information;
+          const roomName = `${roomInformation.RoomName} ${roomInformation.RoomId}`;
+
+          if (!MeowEngine.RoomInstance.CachedOutgoingPackets) {
+            MeowEngine.RoomInstance.CachedOutgoingPackets = {};
+          }
+
+          if (!MeowEngine.RoomInstance.CachedOutgoingPackets[roomName]) {
+            MeowEngine.RoomInstance.CachedOutgoingPackets[roomName] = [];
+          }
+
+          MeowEngine.RoomInstance.CachedOutgoingPackets[roomName].push(data);
+        }
+
+        if (MeowEngine.Config.debugOutgoingPackets) {
+          MeowEngine.Log.Instance.info("Outgoing packet:", data);
+
+          return originalSend.apply(socket, args);
+        }
+
+        if (
+          data.code == OperationCode.Authenticate &&
+          data.params["210"] &&
+          data.params["225"]
+        ) {
+          let serverSettings = MeowEngine.SDK.PhotonServerSettings;
+          serverSettings.Region = data.params["210"];
+          serverSettings.AppVersion = data.params["220"];
+          serverSettings.AppId = data.params["224"];
+        }
+
+        if (data.code == OperationCode.JoinGame) {
+          if (data.params["255"]) {
+            let { roomName, roomId } = GameUtils.seperateRoomIdFromRoomName(
+              data.params["255"]
+            );
+            MeowEngine.RoomInstance.Information.RoomName = roomName;
+            MeowEngine.RoomInstance.Information.RoomId = roomId;
+          }
+        }
+
+        if (
+          data.code === 253 &&
+          data.params &&
+          data.params["245"] &&
+          data.params["245"]["int8 10"] &&
+          data.params["245"]["int8 10"].length > 10
+        ) {
+          const parser = new OpCode201(data);
+          OpCode201.handleLocalPlayerUpdate(parser.parseOutgoing());
+        }
 
         if (packet.op_code == 252) {
-            if (packet.sections && 
-              packet.sections[0] && 
-              packet.sections[0][1] && 
-              packet.sections[0][1].data) {
-            
-              if (packet.sections[0][1].data.get({type: 98, data: 255}) && typeof (packet.sections[0][1].data.get({type: 98, data: 255}).data) == "string") {
-                let username = packet.sections[0][1].data.get({type: 98, data: 255}).data;
-                if (MeowEngine.LocalPlayer.ClanTag !== "") {
-                  packet.sections[0][1].data.get({type: 98, data: 255}).data = MeowEngine.LocalPlayer.ClanTag + username;
-                }
+          if (
+            packet.sections &&
+            packet.sections[0] &&
+            packet.sections[0][1] &&
+            packet.sections[0][1].data
+          ) {
+            if (
+              packet.sections[0][1].data.get({ type: 98, data: 255 }) &&
+              typeof packet.sections[0][1].data.get({ type: 98, data: 255 })
+                .data == "string"
+            ) {
+              let username = packet.sections[0][1].data.get({
+                type: 98,
+                data: 255,
+              }).data;
+              if (MeowEngine.LocalPlayer.ClanTag !== "") {
+                packet.sections[0][1].data.get({ type: 98, data: 255 }).data =
+                  MeowEngine.LocalPlayer.ClanTag + username;
               }
-
-          } 
+            }
+          }
 
           let args = [];
           args[0] = packet.serialize();
-          MeowEngine.Log.Instance.info("Username prop set to:", this.username, packet.sections[0][1]);
+          MeowEngine.Log.Instance.info(
+            "Username prop set to:",
+            this.username,
+            packet.sections[0][1]
+          );
           return originalSend.apply(socket, args);
         }
 
         return originalSend.apply(socket, args);
       }
-      
-      if (
-        data.code === 253 &&
-        data.params &&
-        data.params["245"] &&
-        data.params["245"]["int8 10"] &&
-        data.params["245"]["int8 10"].length > 10
-      ) {
-        const parser = new OpCode201(data);
-        OpCode201.handleLocalPlayerUpdate(parser.parseOutgoing());
-      }
-
-      return originalSend.apply(socket, args);
-    });
+    );
 
     // Patch the OnEvent / Message Listener for the socket constructor
     OnEvent.addListener("data", (event) => {
-      if (!(event.data instanceof ArrayBuffer) || event.data.byteLength < 1) return;
+      if (!(event.data instanceof ArrayBuffer) || event.data.byteLength < 1)
+        return;
 
       const uint8Array = new Uint8Array(event.data);
 
       let reader = new ProtocolReader(uint8Array.buffer);
       const packet = reader.readPacket();
+
+      if (MeowEngine.Config.cacheIncomingPhotonPackets) {
+        let roomInformation = MeowEngine.RoomInstance.Information;
+          const roomName = `${roomInformation.RoomName} ${roomInformation.RoomId}`;
+
+        if (!MeowEngine.RoomInstance.CachedIncomingPackets) {
+          MeowEngine.RoomInstance.CachedIncomingPackets = {};
+        }
+
+        if (!MeowEngine.RoomInstance.CachedIncomingPackets[roomName]) {
+          MeowEngine.RoomInstance.CachedIncomingPackets[roomName] = [];
+        }
+
+        MeowEngine.RoomInstance.CachedIncomingPackets[roomName].push(packet);
+      }
 
       if (MeowEngine.Config.debugIncomingPackets) {
         MeowEngine.Log.Instance.info("Incoming packet:", packet);

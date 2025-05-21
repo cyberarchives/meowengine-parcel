@@ -80,7 +80,8 @@ meowengine-parcel/
 │   ├── Menu/
 │   │   ├── CanvasComponents/
 │   │   │   ├── CanvasConsole.js
-│   │   │   └── PerformancePanel.js
+│   │   │   ├── PerformancePanel.js
+│   │   │   └── PlayerList.js
 │   │   ├── Components/ # UI components
 │   │   │   ├── 3DViewPort.js
 │   │   │   ├── Button.js
@@ -111,6 +112,7 @@ meowengine-parcel/
 │   │   ├── Bot/
 │   │   │   └── PhotonBot.js
 │   │   ├── Patching/
+│   │   │   ├── ConsoleFilter.js
 │   │   │   └── Entry.js # Patch listeners (Add your own patches here)
 │   │   └── Photon/
 │   │       ├── Instance/

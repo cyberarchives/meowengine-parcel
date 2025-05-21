@@ -26,15 +26,24 @@ export const MeowEngine = {
     LoadBalancingClient: {
         OpRaiseEvent: null
     },
+    PlayerListCanvasComp: {
+        Enabled: true,
+        Instance: null
+    },
     Config: {
         ToggleStates: {
-            
+            AllowFlight: false,
         },
         version: "1.0.0",
         debug: false,
-        debugOutgoingPackets: true,
+        debugOutgoingPackets: false,
         debugIncomingPackets: false,
-        flyEnabled: false
+        flyEnabled: false,
+        cacheAuthenticationPackets: true,
+        cacheRPCPackets: true,
+        cacheJoinAndLeavePackets: true,
+        cacheOutgoingPhotonPackets: false,
+        cacheIncomingPhotonPackets: false
     },
     UnityInstance: {
         Module: null,
@@ -42,6 +51,14 @@ export const MeowEngine = {
     },
     RoomInstance: {
         Players: [],
+        Information: {
+            RoomName: "Set later",
+            RoomId: "Set later",
+            PlayerCount: 0,
+            MaxPlayers: 26,
+        },
+        CachedOutgoingPackets: [],
+        CachedIncomingPackets: []
     },
     Log: {
         Instance: null
@@ -64,7 +81,8 @@ export const MeowEngine = {
         Enabled: true
     },
     PerformancePanel: {
-        Enabled: true
+        Enabled: true,
+        Instance: null
     }
 };
 

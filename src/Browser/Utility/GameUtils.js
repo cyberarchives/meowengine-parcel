@@ -105,6 +105,13 @@ class GameUtils {
         return cleaned;
     }
 
+    static seperateRoomIdFromRoomName(room) {
+        let roomName = room.split(" (#")[0]
+        let roomId = `(#${room.split(" (#")[1]}`;
+
+        return { roomName, roomId };
+    }
+
     /**
      * Converts a PhotonView Id to an Actor Number
      * @param {number} viewId - PhotonView Id

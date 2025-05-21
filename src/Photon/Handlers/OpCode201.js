@@ -167,18 +167,18 @@ export class OpCode201 {
   }
 
   static handlePlayerUpdate(data) {
-    const playerEntry = MeowEngine.RoomInstance.Players.find(player => 
-        Object.keys(player).includes(data.actorNr.toString())
-    );
-    
+    let player = MeowEngine.RoomInstance.Players.find(plr => plr[data.actorNr]);
+    const playerEntry = Object.values(player)[0];
+
     let position = FairCollection.GetDecryptedVector3({ x: data.position.f1, y: data.position.f2, z: data.position.f3 });
 
-    playerEntry[data.actorNr].position = position;
-    playerEntry[data.actorNr].rotation = data.rotation;
-    playerEntry[data.actorNr].health = data.health;
-    playerEntry[data.actorNr].pitch = data.pitch;
-    playerEntry[data.actorNr].yaw = data.yaw;
-    playerEntry[data.actorNr].ping = data.ping;
+    playerEntry.position = position;
+    playerEntry.rotation = data.rotation;
+    playerEntry.health = data.health;
+    playerEntry.pitch = data.pitch;
+    playerEntry.yaw = data.yaw;
+    playerEntry.ping = data.ping;
+    playerEntry.kills = data?.number_of_kills ?? 0;
   }
 
   static handleLocalPlayerUpdate(data) {

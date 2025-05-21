@@ -64,7 +64,12 @@ class PlayerList {
         const platform = value.platform ?? "Unknown";
 
         MeowEngine.Log.Instance.join(`[${actorNr}] ${name}`);
-        MeowEngine.CanvasConsole.Log(`[<color=#00ffaa>MeowEngine</color>] [<color=#9B59B6>JOIN</color>]: [${actorNr}] ${name}`)
+
+        if (name.includes("[MeowEngine Network Bot]")) {
+          MeowEngine.CanvasConsole.Log(`<color=#00ffaa>MeowEngine</color>] [<color=#9B59B6>JOIN</color>]: A <color=#00ffaa>MeowEngine</color> <color=#ff0000>Bot</color> has joined the room. Be sure to have your <color=#ff0000>Anti-Crash</color> on!`);
+        } else {
+          MeowEngine.CanvasConsole.Log(`[<color=#00ffaa>MeowEngine</color>] [<color=#9B59B6>JOIN</color>]: [${actorNr}] ${name}`);
+        }
 
         // Create the player entry
         let usrEntry = {};
