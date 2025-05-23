@@ -180,7 +180,7 @@ export class PlayerListPanel {
 
         // Add player rows
         sortedPlayers.forEach(([actorKey, player]) => {
-          if (player.name == "Unknown") return; // Skip invalid player
+          if (player.name.toLowerCase().includes("unknown")) return; // Skip invalid player
           if (player.name !== "" && player.actorNr === 0) return; // Skip invalid players
           
           const row = document.createElement("tr");

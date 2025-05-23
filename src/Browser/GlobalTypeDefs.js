@@ -36,7 +36,7 @@ export const MeowEngine = {
         },
         version: "1.0.0",
         debug: false,
-        debugOutgoingPackets: false,
+        debugOutgoingPackets: true,
         debugIncomingPackets: false,
         flyEnabled: false,
         cacheAuthenticationPackets: true,
@@ -74,7 +74,15 @@ export const MeowEngine = {
         Health: 10000,
         Ping: 999,
         Perks: [],
-        ClanTag: ""
+        ClanTag: "",
+        Platform: "MeowEnginePlayer",
+        Rank: 181, // This can be changed to spoof your rank
+        TeamNumber: 4,
+        ThrowableAmount: 20,
+        SpoofRank: true,
+        SpoofPlatform: true,
+        SpoofTeamNumber: true,
+        SpoofThrowableAmount: true,
     },
     CanvasConsole: {
         Log: null,
