@@ -175,8 +175,7 @@ meowengine-parcel/
 ├── package.json # Project dependencies and scripts
 ├── pnpm-lock.yaml
 ├── pnpm-workspace.yaml
-├── README.md
-└── test.js
+└── README.md
 ```
 
 ## Installation
