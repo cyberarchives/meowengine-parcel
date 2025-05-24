@@ -6,7 +6,6 @@
 // @author       Snoofz
 // @match        https://bullet-force-multiplayer.game-files.crazygames.com/unity/unity2020/bullet-force-multiplayer.html*
 // @match        https://games.crazygames.com/en_US/bullet-force-multiplayer/index.html*
-// @match        https://forward-assault.game-files.crazygames.com/unity/unity2020/forward-assault.html*
 // @icon         https://github.com/cyberarchives/oof/blob/main/meowengine-icon.png?raw=true
 // @updateURL    https://snoofz.net/updates/meowengine.user.js
 // @downloadURL  https://snoofz.net/downloads/meowengine.user.js
