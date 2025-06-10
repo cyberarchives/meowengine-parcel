@@ -1,6 +1,6 @@
 # MeowEngine Parcel
   
-## ⚠️ HUGE NOTICE: This project is still a work in progress, things will be added here and there to make modding easier so don't go too crazy 
+## ⚠️ This project is no longer maintained, and no further development is planned.
 
 ## Table of Contents
 - [Disclaimer](#disclaimer)
