@@ -9,11 +9,15 @@ export class HttpRequestManager {
             const requestUrl = typeof input === 'string' ? input : input.url;
             const parsedUrl = new URL(requestUrl).toString();
 
-            if (parsedUrl.includes('leftV2.php')) {
+            if (parsedUrl.includes('leftV2')) {
                 PlayerList.clearPlayerlist();
 
                 MeowEngine.Log.Instance.info("Player list cleared");
                 MeowEngine.Log.Instance.info("You left the room!");
+            }
+
+            if (parsedUrl.includes("register_in_store_match.php")) {
+                PlayerList.clearPlayerlist();
             }
 
             if (parsedUrl.includes("get_multiplayer_auth_code.php")) {

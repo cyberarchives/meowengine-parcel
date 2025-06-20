@@ -18,10 +18,11 @@ export class PerformancePanel {
             position: absolute;
             top: 10px;
             right: 10px;
-            background-color: rgba(0, 255, 170, 0.2);
-            border: 1px solid rgba(0, 255, 170, 0.3);
-            border-radius: 3px;
-            color: #00ffaa;
+            background: linear-gradient(145deg, #0a0a0a 0%, #1a1a1a 100%);
+            backdropFilter: blur(20px);
+            border: 1px solid #ff6b35;
+            borderRadius: 8px;
+            color: #00d4ff;
             font-size: 14px;
             padding: 8px 15px;
             font-weight: bold;

@@ -1,7 +1,9 @@
 import MeowEngine from "../../Browser/GlobalTypeDefs";
 import GameUtils from "../../Browser/Utility/GameUtils";
 import Account from "../../Bullet Force/API/Account";
+import EventCode from "../../Photon/Enums/EventCode";
 import OperationCode from "../../Photon/Enums/OperationCode";
+import PacketType from "../../Photon/Enums/PacketType";
 import OnEvent from "../../Photon/Handlers/OnEventHandler";
 import OpCode201 from "../../Photon/Handlers/OpCode201";
 import OpRaiseEvent from "../../Photon/Handlers/OpRaiseEventHandler";
@@ -43,7 +45,7 @@ export class Patching {
         if (MeowEngine.Config.debugOutgoingPackets) {
           MeowEngine.Log.Instance.info("Outgoing packet:", data);
         }
-
+        
         if (
           data.code == OperationCode.Authenticate &&
           data.params["210"] &&

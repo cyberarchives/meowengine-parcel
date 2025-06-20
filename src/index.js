@@ -6,7 +6,7 @@ import FairCollection from "./Bullet Force/FairPlayAPI/FairCollection";
 import CanvasConsole from "./Menu/CanvasComponents/CanvasConsole";
 import PerformancePanel from "./Menu/CanvasComponents/PerformancePanel";
 import PlayerListPanel from "./Menu/CanvasComponents/PlayerList";
-import { UI } from "./Menu/UIManager";
+import { UI } from "./Menu/UIManager"; // Assuming this is now the ModMenuUI class
 import ConsoleFilter from "./MeowEngine/Patching/ConsoleFilter";
 import Patching from "./MeowEngine/Patching/Entry";
 import HttpRequestManager from "./Photon/HttpRequestManager";
@@ -28,8 +28,6 @@ MeowEngine.Log.Instance = new CustomLogs({
 });
 
 // Wait for UnityInstance to be ready
-// TODO: Add a timeout
-// TODO: Add a check for the unity version
 GameUtils.waitForUnityInstance((instance) => {
   // Ensure MeowEngine is set to window globally
   window.MeowEngine = MeowEngine;
@@ -46,7 +44,7 @@ GameUtils.waitForUnityInstance((instance) => {
   // Initialize the Http Request Manager
   HttpRequestManager.initialize();
 
-  // Initiailize network patches
+  // Initialize network patches
   Patching.initPatches();
 
   // Initialize UI
@@ -325,27 +323,29 @@ GameUtils.waitForUnityInstance((instance) => {
     return container;
   }
 
-  // You can toggle this by setting Enabled to true or false in '/src/Browser/GlobalTypeDefs.js'
+  // Initialize canvas components if enabled
   if (MeowEngine.CanvasConsole.Enabled) {
     CanvasConsole.createConsole();
   }
 
-  // You can toggle this by setting Enabled to true or false in '/src/Browser/GlobalTypeDefs.js'
   if (MeowEngine.PerformancePanel.Enabled) {
     const performancePanel = PerformancePanel.initialize();
     performancePanel.setVisible(MeowEngine.PerformancePanel.Enabled);
     performancePanel.setPosition("topRight");
-
     MeowEngine.PerformancePanel.Instance = performancePanel;
   }
 
-  // You can toggle this by setting Enabled to true or false in '/src/Browser/GlobalTypeDefs.js'
   if (MeowEngine.PlayerListCanvasComp.Enabled) {
     const playerList = PlayerListPanel.initialize();
     playerList.setVisible(MeowEngine.PlayerListCanvasComp.Enabled);
     playerList.setPosition("topLeft");
     playerList.updateTitle("Active Players");
-
     MeowEngine.PlayerListCanvasComp.Instance = playerList;
   }
+
+  // Store menu reference globally for debugging/external access
+  window.MeowEngineMenu = menu;
+  
+  console.log("MeowEngine v2.0 initialized with ModMenu UI");
+  console.log("Press 'V' or 'Insert' to toggle the menu");
 });
