@@ -212,7 +212,7 @@ export class PhotonClient {
     args[0] = packet.toBuffer();
     this.originalSend.apply(this.socket, args);
 
-    // Return true to indicate success (in real implementation, would check if send was successful)
+    // Return true to indicate success (in real implementation, would check if send was successful, since this is NOT the original C# version and its not directly hooked from the game, we cant do that)
     return true;
   }
 
