@@ -1,11 +1,15 @@
 import MeowEngine from "../../Browser/GlobalTypeDefs";
 
+interface LogFunction {
+  (message: string): void;
+}
+
 export class CanvasConsole {
-  static createConsole() {
-    const existing = document.getElementById("meow-log-container");
+  static createConsole(): void {
+    const existing: HTMLElement | null = document.getElementById("meow-log-container");
     if (existing) existing.remove();
 
-    const logContainer = document.createElement("div");
+    const logContainer: HTMLDivElement = document.createElement("div");
     logContainer.id = "meow-log-container";
     logContainer.style.position = "fixed";
     logContainer.style.bottom = "20px";
@@ -26,7 +30,7 @@ export class CanvasConsole {
     logContainer.style.pointerEvents = "none";
     document.body.appendChild(logContainer);
 
-    const header = document.createElement("div");
+    const header: HTMLDivElement = document.createElement("div");
     header.style.background = "linear-gradient(90deg, rgba(255, 107, 53, 0.1) 0%, rgba(0, 212, 255, 0.1) 100%)";
     header.style.padding = "8px 15px";
     header.style.borderBottom = "1px solid rgba(255, 107, 53, 0.3)";
@@ -39,8 +43,7 @@ export class CanvasConsole {
     header.style.position = "relative";
     logContainer.appendChild(header);
 
-    // Add glow line at top
-    const glowLine = document.createElement("div");
+    const glowLine: HTMLDivElement = document.createElement("div");
     glowLine.style.position = "absolute";
     glowLine.style.top = "0";
     glowLine.style.left = "0";
@@ -50,31 +53,31 @@ export class CanvasConsole {
     glowLine.style.borderRadius = "12px 12px 0 0";
     header.appendChild(glowLine);
 
-    const title = document.createElement("div");
+    const title: HTMLDivElement = document.createElement("div");
     title.innerHTML = '⚡ MeowLog <span style="font-size:11px;opacity:0.7;color:#ff6b35;">v2.0</span>';
     title.style.textShadow = "0 0 8px rgba(0, 212, 255, 0.5)";
     title.style.color = "#00d4ff";
     header.appendChild(title);
 
-    const timestamp = document.createElement("div");
+    const timestamp: HTMLDivElement = document.createElement("div");
     timestamp.style.fontSize = "11px";
     timestamp.style.opacity = "0.7";
     timestamp.style.color = "#ff6b35";
     timestamp.style.textShadow = "0 0 4px rgba(255, 107, 53, 0.3)";
     header.appendChild(timestamp);
 
-    function updateTimestamp() {
-      const now = new Date();
-      const hours = now.getHours().toString().padStart(2, "0");
-      const minutes = now.getMinutes().toString().padStart(2, "0");
-      const seconds = now.getSeconds().toString().padStart(2, "0");
+    function updateTimestamp(): void {
+      const now: Date = new Date();
+      const hours: string = now.getHours().toString().padStart(2, "0");
+      const minutes: string = now.getMinutes().toString().padStart(2, "0");
+      const seconds: string = now.getSeconds().toString().padStart(2, "0");
       timestamp.textContent = `${hours}:${minutes}:${seconds}`;
     }
 
     updateTimestamp();
     setInterval(updateTimestamp, 1000);
 
-    const content = document.createElement("div");
+    const content: HTMLDivElement = document.createElement("div");
     content.id = "meow-log-content";
     content.style.height = "calc(100% - 38px)";
     content.style.overflowY = "auto";
@@ -83,8 +86,7 @@ export class CanvasConsole {
     content.style.scrollBehavior = "smooth";
     content.style.background = "rgba(0, 0, 0, 0.2)";
 
-    // Add custom scrollbar styling
-    const scrollbarStyle = document.createElement("style");
+    const scrollbarStyle: HTMLStyleElement = document.createElement("style");
     scrollbarStyle.textContent = `
       #meow-log-content::-webkit-scrollbar {
         width: 12px;
@@ -108,8 +110,8 @@ export class CanvasConsole {
 
     logContainer.appendChild(content);
 
-    MeowEngine.CanvasConsole.Log = function (message) {
-      const line = document.createElement("div");
+    MeowEngine.CanvasConsole.Log = function (message: string): void {
+      const line: HTMLDivElement = document.createElement("div");
       line.style.marginBottom = "4px";
       line.style.lineHeight = "1.4";
       line.style.opacity = "0";
@@ -117,65 +119,57 @@ export class CanvasConsole {
       line.style.transition = "all 0.2s ease";
       line.style.color = "#00d4ff";
 
-      // Support original <color=...>text</color>
-      let formattedMessage = message.replace(
+      let formattedMessage: string = message.replace(
         /<color=(.*?)>(.*?)<\/color>/g,
-        (_, color, text) => {
+        (_: string, color: string, text: string): string => {
           return `<span style="color:${color}; text-shadow: 0 0 4px ${color}40;">${text}</span>`;
         }
       );
 
-      // Additional syntax: <bold>text</bold> for bold text
       formattedMessage = formattedMessage.replace(
         /<bold>(.*?)<\/bold>/g,
-        (_, text) => {
+        (_: string, text: string): string => {
           return `<span style="font-weight:bold; color:#ff6b35; text-shadow: 0 0 4px rgba(255, 107, 53, 0.3);">${text}</span>`;
         }
       );
 
-      // Additional syntax: <italic>text</italic> for italic text
       formattedMessage = formattedMessage.replace(
         /<italic>(.*?)<\/italic>/g,
-        (_, text) => {
+        (_: string, text: string): string => {
           return `<span style="font-style:italic; color:#ffb347; text-shadow: 0 0 4px rgba(255, 179, 71, 0.3);">${text}</span>`;
         }
       );
 
-      // Additional syntax: <glow>text</glow> for text with glow effect
       formattedMessage = formattedMessage.replace(
         /<glow>(.*?)<\/glow>/g,
-        (_, text) => {
+        (_: string, text: string): string => {
           return `<span style="color:#00ff88; text-shadow: 0 0 8px rgba(0, 255, 136, 0.5);">${text}</span>`;
         }
       );
 
-      // Additional syntax: <error>text</error> for error messages
       formattedMessage = formattedMessage.replace(
         /<error>(.*?)<\/error>/g,
-        (_, text) => {
+        (_: string, text: string): string => {
           return `<span style="color:#ff4757; text-shadow: 0 0 6px rgba(255, 71, 87, 0.4);">${text}</span>`;
         }
       );
 
-      // Additional syntax: <success>text</success> for success messages
       formattedMessage = formattedMessage.replace(
         /<success>(.*?)<\/success>/g,
-        (_, text) => {
+        (_: string, text: string): string => {
           return `<span style="color:#00ff88; text-shadow: 0 0 6px rgba(0, 255, 136, 0.4);">${text}</span>`;
         }
       );
 
-      // Additional syntax: <warning>text</warning> for warning messages
       formattedMessage = formattedMessage.replace(
         /<warning>(.*?)<\/warning>/g,
-        (_, text) => {
+        (_: string, text: string): string => {
           return `<span style="color:#ffb347; text-shadow: 0 0 6px rgba(255, 179, 71, 0.4);">${text}</span>`;
         }
       );
 
-      // Automatically prefix with timestamp
-      const now = new Date();
-      const timeStr = `${now.getHours().toString().padStart(2, "0")}:${now
+      const now: Date = new Date();
+      const timeStr: string = `${now.getHours().toString().padStart(2, "0")}:${now
         .getMinutes()
         .toString()
         .padStart(2, "0")}:${now.getSeconds().toString().padStart(2, "0")}.${now
@@ -186,55 +180,50 @@ export class CanvasConsole {
       line.innerHTML = `<span style="color:#ff6b35;opacity:0.7;font-size:11px;text-shadow: 0 0 3px rgba(255, 107, 53, 0.3);">[${timeStr}]</span> ${formattedMessage}`;
       content.appendChild(line);
 
-      // Add entrance animation
-      setTimeout(() => {
+      setTimeout((): void => {
         line.style.opacity = "1";
         line.style.transform = "translateX(0)";
       }, 10);
 
-      // Auto-scroll to bottom
       content.scrollTop = content.scrollHeight;
 
-      // Optional: Fade out old entries (keep last 50)
-      const entries = content.children;
+      const entries: HTMLCollection = content.children;
       if (entries.length > 50) {
-        entries[0].style.opacity = "0";
-        entries[0].style.transform = "translateX(-10px)";
-        setTimeout(() => {
+        const firstEntry = entries[0] as HTMLElement;
+        firstEntry.style.opacity = "0";
+        firstEntry.style.transform = "translateX(-10px)";
+        setTimeout((): void => {
           if (entries[0]) entries[0].remove();
         }, 300);
       }
     };
 
-    // Add demo message
-    setTimeout(() => {
+    setTimeout((): void => {
         MeowEngine.CanvasConsole.Log(
         "<success>✓</success> MeowLog console <bold>initialized</bold> <glow>successfully</glow>"
       );
     }, 100);
 
-    // Automatic opacity management (fade when not logging)
-    let fadeTimeout;
-    const originalLog = MeowEngine.CanvasConsole.Log;
-    MeowEngine.CanvasConsole.Log = function (message) {
+    let fadeTimeout: number;
+    const originalLog: LogFunction = MeowEngine.CanvasConsole.Log;
+    MeowEngine.CanvasConsole.Log = function (message: string): void {
       logContainer.style.opacity = "1";
       clearTimeout(fadeTimeout);
       originalLog(message);
-      fadeTimeout = setTimeout(() => {
+      fadeTimeout = window.setTimeout((): void => {
         logContainer.style.opacity = "0.8";
       }, 3000);
     };
 
-    // Add some example log messages to show off the styling
-    setTimeout(() => {
+    setTimeout((): void => {
       MeowEngine.CanvasConsole.Log("<warning>⚠</warning> System <italic>status</italic> check <bold>complete</bold>");
     }, 500);
 
-    setTimeout(() => {
+    setTimeout((): void => {
       MeowEngine.CanvasConsole.Log("<color=#c471ed>🎮</color> Game engine <glow>ready</glow> for <bold>operation</bold>");
     }, 1000);
 
-    setTimeout(() => {
+    setTimeout((): void => {
       MeowEngine.CanvasConsole.Log("<success>◉</success> All systems <bold>online</bold> - <italic>welcome to the matrix</italic>");
     }, 1500);
   }

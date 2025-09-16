@@ -1,9 +1,28 @@
 import MeowEngine from "../../Browser/GlobalTypeDefs";
 
+type PanelPosition = "topRight" | "topLeft" | "bottomRight" | "bottomLeft";
+
+interface Player {
+  actorNr: number;
+  name: string;
+  rank: number;
+  kd: number;
+  team: number;
+  kills: number;
+  platform: string;
+  health: number | null | "Dead";
+  ping: number;
+}
+
+interface PlayerListPanelAPI {
+  setVisible: (visible: boolean) => void;
+  setPosition: (position: PanelPosition) => void;
+  updateTitle: (text: string) => void;
+}
+
 export class PlayerListPanel {
-  static initialize() {
-    // Add CSS styles for clean IMGUI-style player list
-    const styleElement = document.createElement("style");
+  static initialize(): PlayerListPanelAPI {
+    const styleElement: HTMLStyleElement = document.createElement("style");
     styleElement.textContent = `
       .meow-players-overlay {
         position: absolute;
@@ -115,7 +134,6 @@ export class PlayerListPanel {
         box-shadow: inset 0 0 10px rgba(255, 107, 53, 0.1);
       }
       
-      /* Team colors - cyberpunk themed */
       .meow-team-0 {
         color: #ff6b35;
         text-shadow: 0 0 6px rgba(255, 107, 53, 0.4);
@@ -131,7 +149,6 @@ export class PlayerListPanel {
         text-shadow: 0 0 6px rgba(196, 113, 237, 0.4);
       }
       
-      /* Cyberpunk status indicators */
       .meow-ping-good {
         color: #00ff88;
         text-shadow: 0 0 4px rgba(0, 255, 136, 0.3);
@@ -168,7 +185,6 @@ export class PlayerListPanel {
         text-shadow: none;
       }
       
-      /* Cyberpunk badges */
       .meow-stat-badge {
         display: inline-block;
         padding: 1px 4px;
@@ -261,38 +277,33 @@ export class PlayerListPanel {
     `;
     document.head.appendChild(styleElement);
 
-    // Create player list container
-    const overlay = document.createElement("div");
+    const overlay: HTMLDivElement = document.createElement("div");
     overlay.className = "meow-players-overlay";
 
-    // Create header section
-    const header = document.createElement("div");
+    const header: HTMLDivElement = document.createElement("div");
     header.className = "meow-players-header";
     
-    const title = document.createElement("div");
+    const title: HTMLDivElement = document.createElement("div");
     title.className = "meow-players-title";
     title.textContent = "Players (0)";
     header.appendChild(title);
     overlay.appendChild(header);
 
-    // Create content wrapper
-    const content = document.createElement("div");
+    const content: HTMLDivElement = document.createElement("div");
     content.className = "meow-players-content";
 
-    // Create table
-    const table = document.createElement("table");
+    const table: HTMLTableElement = document.createElement("table");
     table.className = "meow-players-table";
 
-    // Create table header
-    const thead = document.createElement("thead");
-    const headerRow = document.createElement("tr");
+    const thead: HTMLTableSectionElement = document.createElement("thead");
+    const headerRow: HTMLTableRowElement = document.createElement("tr");
     
-    const headers = [
+    const headers: string[] = [
       "ID", "Name", "Rank", "K/D", "Team", "Kills", "Platform", "Health", "Ping"
     ];
     
-    headers.forEach(headerText => {
-      const th = document.createElement("th");
+    headers.forEach((headerText: string) => {
+      const th: HTMLTableHeaderCellElement = document.createElement("th");
       th.textContent = headerText;
       headerRow.appendChild(th);
     });
@@ -300,65 +311,63 @@ export class PlayerListPanel {
     thead.appendChild(headerRow);
     table.appendChild(thead);
 
-    // Create table body
-    const tbody = document.createElement("tbody");
+    const tbody: HTMLTableSectionElement = document.createElement("tbody");
     table.appendChild(tbody);
 
     content.appendChild(table);
     overlay.appendChild(content);
     document.body.appendChild(overlay);
 
-    // Clean utility functions
-    function getPingStatusClass(ping) {
+    function getPingStatusClass(ping: number): string {
       if (ping < 100) return "meow-ping-good";
       if (ping < 200) return "meow-ping-medium";
       return "meow-ping-bad";
     }
 
-    function getHealthStatusClass(health) {
+    function getHealthStatusClass(health: number | null | "Dead"): string {
       if (health === "Dead" || health === null) return "meow-health-dead";
       if (health > 7000) return "meow-health-high";
       if (health > 3000) return "meow-health-medium";
       return "meow-health-low";
     }
 
-    function getKDClass(kd) {
+    function getKDClass(kd: number): string {
       if (kd >= 3.0) return "meow-kd-excellent";
       if (kd >= 2.0) return "meow-kd-good";
       if (kd >= 1.0) return "meow-kd-average";
       return "meow-kd-poor";
     }
 
-    function getTeamClass(team) {
+    function getTeamClass(team: number): string {
       return `meow-team-${team}`;
     }
 
-    function formatHealth(health) {
+    function formatHealth(health: number | null | "Dead"): string {
       if (health === null || health === "Dead") return "Dead";
       return Math.round(health).toString();
     }
 
-    function getHealthPercentage(health) {
+    function getHealthPercentage(health: number | null | "Dead"): number {
       if (health === null || health === "Dead") return 0;
       return Math.min(100, (health / 10000) * 100);
     }
 
-    function createHealthBar(health) {
-      const container = document.createElement("div");
+    function createHealthBar(health: number | null | "Dead"): HTMLDivElement {
+      const container: HTMLDivElement = document.createElement("div");
       container.className = "meow-health-bar";
       
-      const text = document.createElement("span");
+      const text: HTMLSpanElement = document.createElement("span");
       text.textContent = formatHealth(health);
       text.className = getHealthStatusClass(health);
       
-      const progressContainer = document.createElement("div");
+      const progressContainer: HTMLDivElement = document.createElement("div");
       progressContainer.className = "meow-health-progress";
       
-      const progressFill = document.createElement("div");
+      const progressFill: HTMLDivElement = document.createElement("div");
       progressFill.className = "meow-health-fill";
       progressFill.style.width = `${getHealthPercentage(health)}%`;
       
-      const healthClass = getHealthStatusClass(health);
+      const healthClass: string = getHealthStatusClass(health);
       if (healthClass === "meow-health-high") {
         progressFill.style.background = "#00ff88";
       } else if (healthClass === "meow-health-medium") {
@@ -376,90 +385,77 @@ export class PlayerListPanel {
       return container;
     }
 
-    // Clean update function
-    function updatePlayerList() {
+    function updatePlayerList(): void {
       try {
         const players = MeowEngine.RoomInstance.Players;
         if (!players) return;
         
-        // Clear existing rows
         tbody.innerHTML = '';
         
-        const flattenedPlayers = players.map(obj => {
+        const flattenedPlayers: [string, Player][] = players.map((obj: Record<string, Player>) => {
             const [key, value] = Object.entries(obj)[0];
             return [key, value];
         });
 
-        const sortedPlayers = flattenedPlayers.sort((a, b) => {
-            const teamA = a[1].team;
-            const teamB = b[1].team;
+        const sortedPlayers: [string, Player][] = flattenedPlayers.sort((a, b) => {
+            const teamA: number = a[1].team;
+            const teamB: number = b[1].team;
             if (teamA !== teamB) return teamA - teamB;
             return parseInt(a[0]) - parseInt(b[0]);
         });
 
-        // Update title with player count
         title.textContent = `Players (${sortedPlayers.length})`;
 
-        // Add player rows with clean styling
-        sortedPlayers.forEach(([actorKey, player]) => {
+        sortedPlayers.forEach(([actorKey, player]: [string, Player]) => {
           if (player.name.toLowerCase().includes("unknown")) return;
           if (player.name !== "" && player.actorNr === 0) return;
           
-          const row = document.createElement("tr");
+          const row: HTMLTableRowElement = document.createElement("tr");
           
-          // Actor number
-          const actorCell = document.createElement("td");
+          const actorCell: HTMLTableDataCellElement = document.createElement("td");
           actorCell.textContent = player.actorNr.toString();
           actorCell.className = "meow-actor-number";
           row.appendChild(actorCell);
           
-          // Name with team color
-          const nameCell = document.createElement("td");
+          const nameCell: HTMLTableDataCellElement = document.createElement("td");
           nameCell.textContent = player.name || "Unknown";
           nameCell.className = getTeamClass(player.team);
           row.appendChild(nameCell);
           
-          // Rank
-          const rankCell = document.createElement("td");
+          const rankCell: HTMLTableDataCellElement = document.createElement("td");
           rankCell.textContent = player.rank.toString();
           rankCell.className = "meow-rank-display";
           row.appendChild(rankCell);
           
-          // K/D with badge
-          const kdCell = document.createElement("td");
-          const kdBadge = document.createElement("span");
+          const kdCell: HTMLTableDataCellElement = document.createElement("td");
+          const kdBadge: HTMLSpanElement = document.createElement("span");
           kdBadge.className = `meow-stat-badge ${getKDClass(player.kd)}`;
           kdBadge.textContent = player.kd.toFixed(2);
           kdCell.appendChild(kdBadge);
           row.appendChild(kdCell);
           
-          // Team
-          const teamCell = document.createElement("td");
+          const teamCell: HTMLTableDataCellElement = document.createElement("td");
           teamCell.textContent = player.team.toString();
           teamCell.className = getTeamClass(player.team);
           row.appendChild(teamCell);
           
-          // Kills
-          const killsCell = document.createElement("td");
+          const killsCell: HTMLTableDataCellElement = document.createElement("td");
           killsCell.textContent = player.kills.toString();
           killsCell.className = "meow-kills-display";
           row.appendChild(killsCell);
           
-          // Platform
-          const platformCell = document.createElement("td");
-          const platformBadge = document.createElement("span");
+          const platformCell: HTMLTableDataCellElement = document.createElement("td");
+          const platformBadge: HTMLSpanElement = document.createElement("span");
           platformBadge.className = "meow-platform-badge";
           platformBadge.textContent = player.platform || "UNK";
           platformCell.appendChild(platformBadge);
           row.appendChild(platformCell);
           
-          // Health with progress bar
-          const healthCell = document.createElement("td");
+          const healthCell: HTMLTableDataCellElement = document.createElement("td");
           healthCell.appendChild(createHealthBar(player.health));
           row.appendChild(healthCell);
           
-          // Ping
-          const pingCell = document.createElement("td");
+          const pingCell: HTMLTableDataCellElement = document.createElement("td");
           pingCell.textContent = `${player.ping}ms`;
           pingCell.className = getPingStatusClass(player.ping);
           row.appendChild(pingCell);
@@ -473,26 +469,24 @@ export class PlayerListPanel {
       setTimeout(updatePlayerList, 500);
     }
 
-    // Start updating
     updatePlayerList();
 
-    // Return clean control functions
     return {
-      setVisible: function(visible) {
+      setVisible: function(visible: boolean): void {
         overlay.style.display = visible ? "block" : "none";
       },
-      setPosition: function(position) {
-        const positions = {
+      setPosition: function(position: PanelPosition): void {
+        const positions: Record<PanelPosition, Record<string, string>> = {
           topRight: { top: "20px", right: "20px", bottom: "auto", left: "auto" },
           topLeft: { top: "20px", left: "20px", bottom: "auto", right: "auto" },
           bottomRight: { bottom: "20px", right: "20px", top: "auto", left: "auto" },
           bottomLeft: { bottom: "20px", left: "20px", top: "auto", right: "auto" }
         };
         
-        const pos = positions[position] || positions.bottomLeft;
+        const pos: Record<string, string> = positions[position] || positions.bottomLeft;
         Object.assign(overlay.style, pos);
       },
-      updateTitle: function(text) {
+      updateTitle: function(text: string): void {
         title.textContent = text;
       }
     };

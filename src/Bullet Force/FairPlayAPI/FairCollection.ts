@@ -1,27 +1,34 @@
-/**
- * FairCollection - A utility class for secure data handling in browser environments.
- * 
- * Provides encryption and decryption utilities for various data types 
- * including numbers, strings, and vector objects.
- */
+interface Vector2 {
+    x: number;
+    y: number;
+}
+
+interface Vector3 {
+    x: number;
+    y: number;
+    z: number;
+}
+
+interface Vector4 {
+    x: number;
+    y: number;
+    z: number;
+    w: number;
+}
 
 const WEB_ADDRESS = "https://server.blayzegames.com/OnlineAccountSystem/fairplay_spec.php";
 const MAGIC = "1983031920131006";
 const SEC_SIZE = 16;
 
 export class FairCollection {
-    static #off1 = 0;
-    static #off2 = 0;
-    static #sec1 = new Uint8Array(SEC_SIZE);
-    static #sec2 = new Uint8Array(SEC_SIZE);
-    static #response = "";
-    static #enabled = false;
+    static #off1: number = 0;
+    static #off2: number = 0;
+    static #sec1: Uint8Array = new Uint8Array(SEC_SIZE);
+    static #sec2: Uint8Array = new Uint8Array(SEC_SIZE);
+    static #response: string = "";
+    static #enabled: boolean = false;
 
-    /**
-     * Makes an initialization request to the server.
-     * @private
-     */
-    static async #initRequest() {
+    static async #initRequest(): Promise<void> {
         try {
             const params = new URLSearchParams();
             params.append('magic', MAGIC);
@@ -49,12 +56,8 @@ export class FairCollection {
         }
     }
     
-    /**
-     * Initializes internal data structures from the server response.
-     * @private
-     */
-    static #initData() {
-        const bytes = this.#hexStringToUint8Array(this.#response);
+    static #initData(): void {
+        const bytes: Uint8Array = this.#hexStringToUint8Array(this.#response);
 
         if (bytes[1] !== 0) {
             return;
@@ -71,13 +74,7 @@ export class FairCollection {
         this.#enabled = true;
     }
     
-    /**
-     * Converts a hex string to Uint8Array.
-     * @private
-     * @param {string} hexString - The hex string to convert
-     * @returns {Uint8Array} - The resulting byte array
-     */
-    static #hexStringToUint8Array(hexString) {
+    static #hexStringToUint8Array(hexString: string): Uint8Array {
         if (hexString.length % 2 !== 0) {
             throw new Error('Hex string must have an even number of characters');
         }
@@ -91,14 +88,7 @@ export class FairCollection {
         return bytes;
     }
     
-    /**
-     * Transforms an ArrayBuffer using the security parameters.
-     * @private
-     * @param {ArrayBuffer} buf - The buffer to transform
-     * @param {Uint8Array} sec - The security array to use
-     * @param {number} off - The offset to use
-     */
-    static #transformArrayBuffer(buf, sec, off) {
+    static #transformArrayBuffer(buf: ArrayBuffer, sec: Uint8Array, off: number): void {
         const bytes = new Uint8Array(buf);
         let k = 0;
         
@@ -116,12 +106,7 @@ export class FairCollection {
         }
     }
 
-    /**
-     * Initializes the FairCollection system.
-     * Must be called before using any encryption/decryption methods.
-     * @returns {Promise<void>}
-     */
-    static async InitOperation() {
+    static async InitOperation(): Promise<string> {
         let res = "";
         if (!this.#enabled) {
             await this.#initRequest();
@@ -133,12 +118,7 @@ export class FairCollection {
         return res;
     }
 
-    /**
-     * Encrypts a double precision floating point number.
-     * @param {number} value - The value to encrypt
-     * @returns {number} - The encrypted value
-     */
-    static GetEncryptedDouble(value) {
+    static GetEncryptedDouble(value: number): number {
         if (!this.#enabled) {
             return value;
         }
@@ -149,12 +129,7 @@ export class FairCollection {
         return arr[0];
     }
     
-    /**
-     * Decrypts a double precision floating point number.
-     * @param {number} value - The value to decrypt
-     * @returns {number} - The decrypted value
-     */
-    static GetDecryptedDouble(value) {
+    static GetDecryptedDouble(value: number): number {
         if (!this.#enabled) {
             return value;
         }
@@ -165,12 +140,7 @@ export class FairCollection {
         return arr[0];
     }
 
-    /**
-     * Encrypts a single precision floating point number.
-     * @param {number} value - The value to encrypt
-     * @returns {number} - The encrypted value
-     */
-    static GetEncryptedFloat(value) {
+    static GetEncryptedFloat(value: number): number {
         if (!this.#enabled) {
             return value;
         }
@@ -181,12 +151,7 @@ export class FairCollection {
         return arr[0];
     }
     
-    /**
-     * Decrypts a single precision floating point number.
-     * @param {number} value - The value to decrypt
-     * @returns {number} - The decrypted value
-     */
-    static GetDecryptedFloat(value) {
+    static GetDecryptedFloat(value: number): number {
         if (!this.#enabled) {
             return value;
         }
@@ -197,12 +162,7 @@ export class FairCollection {
         return arr[0];
     }
 
-    /**
-     * Encrypts an integer.
-     * @param {number} value - The value to encrypt
-     * @returns {number} - The encrypted value
-     */
-    static GetEncryptedInteger(value) {
+    static GetEncryptedInteger(value: number): number {
         if (!this.#enabled) {
             return value;
         }
@@ -213,12 +173,7 @@ export class FairCollection {
         return arr[0];
     }
     
-    /**
-     * Decrypts an integer.
-     * @param {number} value - The value to decrypt
-     * @returns {number} - The decrypted value
-     */
-    static GetDecryptedInteger(value) {
+    static GetDecryptedInteger(value: number): number {
         if (!this.#enabled) {
             return value;
         }
@@ -229,12 +184,7 @@ export class FairCollection {
         return arr[0];
     }
 
-    /**
-     * Encrypts a string.
-     * @param {string} value - The string to encrypt
-     * @returns {string} - The encrypted string
-     */
-    static GetEncryptedString(value) {
+    static GetEncryptedString(value: string): string {
         if (!this.#enabled) {
             return value;
         }
@@ -244,12 +194,7 @@ export class FairCollection {
         return new TextDecoder().decode(arr);
     }
     
-    /**
-     * Decrypts a string.
-     * @param {string} value - The string to decrypt
-     * @returns {string} - The decrypted string
-     */
-    static GetDecryptedString(value) {
+    static GetDecryptedString(value: string): string {
         if (!this.#enabled) {
             return value;
         }
@@ -259,12 +204,7 @@ export class FairCollection {
         return new TextDecoder().decode(arr);
     }
 
-    /**
-     * Encrypts a 2D vector.
-     * @param {Object} value - The vector to encrypt {x, y}
-     * @returns {Object} - The encrypted vector
-     */
-    static GetEncryptedVector2(value) {
+    static GetEncryptedVector2(value: Vector2): Vector2 {
         if (!this.#enabled) {
             return value;
         }
@@ -275,12 +215,7 @@ export class FairCollection {
         };
     }
     
-    /**
-     * Decrypts a 2D vector.
-     * @param {Object} value - The vector to decrypt {x, y}
-     * @returns {Object} - The decrypted vector
-     */
-    static GetDecryptedVector2(value) {
+    static GetDecryptedVector2(value: Vector2): Vector2 {
         if (!this.#enabled) {
             return value;
         }
@@ -291,12 +226,7 @@ export class FairCollection {
         };
     }
 
-    /**
-     * Encrypts a 2D integer vector.
-     * @param {Object} value - The vector to encrypt {x, y}
-     * @returns {Object} - The encrypted vector
-     */
-    static GetEncryptedVector2Int(value) {
+    static GetEncryptedVector2Int(value: Vector2): Vector2 {
         if (!this.#enabled) {
             return value;
         }
@@ -307,12 +237,7 @@ export class FairCollection {
         };
     }
     
-    /**
-     * Decrypts a 2D integer vector.
-     * @param {Object} value - The vector to decrypt {x, y}
-     * @returns {Object} - The decrypted vector
-     */
-    static GetDecryptedVector2Int(value) {
+    static GetDecryptedVector2Int(value: Vector2): Vector2 {
         if (!this.#enabled) {
             return value;
         }
@@ -323,12 +248,7 @@ export class FairCollection {
         };
     }
 
-    /**
-     * Encrypts a 3D vector.
-     * @param {Object} value - The vector to encrypt {x, y, z}
-     * @returns {Object} - The encrypted vector
-     */
-    static GetEncryptedVector3(value) {
+    static GetEncryptedVector3(value: Vector3): Vector3 {
         if (!this.#enabled) {
             return value;
         }
@@ -340,12 +260,7 @@ export class FairCollection {
         };
     }
     
-    /**
-     * Decrypts a 3D vector.
-     * @param {Object} value - The vector to decrypt {x, y, z}
-     * @returns {Object} - The decrypted vector
-     */
-    static GetDecryptedVector3(value) {
+    static GetDecryptedVector3(value: Vector3): Vector3 {
         if (!this.#enabled) {
             return value;
         }
@@ -357,12 +272,7 @@ export class FairCollection {
         };
     }
 
-    /**
-     * Encrypts a 3D integer vector.
-     * @param {Object} value - The vector to encrypt {x, y, z}
-     * @returns {Object} - The encrypted vector
-     */
-    static GetEncryptedVector3Int(value) {
+    static GetEncryptedVector3Int(value: Vector3): Vector3 {
         if (!this.#enabled) {
             return value;
         }
@@ -374,12 +284,7 @@ export class FairCollection {
         };
     }
     
-    /**
-     * Decrypts a 3D integer vector.
-     * @param {Object} value - The vector to decrypt {x, y, z}
-     * @returns {Object} - The decrypted vector
-     */
-    static GetDecryptedVector3Int(value) {
+    static GetDecryptedVector3Int(value: Vector3): Vector3 {
         if (!this.#enabled) {
             return value;
         }
@@ -391,12 +296,7 @@ export class FairCollection {
         };
     }
 
-    /**
-     * Encrypts a 4D vector.
-     * @param {Object} value - The vector to encrypt {x, y, z, w}
-     * @returns {Object} - The encrypted vector
-     */
-    static GetEncryptedVector4(value) {
+    static GetEncryptedVector4(value: Vector4): Vector4 {
         if (!this.#enabled) {
             return value;
         }
@@ -409,12 +309,7 @@ export class FairCollection {
         };
     }
     
-    /**
-     * Decrypts a 4D vector.
-     * @param {Object} value - The vector to decrypt {x, y, z, w}
-     * @returns {Object} - The decrypted vector
-     */
-    static GetDecryptedVector4(value) {
+    static GetDecryptedVector4(value: Vector4): Vector4 {
         if (!this.#enabled) {
             return value;
         }

@@ -1,6 +1,6 @@
 # MeowEngine Parcel
   
-## ⚠️ This project is no longer maintained, and no further development is planned.
+## ⚠️ HUGE NOTICE: This project is still a work in progress, things will be added here and there to make modding easier so don't go too crazy 
 
 ## Table of Contents
 - [Disclaimer](#disclaimer)
@@ -66,23 +66,23 @@ meowengine-parcel/
 ├── src/
 │   ├── Browser/
 │   │   ├── UnityInteraction/
-│   │   │   └── UnityMessageWrapper.js
+│   │   │   └── UnityMessageWrapper.ts
 │   │   ├── Utility/
 │   │   │   ├── Buffer.js
-│   │   │   ├── CustomLogs.js
-│   │   │   ├── EventEmitter.js
-│   │   │   └── GameUtils.js
-│   │   └── GlobalTypeDefs.js
+│   │   │   ├── CustomLogs.ts
+│   │   │   ├── EventEmitter.ts
+│   │   │   └── GameUtils.ts
+│   │   └── GlobalTypeDefs.ts
 │   ├── Bullet Force/
 │   │   ├── API/
-│   │   │   └── Account.js
+│   │   │   └── Account.ts
 │   │   └── FairPlayAPI/
-│   │       └── FairCollection.js
+│   │       └── FairCollection.ts
 │   ├── Menu/
 │   │   ├── CanvasComponents/
-│   │   │   ├── CanvasConsole.js
-│   │   │   ├── PerformancePanel.js
-│   │   │   └── PlayerList.js
+│   │   │   ├── CanvasConsole.ts
+│   │   │   ├── PerformancePanel.ts
+│   │   │   └── PlayerList.ts
 │   │   ├── Components/ # UI components
 │   │   │   ├── 3DViewPort.js
 │   │   │   ├── Button.js
@@ -108,10 +108,10 @@ meowengine-parcel/
 │   │   │   ├── ToggleGroup.js
 │   │   │   └── ToggleSwitch.js
 │   │   ├── Examples.md
-│   │   └── UIManager.js
+│   │   └── UIManager.ts
 │   ├── MeowEngine/
 │   │   ├── Bot/
-│   │   │   └── PhotonBot.js
+│   │   │   └── FishNetBot.js
 │   │   ├── Patching/
 │   │   │   ├── ConsoleFilter.js
 │   │   │   └── Entry.js # Patch listeners (Add your own patches here)

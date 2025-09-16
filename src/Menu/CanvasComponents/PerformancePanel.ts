@@ -1,8 +1,16 @@
 import MeowEngine from "../../Browser/GlobalTypeDefs";
 
+type PanelPosition = "topRight" | "topLeft" | "bottomRight" | "bottomLeft";
+
+interface PerformancePanelAPI {
+  setVisible: (visible: boolean) => void;
+  setPosition: (position: PanelPosition) => void;
+  updateGameName: (name: string) => void;
+}
+
 export class PerformancePanel {
-  static initialize() {
-    const styleElement = document.createElement("style");
+  static initialize(): PerformancePanelAPI {
+    const styleElement: HTMLStyleElement = document.createElement("style");
     styleElement.textContent = `
           .meow-overlay {
             position: absolute;
@@ -47,35 +55,35 @@ export class PerformancePanel {
         `;
     document.head.appendChild(styleElement);
 
-    const overlay = document.createElement("div");
+    const overlay: HTMLDivElement = document.createElement("div");
     overlay.className = "meow-overlay";
 
-    const header = document.createElement("div");
+    const header: HTMLDivElement = document.createElement("div");
     header.className = "meow-console-header";
 
-    const stats = document.createElement("div");
+    const stats: HTMLDivElement = document.createElement("div");
     stats.className = "meow-stats";
 
-    const engineName = document.createElement("span");
+    const engineName: HTMLSpanElement = document.createElement("span");
     engineName.textContent = "MeowEngine";
 
-    const separator1 = document.createElement("span");
+    const separator1: HTMLSpanElement = document.createElement("span");
     separator1.className = "meow-separator";
     separator1.textContent = "|";
 
-    const fpsContainer = document.createElement("span");
+    const fpsContainer: HTMLSpanElement = document.createElement("span");
     fpsContainer.textContent = "FPS: ";
-    const fpsValue = document.createElement("span");
+    const fpsValue: HTMLSpanElement = document.createElement("span");
     fpsValue.textContent = "0";
     fpsContainer.appendChild(fpsValue);
 
-    const separator2 = document.createElement("span");
+    const separator2: HTMLSpanElement = document.createElement("span");
     separator2.className = "meow-separator";
     separator2.textContent = "|";
 
-    const pingContainer = document.createElement("span");
+    const pingContainer: HTMLSpanElement = document.createElement("span");
     pingContainer.textContent = "PING: ";
-    const pingValue = document.createElement("span");
+    const pingValue: HTMLSpanElement = document.createElement("span");
     pingValue.textContent = "0";
     pingContainer.appendChild(pingValue);
 
@@ -89,18 +97,18 @@ export class PerformancePanel {
 
     document.body.appendChild(overlay);
 
-    let frameCount = 0;
-    let lastTime = performance.now();
-    const fpsUpdateInterval = 500;
+    let frameCount: number = 0;
+    let lastTime: number = performance.now();
+    const fpsUpdateInterval: number = 500;
 
-    function updateFPS(currentTime) {
+    function updateFPS(currentTime: number): void {
       frameCount++;
 
-      const elapsed = currentTime - lastTime;
+      const elapsed: number = currentTime - lastTime;
 
       if (elapsed >= fpsUpdateInterval) {
-        const fps = Math.round((frameCount / elapsed) * 1000);
-        fpsValue.textContent = fps;
+        const fps: number = Math.round((frameCount / elapsed) * 1000);
+        fpsValue.textContent = fps.toString();
 
         if (fps >= 60) {
           fpsValue.style.color = "#00ff00";
@@ -117,9 +125,9 @@ export class PerformancePanel {
       requestAnimationFrame(updateFPS);
     }
 
-    function updatePing() {
-      let ping = MeowEngine.LocalPlayer.Ping;
-      pingValue.textContent = ping;
+    function updatePing(): void {
+      const ping: number = MeowEngine.LocalPlayer.Ping;
+      pingValue.textContent = ping.toString();
 
       if (ping < 100) {
         pingValue.style.color = "#00ff00";
@@ -136,10 +144,10 @@ export class PerformancePanel {
     updatePing();
 
     return {
-      setVisible: function (visible) {
+      setVisible: function (visible: boolean): void {
         overlay.style.display = visible ? "block" : "none";
       },
-      setPosition: function (position) {
+      setPosition: function (position: PanelPosition): void {
         if (position === "topRight") {
           header.style.top = "10px";
           header.style.right = "10px";
@@ -162,7 +170,7 @@ export class PerformancePanel {
           header.style.right = "auto";
         }
       },
-      updateGameName: function (name) {
+      updateGameName: function (name: string): void {
         engineName.textContent = name;
       },
     };
