@@ -1,5 +1,7 @@
 import WebSocket from "ws";
 
+// DOES NOT WORK YET
+
 export class FishNetBot {
   constructor(username, password, serverAddress = "wss://game-us-2.blayzegames.com:51000") {
     // Bot Identity
