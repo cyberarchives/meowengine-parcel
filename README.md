@@ -75,7 +75,8 @@ meowengine-parcel/
 │   │   └── GlobalTypeDefs.ts
 │   ├── Bullet Force/
 │   │   ├── API/
-│   │   │   └── Account.ts
+│   │   │   ├── Account.ts
+│   │   │   └── RegistrationData.ts
 │   │   └── FairPlayAPI/
 │   │       └── FairCollection.ts
 │   ├── Menu/
