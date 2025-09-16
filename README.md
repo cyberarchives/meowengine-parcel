@@ -1,8 +1,10 @@
 # MeowEngine Parcel
-  
-### ⚠️ Important Notice
 ___________________________
+
+### ⚠️ Important Notice
 ## This project is being actively revived to ensure compatibility with the latest Bullet Force update, which introduces support for FishNet Unity Networking. Development is underway to update the mod base accordingly.
+
+___________________________
 
 ## Table of Contents
 - [Disclaimer](#disclaimer)
