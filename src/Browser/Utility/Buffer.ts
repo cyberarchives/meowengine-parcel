@@ -14,17 +14,24 @@ const ENCODINGS = [
   "ucs-2",
   "utf16le",
   "utf-16le",
-];
+] as const;
+
+type BufferEncoding = typeof ENCODINGS[number];
+
+interface BufferLike {
+  type: "Buffer";
+  data: number[];
+}
+
+type BufferSource = string | ArrayBuffer | ArrayBufferView | number[] | BufferLike | ArrayLike<number>;
 
 // Helper function to check if a value is a valid encoding
-function isValidEncoding(encoding) {
-  return (
-    typeof encoding === "string" && ENCODINGS.includes(encoding.toLowerCase())
-  );
+function isValidEncoding(encoding: string): encoding is BufferEncoding {
+  return ENCODINGS.includes(encoding.toLowerCase() as BufferEncoding);
 }
 
 // Helper function to assert valid size
-function assertSize(size) {
+function assertSize(size: number): asserts size is number {
   if (
     typeof size !== "number" ||
     size < 0 ||
@@ -36,7 +43,7 @@ function assertSize(size) {
 }
 
 // Helper function to normalize encoding
-function normalizeEncoding(encoding) {
+function normalizeEncoding(encoding?: string): BufferEncoding {
   if (!encoding) return "utf8";
   const enc = encoding.toLowerCase();
   if (!isValidEncoding(enc)) {
@@ -49,9 +56,8 @@ function normalizeEncoding(encoding) {
 
 // Buffer class
 export class Buffer extends Uint8Array {
-  constructor(arg, encodingOrOffset, length) {
-    let buffer;
-    let offset = 0;
+  constructor(arg: number | BufferSource, encodingOrOffset?: BufferEncoding | number, length?: number) {
+    let buffer: Uint8Array;
 
     if (typeof arg === "number") {
       // Buffer.alloc(size) or new Buffer(size)
@@ -61,22 +67,29 @@ export class Buffer extends Uint8Array {
       // Buffer.from(arrayBuffer[, byteOffset[, length]])
       buffer = new Uint8Array(
         arg,
-        encodingOrOffset || 0,
+        (encodingOrOffset as number) || 0,
         length || arg.byteLength
       );
     } else if (ArrayBuffer.isView(arg)) {
       // Buffer.from(typedArray)
-      buffer = new Uint8Array(arg.buffer, arg.byteOffset, arg.byteLength);
+      buffer = new Uint8Array(arg.buffer as ArrayBuffer, arg.byteOffset, arg.byteLength);
     } else if (typeof arg === "string") {
       // Buffer.from(string[, encoding])
-      encodingOrOffset = normalizeEncoding(encodingOrOffset || "utf8");
-      buffer = Buffer.fromString(arg, encodingOrOffset);
+      const encoding = normalizeEncoding(encodingOrOffset as BufferEncoding || "utf8");
+      buffer = Buffer.fromString(arg, encoding);
     } else if (Array.isArray(arg)) {
       // Buffer.from(array)
       buffer = new Uint8Array(arg);
     } else if (arg && typeof arg === "object" && "type" in arg && arg.data) {
       // Buffer.from({ type: 'Buffer', data: [...] })
-      buffer = new Uint8Array(arg.data);
+      buffer = new Uint8Array((arg as BufferLike).data);
+    } else if (arg && typeof arg === "object" && "length" in arg) {
+      // Buffer.from(arrayLike)
+      const arrayLike = arg as ArrayLike<number>;
+      buffer = new Uint8Array(arrayLike.length);
+      for (let i = 0; i < arrayLike.length; i++) {
+        buffer[i] = arrayLike[i] || 0;
+      }
     } else {
       throw new TypeError(
         "First argument must be a string, Buffer, ArrayBuffer, Array, or array-like object"
@@ -84,20 +97,20 @@ export class Buffer extends Uint8Array {
     }
 
     // Inherit from Uint8Array
-    super(buffer.buffer, buffer.byteOffset, buffer.byteLength);
+    super(buffer.buffer as ArrayBuffer, buffer.byteOffset, buffer.byteLength);
   }
 
   // Static methods
 
   // Create a new Buffer from a string with specified encoding
-  static fromString(str, encoding) {
+  static fromString(str: string, encoding?: BufferEncoding): Uint8Array {
     if (typeof str !== "string") {
       throw new TypeError("Argument must be a string");
     }
-    encoding = normalizeEncoding(encoding);
-    let arr;
+    const enc = normalizeEncoding(encoding);
+    let arr: Uint8Array;
 
-    switch (encoding) {
+    switch (enc) {
       case "utf8":
         const encoder = new TextEncoder();
         return new Uint8Array(encoder.encode(str));
@@ -134,22 +147,32 @@ export class Buffer extends Uint8Array {
         }
         return arr;
       default:
-        throw new Error(`Unsupported encoding: ${encoding}`);
+        throw new Error(`Unsupported encoding: ${enc}`);
     }
   }
 
-  // Buffer.from(...args)
-  static from(...args) {
-    return new Buffer(...args);
+  // Buffer.from(...args) - Override the static from method to avoid conflicts
+  static from(arg: string, encoding?: BufferEncoding): Buffer;
+  static from(arg: ArrayBuffer, byteOffset?: number, length?: number): Buffer;
+  static from(arg: ArrayBufferView): Buffer;
+  static from(arg: number[]): Buffer;
+  static from(arg: ArrayLike<number>): Buffer;
+  static from(arg: BufferLike): Buffer;
+  static from(
+    arg: string | ArrayBuffer | ArrayBufferView | number[] | BufferLike | ArrayLike<number>, 
+    encodingOrOffset?: BufferEncoding | number, 
+    length?: number
+  ): Buffer {
+    return new Buffer(arg, encodingOrOffset, length);
   }
 
   // Buffer.alloc(size[, fill[, encoding]])
-  static alloc(size, fill, encoding) {
+  static alloc(size: number, fill?: string | number | Buffer, encoding?: BufferEncoding): Buffer {
     assertSize(size);
     const buf = new Buffer(size);
     if (fill !== undefined) {
       if (typeof fill === "string") {
-        buf.fill(fill, encoding);
+        buf.fill(fill, 0, size, encoding);
       } else if (typeof fill === "number") {
         buf.fill(fill);
       } else if (Buffer.isBuffer(fill)) {
@@ -160,31 +183,31 @@ export class Buffer extends Uint8Array {
   }
 
   // Buffer.allocUnsafe(size)
-  static allocUnsafe(size) {
+  static allocUnsafe(size: number): Buffer {
     assertSize(size);
     return new Buffer(size);
   }
 
   // Buffer.isBuffer(obj)
-  static isBuffer(obj) {
+  static isBuffer(obj: any): obj is Buffer {
     return obj instanceof Buffer;
   }
 
   // Buffer.isEncoding(encoding)
-  static isEncoding(encoding) {
+  static isEncoding(encoding: string): encoding is BufferEncoding {
     return isValidEncoding(encoding);
   }
 
   // Buffer.byteLength(string[, encoding])
-  static byteLength(string, encoding) {
+  static byteLength(string: string | Buffer, encoding?: BufferEncoding): number {
     if (typeof string !== "string" && !(string instanceof Buffer)) {
       throw new TypeError("Argument must be a string or Buffer");
     }
-    encoding = normalizeEncoding(encoding || "utf8");
+    const enc = normalizeEncoding(encoding || "utf8");
     if (Buffer.isBuffer(string)) {
       return string.length;
     }
-    switch (encoding) {
+    switch (enc) {
       case "utf8":
         return new TextEncoder().encode(string).length;
       case "ascii":
@@ -197,12 +220,12 @@ export class Buffer extends Uint8Array {
       case "utf16le":
         return string.length * 2;
       default:
-        throw new Error(`Unsupported encoding: ${encoding}`);
+        throw new Error(`Unsupported encoding: ${enc}`);
     }
   }
 
   // Buffer.concat(list[, totalLength])
-  static concat(list, totalLength) {
+  static concat(list: Buffer[], totalLength?: number): Buffer {
     if (!Array.isArray(list)) {
       throw new TypeError("list argument must be an Array");
     }
@@ -229,13 +252,13 @@ export class Buffer extends Uint8Array {
   // Instance methods
 
   // buf.toString([encoding[, start[, end]]])
-  toString(encoding, start = 0, end = this.length) {
-    encoding = normalizeEncoding(encoding || "utf8");
+  toString(encoding?: BufferEncoding, start: number = 0, end: number = this.length): string {
+    const enc = normalizeEncoding(encoding || "utf8");
     start = Math.max(0, start);
     end = Math.min(this.length, end);
     const slice = this.subarray(start, end);
 
-    switch (encoding) {
+    switch (enc) {
       case "utf8":
         return new TextDecoder().decode(slice);
       case "ascii":
@@ -267,39 +290,41 @@ export class Buffer extends Uint8Array {
         }
         return utf16;
       default:
-        throw new Error(`Unsupported encoding: ${encoding}`);
+        throw new Error(`Unsupported encoding: ${enc}`);
     }
   }
 
   // buf.write(string[, offset[, length]][, encoding])
-  write(string, offset = 0, length = this.length - offset, encoding) {
-    encoding = normalizeEncoding(encoding || "utf8");
-    const buf = Buffer.fromString(string, encoding);
+  write(string: string, offset: number = 0, length: number = this.length - offset, encoding?: BufferEncoding): number {
+    const enc = normalizeEncoding(encoding || "utf8");
+    const buf = Buffer.fromString(string, enc);
     length = Math.min(length, buf.length, this.length - offset);
     this.set(buf.subarray(0, length), offset);
     return length;
   }
 
   // buf.fill(value[, offset[, end]][, encoding])
-  fill(value, offset = 0, end = this.length, encoding) {
+  fill(value: string | number | Buffer, offset: number = 0, end: number = this.length, encoding?: BufferEncoding): this {
     offset = Math.max(0, offset);
     end = Math.min(this.length, end);
 
+    let fillValue: number | Buffer = value as number | Buffer;
+
     if (typeof value === "string") {
       if (encoding) {
-        value = Buffer.from(value, encoding);
+        fillValue = Buffer.from(value, encoding);
       } else {
-        value = value.charCodeAt(0);
+        fillValue = value.charCodeAt(0);
       }
     }
 
-    if (typeof value === "number") {
+    if (typeof fillValue === "number") {
       for (let i = offset; i < end; i++) {
-        this[i] = value & 0xff;
+        this[i] = fillValue & 0xff;
       }
-    } else if (Buffer.isBuffer(value)) {
+    } else if (Buffer.isBuffer(fillValue)) {
       for (let i = offset; i < end; i++) {
-        this[i] = value[i % value.length];
+        this[i] = fillValue[i % fillValue.length];
       }
     } else {
       throw new TypeError("value must be a number, string, or Buffer");
@@ -308,12 +333,12 @@ export class Buffer extends Uint8Array {
   }
 
   // buf.slice([start[, end]])
-  slice(start = 0, end = this.length) {
+  slice(start: number = 0, end: number = this.length): Buffer {
     return new Buffer(this.subarray(start, end));
   }
 
   // buf.copy(target[, targetStart[, sourceStart[, sourceEnd]]])
-  copy(target, targetStart = 0, sourceStart = 0, sourceEnd = this.length) {
+  copy(target: Buffer, targetStart: number = 0, sourceStart: number = 0, sourceEnd: number = this.length): number {
     if (!Buffer.isBuffer(target)) {
       throw new TypeError("target must be a Buffer");
     }
@@ -329,7 +354,7 @@ export class Buffer extends Uint8Array {
   }
 
   // buf.equals(otherBuffer)
-  equals(otherBuffer) {
+  equals(otherBuffer: Buffer): boolean {
     if (!Buffer.isBuffer(otherBuffer)) {
       return false;
     }
@@ -345,7 +370,7 @@ export class Buffer extends Uint8Array {
   }
 
   // buf.compare(otherBuffer)
-  compare(otherBuffer) {
+  compare(otherBuffer: Buffer): number {
     if (!Buffer.isBuffer(otherBuffer)) {
       throw new TypeError("Argument must be a Buffer");
     }
@@ -358,20 +383,24 @@ export class Buffer extends Uint8Array {
   }
 
   // buf.indexOf(value[, byteOffset][, encoding])
-  indexOf(value, byteOffset = 0, encoding) {
+  indexOf(value: string | number | Buffer, byteOffset: number = 0, encoding?: BufferEncoding): number {
+    let searchValue: number[] | Buffer;
+    
     if (typeof value === "string") {
-      value = Buffer.from(value, encoding);
+      searchValue = Buffer.from(value, encoding);
     } else if (typeof value === "number") {
-      value = [value & 0xff];
-    } else if (!Buffer.isBuffer(value)) {
+      searchValue = [value & 0xff];
+    } else if (Buffer.isBuffer(value)) {
+      searchValue = value;
+    } else {
       throw new TypeError("value must be a string, number, or Buffer");
     }
 
     byteOffset = Math.max(0, byteOffset);
-    for (let i = byteOffset; i <= this.length - value.length; i++) {
+    for (let i = byteOffset; i <= this.length - searchValue.length; i++) {
       let found = true;
-      for (let j = 0; j < value.length; j++) {
-        if (this[i + j] !== value[j]) {
+      for (let j = 0; j < searchValue.length; j++) {
+        if (this[i + j] !== searchValue[j]) {
           found = false;
           break;
         }
@@ -382,7 +411,7 @@ export class Buffer extends Uint8Array {
   }
 
   // buf.toJSON()
-  toJSON() {
+  toJSON(): BufferLike {
     return {
       type: "Buffer",
       data: Array.from(this),
@@ -390,7 +419,7 @@ export class Buffer extends Uint8Array {
   }
 
   // buf.inspect()
-  inspect() {
+  inspect(): string {
     let str = "";
     const max = INSPECT_MAX_BYTES;
     str = this.toString("hex", 0, max)
@@ -400,7 +429,7 @@ export class Buffer extends Uint8Array {
     return `<Buffer ${str}>`;
   }
 
-  readUInt8(offset = 0) {
+  readUInt8(offset: number = 0): number {
     if (offset < 0 || offset >= this.length) {
       throw new RangeError("Offset is out of bounds");
     }
@@ -408,7 +437,7 @@ export class Buffer extends Uint8Array {
   }
 
   // Read an unsigned 16-bit integer (little-endian)
-  readUInt16LE(offset = 0) {
+  readUInt16LE(offset: number = 0): number {
     if (offset < 0 || offset + 1 >= this.length) {
       throw new RangeError("Offset is out of bounds");
     }
@@ -416,7 +445,7 @@ export class Buffer extends Uint8Array {
   }
 
   // Read an unsigned 16-bit integer (big-endian)
-  readUInt16BE(offset = 0) {
+  readUInt16BE(offset: number = 0): number {
     if (offset < 0 || offset + 1 >= this.length) {
       throw new RangeError("Offset is out of bounds");
     }
@@ -424,7 +453,7 @@ export class Buffer extends Uint8Array {
   }
 
   // Read an unsigned 32-bit integer (little-endian)
-  readUInt32LE(offset = 0) {
+  readUInt32LE(offset: number = 0): number {
     if (offset < 0 || offset + 3 >= this.length) {
       throw new RangeError("Offset is out of bounds");
     }
@@ -438,7 +467,7 @@ export class Buffer extends Uint8Array {
   }
 
   // Read an unsigned 32-bit integer (big-endian)
-  readUInt32BE(offset = 0) {
+  readUInt32BE(offset: number = 0): number {
     if (offset < 0 || offset + 3 >= this.length) {
       throw new RangeError("Offset is out of bounds");
     }
@@ -452,7 +481,7 @@ export class Buffer extends Uint8Array {
   }
 
   // Read a signed 8-bit integer
-  readInt8(offset = 0) {
+  readInt8(offset: number = 0): number {
     if (offset < 0 || offset >= this.length) {
       throw new RangeError("Offset is out of bounds");
     }
@@ -460,7 +489,7 @@ export class Buffer extends Uint8Array {
   }
 
   // Read a signed 16-bit integer (little-endian)
-  readInt16LE(offset = 0) {
+  readInt16LE(offset: number = 0): number {
     if (offset < 0 || offset + 1 >= this.length) {
       throw new RangeError("Offset is out of bounds");
     }
@@ -468,7 +497,7 @@ export class Buffer extends Uint8Array {
   }
 
   // Read a signed 16-bit integer (big-endian)
-  readInt16BE(offset = 0) {
+  readInt16BE(offset: number = 0): number {
     if (offset < 0 || offset + 1 >= this.length) {
       throw new RangeError("Offset is out of bounds");
     }
@@ -476,7 +505,7 @@ export class Buffer extends Uint8Array {
   }
 
   // Read a signed 32-bit integer (little-endian)
-  readInt32LE(offset = 0) {
+  readInt32LE(offset: number = 0): number {
     if (offset < 0 || offset + 3 >= this.length) {
       throw new RangeError("Offset is out of bounds");
     }
@@ -490,7 +519,7 @@ export class Buffer extends Uint8Array {
   }
 
   // Read a signed 32-bit integer (big-endian)
-  readInt32BE(offset = 0) {
+  readInt32BE(offset: number = 0): number {
     if (offset < 0 || offset + 3 >= this.length) {
       throw new RangeError("Offset is out of bounds");
     }
@@ -506,7 +535,7 @@ export class Buffer extends Uint8Array {
   // Instance methods for writing numeric values
 
   // Write an unsigned 8-bit integer
-  writeUInt8(value, offset = 0) {
+  writeUInt8(value: number, offset: number = 0): number {
     if (offset < 0 || offset >= this.length) {
       throw new RangeError("Offset is out of bounds");
     }
@@ -518,7 +547,7 @@ export class Buffer extends Uint8Array {
   }
 
   // Write an unsigned 16-bit integer (little-endian)
-  writeUInt16LE(value, offset = 0) {
+  writeUInt16LE(value: number, offset: number = 0): number {
     if (offset < 0 || offset + 1 >= this.length) {
       throw new RangeError("Offset is out of bounds");
     }
@@ -531,7 +560,7 @@ export class Buffer extends Uint8Array {
   }
 
   // Write an unsigned 16-bit integer (big-endian)
-  writeUInt16BE(value, offset = 0) {
+  writeUInt16BE(value: number, offset: number = 0): number {
     if (offset < 0 || offset + 1 >= this.length) {
       throw new RangeError("Offset is out of bounds");
     }
@@ -544,7 +573,7 @@ export class Buffer extends Uint8Array {
   }
 
   // Write an unsigned 32-bit integer (little-endian)
-  writeUInt32LE(value, offset = 0) {
+  writeUInt32LE(value: number, offset: number = 0): number {
     if (offset < 0 || offset + 3 >= this.length) {
       throw new RangeError("Offset is out of bounds");
     }
@@ -559,7 +588,7 @@ export class Buffer extends Uint8Array {
   }
 
   // Write an unsigned 32-bit integer (big-endian)
-  writeUInt32BE(value, offset = 0) {
+  writeUInt32BE(value: number, offset: number = 0): number {
     if (offset < 0 || offset + 3 >= this.length) {
       throw new RangeError("Offset is out of bounds");
     }
@@ -574,7 +603,7 @@ export class Buffer extends Uint8Array {
   }
 
   // Write a signed 8-bit integer
-  writeInt8(value, offset = 0) {
+  writeInt8(value: number, offset: number = 0): number {
     if (offset < 0 || offset >= this.length) {
       throw new RangeError("Offset is out of bounds");
     }
@@ -586,7 +615,7 @@ export class Buffer extends Uint8Array {
   }
 
   // Write a signed 16-bit integer (little-endian)
-  writeInt16LE(value, offset = 0) {
+  writeInt16LE(value: number, offset: number = 0): number {
     if (offset < 0 || offset + 1 >= this.length) {
       throw new RangeError("Offset is out of bounds");
     }
@@ -599,7 +628,7 @@ export class Buffer extends Uint8Array {
   }
 
   // Write a signed 16-bit integer (big-endian)
-  writeInt16BE(value, offset = 0) {
+  writeInt16BE(value: number, offset: number = 0): number {
     if (offset < 0 || offset + 1 >= this.length) {
       throw new RangeError("Offset is out of bounds");
     }
@@ -612,7 +641,7 @@ export class Buffer extends Uint8Array {
   }
 
   // Write a signed 32-bit integer (little-endian)
-  writeInt32LE(value, offset = 0) {
+  writeInt32LE(value: number, offset: number = 0): number {
     if (offset < 0 || offset + 3 >= this.length) {
       throw new RangeError("Offset is out of bounds");
     }
@@ -627,7 +656,7 @@ export class Buffer extends Uint8Array {
   }
 
   // Write a signed 32-bit integer (big-endian)
-  writeInt32BE(value, offset = 0) {
+  writeInt32BE(value: number, offset: number = 0): number {
     if (offset < 0 || offset + 3 >= this.length) {
       throw new RangeError("Offset is out of bounds");
     }
@@ -641,8 +670,8 @@ export class Buffer extends Uint8Array {
     return offset + 4;
   }
 
-  // Add to the existing Buffer class
-  readFloatBE(offset = 0) {
+  // Read a 32-bit single-precision float (big-endian)
+  readFloatBE(offset: number = 0): number {
     if (offset < 0 || offset + 3 >= this.length) {
       throw new RangeError("Offset is out of bounds");
     }
@@ -650,7 +679,8 @@ export class Buffer extends Uint8Array {
     return view.getFloat32(0, false); // false for big-endian
   }
 
-  readFloatLE(offset = 0) {
+  // Read a 32-bit single-precision float (little-endian)
+  readFloatLE(offset: number = 0): number {
     if (offset < 0 || offset + 3 >= this.length) {
       throw new RangeError("Offset is out of bounds");
     }
@@ -658,7 +688,8 @@ export class Buffer extends Uint8Array {
     return view.getFloat32(0, true); // true for little-endian
   }
 
-  writeFloatBE(value, offset = 0) {
+  // Write a 32-bit single-precision float (big-endian)
+  writeFloatBE(value: number, offset: number = 0): number {
     if (offset < 0 || offset + 3 >= this.length) {
       throw new RangeError("Offset is out of bounds");
     }
@@ -670,7 +701,8 @@ export class Buffer extends Uint8Array {
     return offset + 4;
   }
 
-  writeFloatLE(value, offset = 0) {
+  // Write a 32-bit single-precision float (little-endian)
+  writeFloatLE(value: number, offset: number = 0): number {
     if (offset < 0 || offset + 3 >= this.length) {
       throw new RangeError("Offset is out of bounds");
     }
@@ -683,7 +715,7 @@ export class Buffer extends Uint8Array {
   }
 
   // Read a 64-bit double-precision float (big-endian)
-  readDoubleBE(offset = 0) {
+  readDoubleBE(offset: number = 0): number {
     if (offset < 0 || offset + 7 >= this.length) {
       throw new RangeError("Offset is out of bounds");
     }
@@ -692,7 +724,7 @@ export class Buffer extends Uint8Array {
   }
 
   // Read a 64-bit double-precision float (little-endian)
-  readDoubleLE(offset = 0) {
+  readDoubleLE(offset: number = 0): number {
     if (offset < 0 || offset + 7 >= this.length) {
       throw new RangeError("Offset is out of bounds");
     }
@@ -701,7 +733,7 @@ export class Buffer extends Uint8Array {
   }
 
   // Write a 64-bit double-precision float (big-endian)
-  writeDoubleBE(value, offset = 0) {
+  writeDoubleBE(value: number, offset: number = 0): number {
     if (offset < 0 || offset + 7 >= this.length) {
       throw new RangeError("Offset is out of bounds");
     }
@@ -714,7 +746,7 @@ export class Buffer extends Uint8Array {
   }
 
   // Write a 64-bit double-precision float (little-endian)
-  writeDoubleLE(value, offset = 0) {
+  writeDoubleLE(value: number, offset: number = 0): number {
     if (offset < 0 || offset + 7 >= this.length) {
       throw new RangeError("Offset is out of bounds");
     }

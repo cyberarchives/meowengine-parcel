@@ -68,7 +68,7 @@ meowengine-parcel/
 │   │   ├── UnityInteraction/
 │   │   │   └── UnityMessageWrapper.ts
 │   │   ├── Utility/
-│   │   │   ├── Buffer.js
+│   │   │   ├── Buffer.ts
 │   │   │   ├── CustomLogs.ts
 │   │   │   ├── EventEmitter.ts
 │   │   │   └── GameUtils.ts
@@ -114,7 +114,7 @@ meowengine-parcel/
 │   │   ├── Bot/
 │   │   │   └── FishNetBot.js
 │   │   ├── Patching/
-│   │   │   ├── ConsoleFilter.js
+│   │   │   ├── ConsoleFilter.ts
 │   │   │   └── Entry.js # Patch listeners (Add your own patches here)
 │   │   └── Photon/
 │   │       ├── Instance/

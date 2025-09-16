@@ -312,39 +312,6 @@ export class Patching {
                     OpCode201.handleLocalPlayerUpdate(parser.parseOutgoing());
                 }
 
-                // if (packet.op_code == 252) {
-                //   if (
-                //     packet.sections &&
-                //     packet.sections[0] &&
-                //     packet.sections[0][1] &&
-                //     packet.sections[0][1].data
-                //   ) {
-                //     if (
-                //       packet.sections[0][1].data.get({ type: 98, data: 255 }) &&
-                //       typeof packet.sections[0][1].data.get({ type: 98, data: 255 })
-                //         .data == "string"
-                //     ) {
-                //       let username = packet.sections[0][1].data.get({
-                //         type: 98,
-                //         data: 255,
-                //       }).data;
-                //       if (MeowEngine.LocalPlayer.ClanTag !== "") {
-                //         packet.sections[0][1].data.get({ type: 98, data: 255 }).data =
-                //           MeowEngine.LocalPlayer.ClanTag + username;
-                //       }
-                //     }
-                //   }
-
-                //   let args = [];
-                //   args[0] = packet.serialize();
-                //   MeowEngine.Log.Instance.info(
-                //     "Username prop set to:",
-                //     this.username,
-                //     packet.sections[0][1]
-                //   );
-                //   return originalSend.apply(socket, args);
-                // }
-
                 return originalSend.apply(socket, args);
             }
         );

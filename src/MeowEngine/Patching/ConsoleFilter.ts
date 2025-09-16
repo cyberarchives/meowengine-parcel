@@ -1,6 +1,25 @@
+type ConsoleMethod = 'log' | 'error' | 'warn' | 'info' | 'debug';
+type ConsoleFunction = (...args: any[]) => void;
+type FilterPattern = string | RegExp;
+
+interface OriginalMethods {
+    log: ConsoleFunction;
+    error: ConsoleFunction;
+    warn: ConsoleFunction;
+    info: ConsoleFunction;
+    debug: ConsoleFunction;
+}
+
 export class ConsoleFilter {
-    constructor(filterPatterns = []) {
-        this.filterPatterns = filterPatterns;
+    private filterPatterns: RegExp[];
+    private originalMethods: OriginalMethods;
+    private active: boolean;
+
+    constructor(filterPatterns: FilterPattern[] = []) {
+        this.filterPatterns = filterPatterns.map(pattern => 
+            pattern instanceof RegExp ? pattern : new RegExp(pattern, "i")
+        );
+        
         this.originalMethods = {
             log: console.log,
             error: console.error,
@@ -12,15 +31,13 @@ export class ConsoleFilter {
         this.active = false;
     }
 
-    // Add patterns to filter
-    addFilter(pattern) {
+    addFilter(pattern: FilterPattern): this {
         if (pattern instanceof RegExp) {
             this.filterPatterns.push(pattern);
         } else {
             this.filterPatterns.push(new RegExp(pattern, "i"));
         }
 
-        // Reapply filters if already active
         if (this.active) {
             this.enable();
         }
@@ -28,15 +45,12 @@ export class ConsoleFilter {
         return this;
     }
 
-    // Remove a pattern from filters
-    removeFilter(pattern) {
-        const patternStr =
-            pattern instanceof RegExp ? pattern.toString() : pattern;
+    removeFilter(pattern: FilterPattern): this {
+        const patternStr = pattern instanceof RegExp ? pattern.toString() : pattern;
         this.filterPatterns = this.filterPatterns.filter(
             p => p.toString() !== patternStr
         );
 
-        // Reapply filters if already active
         if (this.active) {
             this.enable();
         }
@@ -44,11 +58,9 @@ export class ConsoleFilter {
         return this;
     }
 
-    // Clear all filters
-    clearFilters() {
+    clearFilters(): this {
         this.filterPatterns = [];
 
-        // Reapply filters if already active
         if (this.active) {
             this.enable();
         }
@@ -56,8 +68,7 @@ export class ConsoleFilter {
         return this;
     }
 
-    // Check if a message should be filtered
-    shouldFilter(args) {
+    private shouldFilter(args: any[]): boolean {
         if (this.filterPatterns.length === 0) return false;
 
         return args.some(arg => {
@@ -68,9 +79,7 @@ export class ConsoleFilter {
         });
     }
 
-    // Enable the console filter
-    enable() {
-        // Store original methods if not already stored
+    enable(): this {
         this.originalMethods = {
             log: console.log,
             error: console.error,
@@ -79,32 +88,31 @@ export class ConsoleFilter {
             debug: console.debug
         };
 
-        // Override console methods
-        console.log = (...args) => {
+        console.log = (...args: any[]): void => {
             if (!this.shouldFilter(args)) {
                 this.originalMethods.log.apply(console, args);
             }
         };
 
-        console.error = (...args) => {
+        console.error = (...args: any[]): void => {
             if (!this.shouldFilter(args)) {
                 this.originalMethods.error.apply(console, args);
             }
         };
 
-        console.warn = (...args) => {
+        console.warn = (...args: any[]): void => {
             if (!this.shouldFilter(args)) {
                 this.originalMethods.warn.apply(console, args);
             }
         };
 
-        console.info = (...args) => {
+        console.info = (...args: any[]): void => {
             if (!this.shouldFilter(args)) {
                 this.originalMethods.info.apply(console, args);
             }
         };
 
-        console.debug = (...args) => {
+        console.debug = (...args: any[]): void => {
             if (!this.shouldFilter(args)) {
                 this.originalMethods.debug.apply(console, args);
             }
@@ -114,20 +122,29 @@ export class ConsoleFilter {
         return this;
     }
 
-    // Disable the console filter
-    disable() {
-        // Restore original console methods
-        Object.keys(this.originalMethods).forEach(method => {
-            console[method] = this.originalMethods[method];
+    disable(): this {
+        (Object.keys(this.originalMethods) as ConsoleMethod[]).forEach(method => {
+            (console as any)[method] = this.originalMethods[method];
         });
 
         this.active = false;
         return this;
     }
 
-    // Toggle the filter on/off
-    toggle() {
+    toggle(): this {
         return this.active ? this.disable() : this.enable();
+    }
+
+    isActive(): boolean {
+        return this.active;
+    }
+
+    getFilterPatterns(): RegExp[] {
+        return [...this.filterPatterns];
+    }
+
+    getFilterCount(): number {
+        return this.filterPatterns.length;
     }
 }
 
